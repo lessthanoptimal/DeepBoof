@@ -33,3 +33,13 @@ function boof.create_output(operation_name, data_type, variant)
 
     return output_dir
 end
+
+function boof.save( output_dir, input, operation, output )
+    torch.save(paths.concat(output_dir,'input'), input)
+    torch.save(paths.concat(output_dir,'operation'), operation)
+    torch.save(paths.concat(output_dir,'output'), output)
+
+    torch.save(paths.concat(output_dir,'input_ascii'), input, 'ascii')
+    torch.save(paths.concat(output_dir,'operation_ascii'), operation, 'ascii')
+    torch.save(paths.concat(output_dir,'output_ascii'), output, 'ascii')
+end

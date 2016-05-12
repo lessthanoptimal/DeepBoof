@@ -188,11 +188,10 @@ public abstract class BaseParserTorch7 {
 			}
 		} else {
 			int a = readS32();
-			int b = readS32();
-			int c = readS32();
+			long b = readS64();
 
 			if( verbose )
-				System.out.println("    no dimension.  Weird variable "+a+" "+b+" "+c);
+				System.out.println("    no dimension.  Weird variable "+a+" "+b);
 		}
 		return t;
 	}
@@ -269,7 +268,7 @@ public abstract class BaseParserTorch7 {
 			} else if( o_key instanceof TorchNumber ) {
 				key = ((TorchNumber)o_key).value;
 			} else {
-				throw new RuntimeException("Add support");
+				throw new RuntimeException("Add support for "+o_key);
 			}
 
 			TorchObject value = parseNext(true);

@@ -130,32 +130,46 @@ public class TestConvertTorchToBoofForward {
 			if( !d.isDirectory() )
 				continue;
 
-			Tensor input = convert(read(new File(d,"input")));
-			FunctionAndParameters fap = convert(read(new File(d,"operation")));
-			Tensor expected = convert(read(new File(d,"output")));
+			Tensor input;FunctionAndParameters fap;Tensor expected;
 
-			if( fap != null ) {
-				Function function = fap.getFunction();
-				if (functionClass != null)
-					assertTrue("Unexpected class type. " + function.getClass().getSimpleName(),
-							function.getClass() == functionClass);
+			// First test the binary parser
+			input = convert(readBinary(new File(d,"input")));
+			fap = convert(readBinary(new File(d,"operation")));
+			expected = convert(readBinary(new File(d,"output")));
 
-				int N = input.length(0);
+			checkFunction(functionClass, input, fap, expected);
 
-				function.initialize(TH(input.getShape()));
-				Tensor found = input.create(WI(N, function.getOutputShape()));
-				function.setParameters(fap.parameters);
-				function.forward(input, found);
-				DeepUnitTest.assertEquals(expected,found, Accuracy.STANDARD);
-			} else {
-				// there is no function, so the function is supposed to be pointless and input should be
-				// the same as output
-				DeepUnitTest.assertEquals(expected,input, Accuracy.STANDARD);
-			}
+			// Now test the ASCII parser
+			input = convert(readAscii(new File(d,"input_ascii")));
+			fap = convert(readAscii(new File(d,"operation_ascii")));
+			expected = convert(readAscii(new File(d,"output_ascii")));
+
+			checkFunction(functionClass, input, fap, expected);
 
 			count++;
 		}
 		assertTrue(count>0);
+	}
+
+	private void checkFunction(Class functionClass, Tensor input, FunctionAndParameters fap, Tensor expected) {
+		if( fap != null ) {
+			Function function = fap.getFunction();
+			if (functionClass != null)
+				assertTrue("Unexpected class type. " + function.getClass().getSimpleName(),
+						function.getClass() == functionClass);
+
+			int N = input.length(0);
+
+			function.initialize(TH(input.getShape()));
+			Tensor found = input.create(WI(N, function.getOutputShape()));
+			function.setParameters(fap.parameters);
+			function.forward(input, found);
+			DeepUnitTest.assertEquals(expected,found, Accuracy.STANDARD);
+		} else {
+			// there is no function, so the function is supposed to be pointless and input should be
+			// the same as output
+			DeepUnitTest.assertEquals(expected,input, Accuracy.STANDARD);
+		}
 	}
 
 	private void checkSequence(String directory ) {
@@ -166,9 +180,9 @@ public class TestConvertTorchToBoofForward {
 			if( !d.isDirectory() )
 				continue;
 
-			Tensor input = convert(read(new File(d,"input")));
-			SequenceAndParameters sap = convert(read(new File(d,"operation")));
-			Tensor expected = convert(read(new File(d,"output")));
+			Tensor input = convert(readBinary(new File(d,"input")));
+			SequenceAndParameters sap = convert(readBinary(new File(d,"operation")));
+			Tensor expected = convert(readBinary(new File(d,"output")));
 
 			ForwardSequence forward = new ForwardSequence(sap.sequence,sap.type);
 
@@ -185,9 +199,19 @@ public class TestConvertTorchToBoofForward {
 		assertTrue(count>0);
 	}
 
-	private <T extends TorchObject>T read( File path ) {
+	private <T extends TorchObject>T readBinary(File path ) {
 		try {
 			List<TorchObject> found = new ParseBinaryTorch7().parse(path);
+			assertEquals(1,found.size());
+			return (T)found.get(0);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private <T extends TorchObject>T readAscii(File path ) {
+		try {
+			List<TorchObject> found = new ParseAsciiTorch7().setVerbose(true).parse(path);
 			assertEquals(1,found.size());
 			return (T)found.get(0);
 		} catch (IOException e) {

@@ -20,9 +20,7 @@ local function generate( variant , data_type, v1)
     operation:evaluate()
     local output = operation:forward(input)
 
-    torch.save(paths.concat(output_dir,'input'), input)
-    torch.save(paths.concat(output_dir,'operation'), operation)
-    torch.save(paths.concat(output_dir,'output'), output)
+    boof.save(output_dir,input,operation,output)
 end
 
 for k,data_type in pairs(boof.float_types) do

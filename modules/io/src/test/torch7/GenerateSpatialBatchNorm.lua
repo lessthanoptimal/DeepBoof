@@ -32,10 +32,7 @@ for k,data_type in pairs(boof.float_types) do
     operation:evaluate()
     local output = operation:forward(input)
 
-    -- No need to explicitly save the weight and bias because it is saved with the operation
-    torch.save(paths.concat(output_dir,'input'), input)
-    torch.save(paths.concat(output_dir,'operation'), operation)
-    torch.save(paths.concat(output_dir,'output'), output)
+    boof.save(output_dir,input,operation,output)
 
     ------------------------------------------------------------------------
     -- The same but with gamma+beta (a.k.a. weight and bias)
@@ -51,8 +48,5 @@ for k,data_type in pairs(boof.float_types) do
     operation:evaluate()
     output = operation:forward(input)
 
-    -- No need to explicitly save the weight and bias because it is saved with the operation
-    torch.save(paths.concat(output_dir,'input'), input)
-    torch.save(paths.concat(output_dir,'operation'), operation)
-    torch.save(paths.concat(output_dir,'output'), output)
+    boof.save(output_dir,input,operation,output)
 end

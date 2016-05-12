@@ -126,16 +126,16 @@ public class ParseBinaryTorch7 extends BaseParserTorch7 {
 		if( littleEndian ) {
 			int idx = 0;
 			for (int i = 0; i < size; i++, idx += 8) {
-				long a = (tmp[idx]&0xFF) | (tmp[idx+1]&0xFF)<<8 | (tmp[idx+2]&0xFF)<<16 | (tmp[idx+3]&0xFF) << 24;
-				long b = (tmp[idx+4]&0xFF) | (tmp[idx+5]&0xFF)<<8 | (tmp[idx+6]&0xFF)<<16 | (tmp[idx+7]&0xFF) << 24;
+				long a =  (tmp[idx]&0xFF) | (tmp[idx+1]&0xFF)<<8 | (tmp[idx+2]&0xFF)<<16 | (long)(tmp[idx+3]&0xFF) << 24L;
+				long b = (tmp[idx+4]&0xFF) | (tmp[idx+5]&0xFF)<<8 | (tmp[idx+6]&0xFF)<<16 | (long)(tmp[idx+7]&0xFF) << 24;
 
 				storage[i] = Double.longBitsToDouble(b << 32 | a );
 			}
 		} else {
 			int idx = 0;
 			for (int i = 0; i < size; i++, idx += 8) {
-				int a = (tmp[idx+3]&0xFF) | (tmp[idx+2]&0xFF)<<8 | (tmp[idx+1]&0xFF)<<16 | (tmp[idx]&0xFF) << 24;
-				long b = (tmp[idx+7]&0xFF) | (tmp[idx+6]&0xFF)<<8 | (tmp[idx+5]&0xFF)<<16 | (tmp[idx+4]&0xFF) << 24;
+				long a = (tmp[idx+3]&0xFF) | (tmp[idx+2]&0xFF)<<8 | (tmp[idx+1]&0xFF)<<16 | (long)(tmp[idx]&0xFF) << 24;
+				long b = (tmp[idx+7]&0xFF) | (tmp[idx+6]&0xFF)<<8 | (tmp[idx+5]&0xFF)<<16 | (long)(tmp[idx+4]&0xFF) << 24;
 
 				storage[i] = Double.longBitsToDouble(a << 32 | b );
 			}

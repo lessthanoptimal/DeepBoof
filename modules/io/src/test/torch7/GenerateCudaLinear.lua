@@ -37,8 +37,5 @@ operation.gradBias = nil
 operation.gradInput = nil
 operation.gradWeight = nil
 
--- No need to explicitly save the weight and bias because it is saved with the operation
-torch.save(paths.concat(output_dir,'input'), input)
-torch.save(paths.concat(output_dir,'operation'), operation)
-torch.save(paths.concat(output_dir,'output'), output)
+boof.save(output_dir,input,operation,output)
 

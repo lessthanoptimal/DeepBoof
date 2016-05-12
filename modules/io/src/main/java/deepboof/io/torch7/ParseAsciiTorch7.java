@@ -94,17 +94,26 @@ public class ParseAsciiTorch7 extends BaseParserTorch7 {
 		if( words.length != size )
 			throw new IOException("Unexpected number of words "+size+" found "+words.length);
 		for (int i = 0; i < size; i++) {
-			storage[i] = Double.parseDouble(words[i]);
+			if( words[i].endsWith("nan"))
+				storage[i] = Double.NaN;
+			else
+				storage[i] = Double.parseDouble(words[i]);
 		}
-//		int foo = input.readByte();
 	}
 
 	@Override
 	public void readArrayFloat(int size, float[] storage) throws IOException {
+//		for (int i = 0; i < size; i++) {
+//			storage[i] = readFloat();
+//		}
+//		input.readByte();
+		String line = readInnerString();
+		String words[] = line.split(" ");
+		if( words.length != size )
+			throw new IOException("Unexpected number of words "+size+" found "+words.length);
 		for (int i = 0; i < size; i++) {
-			storage[i] = readFloat();
+			storage[i] = Float.parseFloat(words[i]);
 		}
-		input.readByte();
 	}
 
 	@Override
@@ -132,7 +141,17 @@ public class ParseAsciiTorch7 extends BaseParserTorch7 {
 				break;
 			}
 			buffer[length++] = (byte)value;
+
+			if( buffer.length == length ) {
+				growBuffer();
+			}
 		}
 		return new String(buffer,0,length);
+	}
+
+	private void growBuffer() {
+		byte tmp[] = new byte[ buffer.length + 1024];
+		System.arraycopy(buffer,0,tmp,0,buffer.length);
+		buffer = tmp;
 	}
 }

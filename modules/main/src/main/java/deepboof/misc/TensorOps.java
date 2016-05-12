@@ -21,6 +21,7 @@ package deepboof.misc;
 import deepboof.Tensor;
 import deepboof.tensors.Tensor_F64;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -236,5 +237,39 @@ public class TensorOps {
 			D *= shape[i];
 		}
 		return D;
+	}
+
+	public static File pathToRoot() {
+		File active = new File(".").getAbsoluteFile();
+
+		while( active != null ) {
+			boolean foundModules = false;
+			boolean foundExamples = false;
+			boolean foundSettings = false;
+
+			File[] children = active.listFiles();
+			if( children == null )
+				break;
+
+			for( File d : children ) {
+				if( d.isDirectory() && d.getName().endsWith("modules")) {
+					foundModules = true;
+				}
+				if( d.isDirectory() && d.getName().endsWith("examples")) {
+					foundExamples = true;
+				}
+				if( d.isFile() && d.getName().equals("settings.gradle")) {
+					foundSettings = true;
+				}
+			}
+
+			if( foundModules && foundExamples && foundSettings ) {
+				return active;
+			} else {
+				active = active.getParentFile();
+			}
+		}
+		throw new RuntimeException("Cant find the project root directory");
+
 	}
 }

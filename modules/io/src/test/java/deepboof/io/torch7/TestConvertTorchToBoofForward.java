@@ -25,6 +25,7 @@ import deepboof.Tensor;
 import deepboof.graph.ForwardSequence;
 import deepboof.impl.forward.standard.*;
 import deepboof.io.torch7.struct.TorchObject;
+import deepboof.misc.TensorOps;
 import org.junit.Test;
 
 import java.io.File;
@@ -34,16 +35,14 @@ import java.util.List;
 import static deepboof.io.torch7.ConvertTorchToBoofForward.convert;
 import static deepboof.misc.TensorOps.TH;
 import static deepboof.misc.TensorOps.WI;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * @author Peter Abeles
  */
 public class TestConvertTorchToBoofForward {
 
-	File pathToData = new File("../io/src/test/torch7/data");
+	File pathToData = new File(TensorOps.pathToRoot(),"modules/io/src/test/torch7/data");
 
 	@Test
 	public void relu() {
@@ -119,7 +118,11 @@ public class TestConvertTorchToBoofForward {
 	private void checkFunction(String directory , Class functionClass ) {
 		File pathToOp = new File(pathToData,directory);
 		if( !pathToOp.exists() ) {
-			fail("Have you generated data using torch?");
+			System.err.println("Can't find torch generated test data.  To generate data run the following Linux shell script");
+			System.err.println();
+			System.err.println("DeepBoof/modules/io/src/test/torch7/generate_all.sh");
+			System.err.println();
+			fail("Missing torch data for "+directory);
 		}
 
 		int count = 0;

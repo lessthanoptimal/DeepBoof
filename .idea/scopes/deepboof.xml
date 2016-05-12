@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="deepboof" pattern="(file[DeepBoof_Main_main]:*/||file[DeepBoof_Main_test]:*/||file[DeepBoof_Learning_main]:*/||file[DeepBoof_Learning_test]:*/||file[DeepBoof_Input_Output_main]:*/||file[DeepBoof_Input_Output_test]:*/||file[DeepBoof_Visualization_main]:*/)&amp;&amp;!file:*.gradle&amp;&amp;!file[DeepBoof_Input_Output_test]:torch7//*" />
+</component>

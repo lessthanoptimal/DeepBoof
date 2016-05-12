@@ -89,10 +89,14 @@ public class ParseAsciiTorch7 extends BaseParserTorch7 {
 
 	@Override
 	public void readArrayDouble(int size, double[] storage) throws IOException {
+		String line = readInnerString();
+		String words[] = line.split(" ");
+		if( words.length != size )
+			throw new IOException("Unexpected number of words "+size+" found "+words.length);
 		for (int i = 0; i < size; i++) {
-			storage[i] = readDouble();
+			storage[i] = Double.parseDouble(words[i]);
 		}
-		input.readByte();
+//		int foo = input.readByte();
 	}
 
 	@Override

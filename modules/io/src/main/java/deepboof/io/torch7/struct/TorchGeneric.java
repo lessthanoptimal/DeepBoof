@@ -20,6 +20,7 @@ package deepboof.io.torch7.struct;
 
 import deepboof.io.torch7.ConvertTorchToBoofForward;
 import deepboof.tensors.Tensor_F32;
+import deepboof.tensors.Tensor_F64;
 import deepboof.tensors.Tensor_U8;
 
 import java.util.HashMap;
@@ -49,5 +50,9 @@ public class TorchGeneric extends TorchReferenceable {
 
 	public Tensor_F32 getTensorF32(String key ) {
 		return (Tensor_F32)ConvertTorchToBoofForward.convert(map.get(key));
+	}
+
+	public Tensor_F64 getTensorF64(String key ) {
+		return (Tensor_F64)ConvertTorchToBoofForward.convert(map.get(key));
 	}
 }

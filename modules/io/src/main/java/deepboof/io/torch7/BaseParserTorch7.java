@@ -217,9 +217,7 @@ public abstract class BaseParserTorch7 {
 
 			case "torch.DoubleStorage":{
 				TorchDoubleStorage t = new TorchDoubleStorage(size);
-				for (int i = 0; i < size; i++) {
-					t.data[i] = readDouble();
-				}
+				readArrayDouble(size,t.data);
 				out = t;
 			}break;
 

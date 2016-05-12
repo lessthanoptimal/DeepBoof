@@ -1,0 +1,20 @@
+dependencies {
+    compile 'com.google.protobuf:protobuf-java:2.6.1'
+    compile project(':modules:main')
+    testCompile project(':modules:main').sourceSets.test.output
+
+    compile 'com.github.axet:wget:1.2.19'
+    compile 'org.rauschig:jarchivelib:0.5.0'
+    compile 'net.lingala.zip4j:zip4j:1.3.2'
+}
+
+// Exclude caffe package since it is auto generated code and very large
+javadoc {
+    exclude 'caffe'
+}
+
+idea {
+    module {
+        name = "DeepBoof Input/Output"
+    }
+}

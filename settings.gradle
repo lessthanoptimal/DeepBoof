@@ -1,0 +1,3 @@
+rootProject.name = 'DeepBoof'
+
+include 'modules:main','modules:learning','modules:io','modules:visualization','examples'

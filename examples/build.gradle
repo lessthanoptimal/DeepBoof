@@ -1,0 +1,19 @@
+dependencies {
+    compile project(':modules:main')
+    compile project(':modules:io')
+    compile project(':modules:visualization')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+        }
+    }
+}
+
+idea {
+    module {
+        name = "DeepBoof Examples"
+    }
+}

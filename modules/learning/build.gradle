@@ -1,0 +1,10 @@
+dependencies {
+    compile project(':modules:main')
+    testCompile project(':modules:main').sourceSets.test.output
+}
+
+idea {
+    module {
+        name = "DeepBoof Learning"
+    }
+}

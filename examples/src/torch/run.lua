@@ -91,8 +91,7 @@ while true do
       print("Saving model.  score = "..best_test)
       local model_file_name = paths.concat(opt.save, 'model.net')
       local model1 = model_train:clone()
-      netLighter(model1)
-      torch.save(model_file_name, model1)
+      torch.save(model_file_name, model1:clearState())
    end
 
    -- If performance hasn't improved in a long time stop

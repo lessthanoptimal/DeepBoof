@@ -143,8 +143,7 @@ while true do
             -- save/log current net
             local model_file_name = paths.concat(path_best, 'model.net')
             local model1 = model_train:clone()
-            netLighter(model1)
-            torch.save(model_file_name, model1)
+            torch.save(model_file_name, model1:clearState())
 
             os.execute('cp '.. opt.save ..'/*.log '..path_best)
             os.execute('cp '.. opt.save ..'/*.txt '..path_best)

@@ -50,6 +50,13 @@ public interface Function< T extends Tensor > {
 	void setParameters( List<T> parameters );
 
 	/**
+	 * If the parameters have been set, then this returns the list of parameters.  Otherwise null is returned.
+	 *
+	 * @return List of parameters or null if they have not been set yet
+	 */
+	List<T> getParameters();
+
+	/**
 	 * Performs forward pass of the function on the provided inputs.
 	 *
 	 * <pre>

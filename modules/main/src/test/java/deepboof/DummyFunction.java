@@ -35,6 +35,11 @@ public class DummyFunction< T extends Tensor > implements Function<T> {
 	}
 
 	@Override
+	public List<T> getParameters() {
+		return null;
+	}
+
+	@Override
 	public void forward(T input, T output) {
 
 	}

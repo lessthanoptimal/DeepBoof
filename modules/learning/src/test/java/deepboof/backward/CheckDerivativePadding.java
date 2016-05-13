@@ -121,6 +121,9 @@ public abstract class CheckDerivativePadding<T extends Tensor<T>,P extends DSpat
 		public void setParameters(List<T> parameters) {}
 
 		@Override
+		public List<T> getParameters() {return null;}
+
+		@Override
 		public void forward(T input, T output) {
 			applyPadding(input, output);
 		}

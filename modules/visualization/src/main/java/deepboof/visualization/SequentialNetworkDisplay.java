@@ -21,6 +21,7 @@ package deepboof.visualization;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
+import deepboof.Tensor;
 import deepboof.forward.*;
 import deepboof.graph.Node;
 
@@ -43,6 +44,8 @@ public class SequentialNetworkDisplay extends JPanel {
 	mxGraph graph;
 	Map<String,Node> nameToNode = new HashMap<>();
 	JTextPaneAA textConfig = new JTextPaneAA();
+
+	JPanel visualizePanel = new JPanel();
 
 	public SequentialNetworkDisplay( List<Node<?,?>> list ) {
 		setLayout(new BorderLayout());
@@ -84,14 +87,23 @@ public class SequentialNetworkDisplay extends JPanel {
 			graph.getModel().endUpdate();
 		}
 
+		JPanel right = new JPanel();
+		right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
+
 		textConfig.setMinimumSize(new Dimension(200,300));
 		textConfig.setPreferredSize(new Dimension(200,300));
 		Font font = new Font("monospaced", Font.PLAIN, 12);
 		textConfig.setFont(font);
 
+//		visualizePanel.setMinimumSize(new Dimension(400,400));
+//		visualizePanel.setPreferredSize(new Dimension(400,400));
+
+		right.add(textConfig);
+		right.add(visualizePanel);
+
 		graphComponent = new mxGraphComponent(graph);
 		add(graphComponent,BorderLayout.CENTER);
-		add(textConfig,BorderLayout.EAST);
+		add(right,BorderLayout.EAST);
 
 		graphComponent.getGraphControl().addMouseListener(new ClickHandler());
 	}
@@ -135,13 +147,22 @@ public class SequentialNetworkDisplay extends JPanel {
 						return;
 
 					String info = "";
+					visualizePanel.removeAll();
 					if( n.function instanceof SpatialConvolve2D ) {
 						info += configString((SpatialConvolve2D)n.function);
+
+
+						List parameters = n.function.getParameters();
+						if( parameters != null ) {
+							Kernel2DGridPanel vis = new Kernel2DGridPanel((Tensor)parameters.get(0),60,60);
+							visualizePanel.add(vis);
+						}
 					} else if( n.function instanceof FunctionBatchNorm ) {
 						info += configString((FunctionBatchNorm)n.function);
 					} else if( n.function instanceof SpatialMaxPooling ) {
 						info += configString((SpatialMaxPooling)n.function);
 					}
+					visualizePanel.invalidate();
 
 					final String finfo = info;
 

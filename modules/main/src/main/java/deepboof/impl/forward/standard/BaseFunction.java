@@ -37,6 +37,8 @@ public abstract class BaseFunction<T extends Tensor> implements Function<T> {
 	protected List<int []> shapeParameters = new ArrayList<>();
 	protected int [] shapeOutput = new int[0];
 
+	protected List<T> parameters;
+
 	/**
 	 * Number of inputs in the mini-batch
 	 */
@@ -57,10 +59,16 @@ public abstract class BaseFunction<T extends Tensor> implements Function<T> {
 	public void setParameters(List<T> parameters) {
 		TensorOps.checkShape("parameters", shapeParameters, (List) parameters, false);
 
+		this.parameters = new ArrayList<>(parameters);
 		_setParameters(parameters);
 	}
 
 	public abstract void _setParameters(List<T> parameters);
+
+	@Override
+	public List<T> getParameters() {
+		return parameters;
+	}
 
 	@Override
 	public void forward(T input, T output) {

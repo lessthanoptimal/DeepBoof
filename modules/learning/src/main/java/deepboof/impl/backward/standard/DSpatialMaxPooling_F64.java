@@ -34,7 +34,6 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 
 	// reference to dout and the input gradient
 	Tensor_F64 dout;
-	Tensor_F64 gradientInput;
 
 	// contains the index of the maximum in the local padded image coordinate
 	Tensor_S32 outputToPaddingIdx = new Tensor_S32();
@@ -58,27 +57,26 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 	protected void _backwards(Tensor_F64 input, Tensor_F64 dout, Tensor_F64 gradientInput,
 							  List<Tensor_F64> gradientParameters) {
 		this.dout = dout;
-		this.gradientInput = gradientInput;
 		gradientInput.zero();
 
 		backwardsBCHW(input, gradientInput);
 	}
 
 	@Override
-	protected void backwardsAt(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
+	protected void backwardsAt_inner(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
 
 		int paddedIdx = outputToPaddingIdx.d[outputToPaddingIdx.idx(batch,channel,outY,outX)];
 		dpadding.d[paddedIdx] += dout.get(batch,channel,outY,outX);
 	}
 
 	@Override
-	protected void backwardsAt(DSpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
+	protected void backwardsAt_border(DSpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
 		int paddedIdx = outputToPaddingIdx.d[outputToPaddingIdx.idx(batch,channel,outY,outX)];
 		dpadding.d[paddedIdx] += dout.get(batch,channel,outY,outX);
 	}
 
 	@Override
-	protected void forwardsAt(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
+	protected void forwardsAt_inner(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
 
 		int inputIndexRow = input.idx(batch,channel,inY,inX);
 
@@ -112,7 +110,7 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 	}
 
 	@Override
-	protected void forwardsAt(DSpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
+	protected void forwardsAt_border(DSpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
 
 		double max = -Double.MAX_VALUE;
 

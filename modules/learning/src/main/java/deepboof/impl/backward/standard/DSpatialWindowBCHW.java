@@ -40,7 +40,7 @@ public abstract class DSpatialWindowBCHW<T extends Tensor<T>, P extends DSpatial
 	// Toggle indicating if it's in learning mode or not
 	protected boolean learningMode = false;
 
-	// storage for gradient of padded image.  This is a 2D tensor
+	// storage for padded image gradient.  This is a 2D tensor
 	protected T dpadding;
 
 	public DSpatialWindowBCHW(ConfigSpatial config, P padding) {
@@ -48,8 +48,6 @@ public abstract class DSpatialWindowBCHW<T extends Tensor<T>, P extends DSpatial
 
 		dpadding = new TensorFactory<T>(padding.getTensorType()).create();
 	}
-
-
 
 	@Override
 	public void backwards(T input, T dout, T gradientInput, List<T> gradientParameters) {
@@ -60,8 +58,8 @@ public abstract class DSpatialWindowBCHW<T extends Tensor<T>, P extends DSpatial
 		TensorOps.checkShape("input",-1,shapeInput,input.getShape(),true);
 
 		TensorOps.checkShape("dout", -1, shapeOutput, dout.getShape(),true);
-		TensorOps.checkShape("gradientInput",-1,shapeInput,gradientInput.getShape(),true);
-		TensorOps.checkShape("gradientParameters",shapeParameters,(List)gradientParameters,false);
+		TensorOps.checkShape("gradientInput",-1, shapeInput,gradientInput.getShape(),true);
+		TensorOps.checkShape("gradientParameters", shapeParameters,(List)gradientParameters,false);
 
 		_backwards(input,dout,gradientInput,gradientParameters);
 	}
@@ -114,7 +112,7 @@ public abstract class DSpatialWindowBCHW<T extends Tensor<T>, P extends DSpatial
 						for (int outCol = outC0; outCol < outC1; outCol++) {
 							int inputCol = outCol * config.periodX - paddingX0;
 
-							backwardsAt(input, batchIndex, channel, inputRow, inputCol, outRow, outCol);
+							backwardsAt_inner(input, batchIndex, channel, inputRow, inputCol, outRow, outCol);
 						}
 					}
 					// Process the borders, top, bottom, left, right
@@ -145,7 +143,7 @@ public abstract class DSpatialWindowBCHW<T extends Tensor<T>, P extends DSpatial
 			for (int outCol = col0; outCol < col1; outCol++) {
 				int padCol = outCol*config.periodX;
 
-				backwardsAt(padding, batchIndex, channel, padRow, padCol, outRow, outCol);
+				backwardsAt_border(padding, batchIndex, channel, padRow, padCol, outRow, outCol);
 			}
 		}
 	}
@@ -162,8 +160,8 @@ public abstract class DSpatialWindowBCHW<T extends Tensor<T>, P extends DSpatial
 	 * @param outY y-axis output coordinate
 	 * @param outX x-axis output coordinate
 	 */
-	protected abstract void backwardsAt(T input, int batch, int channel,
-										int inY, int inX, int outY, int outX);
+	protected abstract void backwardsAt_inner(T input, int batch, int channel,
+											  int inY, int inX, int outY, int outX);
 
 	/**
 	 * Applies the backwards local window operation.  The padded gradient (dpadding) should be computed here.
@@ -177,8 +175,8 @@ public abstract class DSpatialWindowBCHW<T extends Tensor<T>, P extends DSpatial
 	 * @param outY y-axis output coordinate
 	 * @param outX x-axis output coordinate
 	 */
-	protected abstract void backwardsAt(P padded, int batch, int channel,
-										int padY, int padX, int outY, int outX);
+	protected abstract void backwardsAt_border(P padded, int batch, int channel,
+											   int padY, int padX, int outY, int outX);
 
 	@Override
 	public void learning() {

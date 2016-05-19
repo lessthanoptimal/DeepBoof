@@ -33,12 +33,12 @@ import static org.junit.Assert.assertEquals;
  * @author Peter Abeles
  */
 public abstract class ChecksSpatialWindow {
-	Random rand = new Random(234);
+	protected Random rand = new Random(234);
 
-	final int pad = 2;
+	protected final int pad = 2;
 
-	int N = 3;
-	int C = 4;
+	protected int N = 3;
+	protected int C = 4;
 	ConfigSpatial configSpatial;
 
 	public abstract BaseSpatialWindow<Tensor_F64,ConstantPadding2D_F64> create(ConfigSpatial config );

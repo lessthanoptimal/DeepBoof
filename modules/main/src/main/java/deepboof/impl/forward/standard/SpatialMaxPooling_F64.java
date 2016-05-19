@@ -58,7 +58,7 @@ public class SpatialMaxPooling_F64
 	}
 
 	@Override
-	protected void forwardsAt(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
+	protected void forwardsAt_inner(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
 
 		int inputIndexRow = input.idx(batch,channel,inY,inX);
 
@@ -81,7 +81,7 @@ public class SpatialMaxPooling_F64
 	}
 
 	@Override
-	protected void forwardsAt(SpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
+	protected void forwardsAt_border(SpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
 
 		double max = -Double.MAX_VALUE;
 

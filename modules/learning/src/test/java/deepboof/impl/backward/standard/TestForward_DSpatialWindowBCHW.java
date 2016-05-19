@@ -16,10 +16,13 @@
  * limitations under the License.
  */
 
-package deepboof.impl.forward.standard;
+package deepboof.impl.backward.standard;
 
 import deepboof.forward.ConfigPadding;
 import deepboof.forward.ConfigSpatial;
+import deepboof.impl.forward.standard.BaseSpatialWindow;
+import deepboof.impl.forward.standard.ChecksSpatialWindow;
+import deepboof.impl.forward.standard.ConstantPadding2D_F64;
 import deepboof.tensors.Tensor_F64;
 
 import java.util.List;
@@ -27,24 +30,26 @@ import java.util.List;
 /**
  * @author Peter Abeles
  */
-public class TestSpatialWindowBCHW extends ChecksSpatialWindow {
+public class TestForward_DSpatialWindowBCHW extends ChecksSpatialWindow {
 
 	public BaseSpatialWindow<Tensor_F64,ConstantPadding2D_F64> create(ConfigSpatial config ) {
-		return new Helper(config);
+		return (BaseSpatialWindow)new Helper(config,createPadding());
 	}
 
-	public class Helper extends SpatialWindowBCHW<Tensor_F64,ConstantPadding2D_F64> {
+	private DConstantPadding2D_F64 createPadding() {
+		ConfigPadding config = new ConfigPadding();
+		config.y0 = pad;
+		config.x0 = pad;
+		config.y1 = pad;
+		config.x1 = pad;
 
-		public Helper(ConfigSpatial configSpatial) {
-			super(configSpatial, null);
+		return new DConstantPadding2D_F64(config);
+	}
 
-			ConfigPadding config = new ConfigPadding();
-			config.y0 = pad;
-			config.x0 = pad;
-			config.y1 = pad;
-			config.x1 = pad;
+	public class Helper extends DSpatialWindowBCHW<Tensor_F64,DConstantPadding2D_F64> {
 
-			this.padding =  new ConstantPadding2D_F64(config);
+		public Helper(ConfigSpatial configSpatial, DConstantPadding2D_F64 padding ) {
+			super(configSpatial, padding);
 		}
 
 		@Override
@@ -61,7 +66,7 @@ public class TestSpatialWindowBCHW extends ChecksSpatialWindow {
 		}
 
 		@Override
-		protected void forwardsAt_border(ConstantPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
+		protected void forwardsAt_border(DConstantPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
 			double sum = 0;
 			for (int y = 0; y < HH; y++) {
 				for (int x = 0; x < WW; x++) {
@@ -76,6 +81,18 @@ public class TestSpatialWindowBCHW extends ChecksSpatialWindow {
 		public void _forward(Tensor_F64 input, Tensor_F64 output) {
 			forwardBHWC(input, output);
 		}
+
+		@Override
+		protected void _backwards(Tensor_F64 input, Tensor_F64 dout, Tensor_F64 gradientInput, List<Tensor_F64> gradientParameters) {
+		}
+
+		@Override
+		protected void backwardsAt_inner(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
+}
+
+		@Override
+		protected void backwardsAt_border(DConstantPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
+}
 
 		@Override
 		public Class<Tensor_F64> getTensorType() {

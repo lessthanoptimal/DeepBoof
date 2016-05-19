@@ -18,13 +18,19 @@
 
 package deepboof.impl.backward.standard;
 
+import deepboof.DFunction;
+import deepboof.DeepBoofConstants;
 import deepboof.forward.ConfigSpatial;
-import deepboof.impl.forward.standard.BaseSpatialWindow;
-import deepboof.impl.forward.standard.ConstantPadding2D_F64;
+import deepboof.misc.TensorFactory_F64;
 import deepboof.tensors.Tensor_F64;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import static deepboof.misc.TensorOps.WI;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Peter Abeles
@@ -38,13 +44,29 @@ public abstract class ChecksBackwards_DSpatialWindow {
 	int C = 4;
 	ConfigSpatial configSpatial;
 
-	public abstract BaseSpatialWindow<Tensor_F64,ConstantPadding2D_F64> create(ConfigSpatial config );
+	public abstract DFunction<Tensor_F64> create(ConfigSpatial config );
 
 	@Test
 	public void entirelyInside() {
+		for( boolean sub : new boolean[]{false,true}) {
+			Tensor_F64 original = TensorFactory_F64.random(rand, sub,N,C,2,2);
 
-		for (boolean sub : new boolean[]{false, true}) {
+			configSpatial = new ConfigSpatial();
+			configSpatial.WW = 3;
+			configSpatial.HH = 3;
 
+			DFunction<Tensor_F64> helper = create(configSpatial);
+
+			helper.initialize(C,6,8);
+
+			Tensor_F64 gradientInput = new Tensor_F64(WI(N,C,6,8));
+			Tensor_F64 dout = new Tensor_F64(WI(N,helper.getOutputShape()));
+
+			List<Tensor_F64> gradientParameters = new ArrayList<>();
+
+			helper.backwards(original, dout, gradientInput, gradientParameters);
+
+			compareToBruteForce(original, dout, gradientInput);
 		}
 	}
 
@@ -53,5 +75,52 @@ public abstract class ChecksBackwards_DSpatialWindow {
 		for (boolean sub : new boolean[]{false, true}) {
 
 		}
+	}
+
+	protected void compareToBruteForce(Tensor_F64 input , Tensor_F64 dout, Tensor_F64 gradientInput ) {
+
+		int periodY = configSpatial.periodY;
+		int periodX = configSpatial.periodX;
+		int HH = configSpatial.HH;
+		int WW = configSpatial.WW;
+
+		int H = input.length(2)+pad*2;
+		int W = input.length(3)+pad*2;
+
+		for (int batch = 0; batch < N; batch++) {
+			for (int channel = 0; channel < C; channel++) {
+				int outY = 0;
+				for (int y = 0; y <= H-HH; y += periodY, outY++) {
+					int outX = 0;
+					for (int x = 0; x <= W-WW; x += periodX, outX++) {
+						double expected = sumWindow(input,batch,channel, y, x, HH, WW);
+						expected *= dout.get(batch,channel,y,x);
+						double foundValue = gradientInput.get(batch,channel,outY,outX);
+						assertEquals(y+" "+x,expected,foundValue, DeepBoofConstants.TEST_TOL_F64);
+					}
+				}
+			}
+		}
+	}
+
+	private double sumWindow(Tensor_F64 input, int b, int c, int y0, int x0, int HH, int WW) {
+		int H = input.length(2)+pad*2;
+		int W = input.length(3)+pad*2;
+
+		double sum = 0;
+
+		for (int y = 0; y < HH; y++) {
+			int yy = y+y0;
+			for (int x = 0; x < WW; x++) {
+				int xx = x+x0;
+
+				// border is all zero
+				if( xx >= pad && xx < W-pad && yy >= pad && yy < H-pad ) {
+					sum += input.get(b,c,yy-pad,xx-pad);
+				}
+			}
+		}
+
+		return sum;
 	}
 }

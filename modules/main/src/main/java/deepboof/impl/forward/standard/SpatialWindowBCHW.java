@@ -76,7 +76,7 @@ public abstract class SpatialWindowBCHW
 						for (int outCol = outC0; outCol < outC1; outCol++) {
 							int inputCol = outCol * config.periodX - paddingX0;
 
-							forwardsAt(input, batchIndex, channel, inputRow, inputCol, outRow, outCol);
+							forwardsAt_inner(input, batchIndex, channel, inputRow, inputCol, outRow, outCol);
 						}
 					}
 					// Process the borders, top, bottom, left, right
@@ -105,7 +105,7 @@ public abstract class SpatialWindowBCHW
 			for (int outCol = col0; outCol < col1; outCol++) {
 				int padCol = outCol*config.periodX;
 
-				forwardsAt(padding, batchIndex, channel, padRow, padCol, outRow, outCol);
+				forwardsAt_border(padding, batchIndex, channel, padRow, padCol, outRow, outCol);
 			}
 		}
 	}
@@ -122,8 +122,8 @@ public abstract class SpatialWindowBCHW
 	 * @param outY y-axis output coordinates
 	 * @param outX x-axis output coordinates
 	 */
-	protected abstract void forwardsAt(T input, int batch, int channel,
-									   int inY, int inX, int outY, int outX);
+	protected abstract void forwardsAt_inner(T input, int batch, int channel,
+											 int inY, int inX, int outY, int outX);
 
 	/**
 	 * Applies the operations at the specified window and stores the results at the specified output
@@ -137,7 +137,7 @@ public abstract class SpatialWindowBCHW
 	 * @param outY y-axis output coordinates
 	 * @param outX x-axis output coordinates
 	 */
-	protected abstract void forwardsAt(VT padded, int batch, int channel,
-									   int padY, int padX, int outY, int outX);
+	protected abstract void forwardsAt_border(VT padded, int batch, int channel,
+											  int padY, int padX, int outY, int outX);
 
 }

@@ -2,26 +2,32 @@ package deepboof.io.torch7;
 
 import deepboof.io.torch7.struct.*;
 
+import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Base class for serializing Torch data types.
+ *
  * @author Peter Abeles
  */
 public abstract class SerializeTorch7 {
 
 	OutputStream stream;
+	DataOutput out;
 
 	protected boolean verbose = false;
 
-	protected int counterObject;
+	protected List<TorchObject> savedObjects = new ArrayList<>();
 
 	public void serialize(List<TorchObject> objects , OutputStream stream ) throws IOException {
 		this.stream = stream;
+		this.out = new DataOutputStream(stream);
 
-		this.counterObject = 0;
+		this.savedObjects.clear();
 
 		for (int i = 0; i < objects.size(); i++) {
 			serializeObject(objects.get(i));
@@ -30,8 +36,24 @@ public abstract class SerializeTorch7 {
 
 	protected void serializeObject(TorchObject object ) throws IOException {
 		if( object instanceof TorchGeneric ) {
-			writeType(TorchType.TABLE);
-			serializeGeneric((TorchGeneric)object);
+			TorchGeneric g = (TorchGeneric)object;
+			if( g.torchName == null ) {
+				writeType(TorchType.TABLE);
+				serializeTable(g);
+			} else {
+				writeType(TorchType.TORCH);
+				if( savedObjects.contains(object)) {
+					writeS32(savedObjects.indexOf(object)+1);
+				} else {
+					writeS32(savedObjects.size() + 1);
+					savedObjects.add(object);
+
+					writeString("V " + g.version);
+					writeString(g.torchName);
+					if( g.map != null )
+						serializeTable(g);
+				}
+			}
 		} else if( object instanceof TorchString ) {
 			writeType(TorchType.STRING);
 			writeString(((TorchString)object).message);
@@ -43,17 +65,94 @@ public abstract class SerializeTorch7 {
 			writeBoolean(((TorchBoolean)object).value);
 		} else if( object instanceof TorchList) {
 			writeType(TorchType.TABLE);
-			serializeList((TorchList)object);
+			serializeList((TorchList) object);
 		} else {
+			TorchReferenceable r = (TorchReferenceable)object;
 			writeType(TorchType.TORCH);
-			// TODO WRITE
+			if( savedObjects.contains(object)) {
+				writeS32(savedObjects.indexOf(object)+1);
+			} else {
+				writeS32(savedObjects.size()+1);
+				savedObjects.add(object);
+
+				writeString("V "+r.version);
+				writeString(r.torchName);
+
+				if( object instanceof TorchTensor ) {
+					serializeTensor((TorchTensor)object);
+					return;
+				} else if( object instanceof TorchStorage ) {
+					serializeStorage((TorchStorage)object);
+					return;
+				}
+			}
+			throw new RuntimeException("Support this type "+object.getClass().getSimpleName());
 		}
 	}
 
-	protected void serializeGeneric( TorchGeneric object ) throws IOException {
+	protected void serializeStorage( TorchStorage storage ) throws IOException {
+
+		switch( storage.torchName ) {
+			case "torch.LongStorage"://{
+				throw new IOException("LongStorage not yet supported");
+//			}break;
+
+			case "torch.FloatStorage":{
+				writeS64(storage.size());
+				writeArrayFloat(((TorchFloatStorage)storage).data,storage.size());
+			}break;
+
+			case "torch.DoubleStorage":{
+				writeS64(storage.size());
+				writeArrayDouble(((TorchDoubleStorage)storage).data,storage.size());
+			}break;
+
+			case "torch.ByteStorage":{
+				writeS64(storage.size());
+				writeArrayByte(((TorchByteStorage)storage).data,storage.size());
+			}break;
+
+			case "torch.CharStorage":{
+				writeS64(storage.size()*2 + storage.size()%2);
+				writeArrayChar(((TorchCharStorage)storage).data,storage.size());
+			}break;
+
+			default:
+				throw new IOException("Unsupported storage type.  Please add support "+storage.torchName);
+		}
+	}
+
+	protected void serializeTensor( TorchTensor object ) throws IOException {
+		writeS32( object.shape.length );
+
+		if( object.shape.length > 0 ) {
+			// save the tensor's shape
+			writeShape(object.shape);
+
+			// compute and save the stride
+			int stride[] = new int[ object.shape.length ];
+			int N = 1;
+			for (int i = object.shape.length-1; i >= 0; i--) {
+				stride[i] = N;
+				N *= object.shape[i];
+			}
+			writeShape(stride);
+
+			// sub-tensor parameters
+			writeS64(object.startIndex);
+			serializeObject(object.storage);
+		} else {
+			// no idea what this is supposed to be
+			writeS32(0);
+			writeS64(0);
+		}
+	}
+
+	protected void serializeTable(TorchGeneric object ) throws IOException {
 		List<Object> keys = new ArrayList<>(object.map.keySet());
 
-		writeS32(counterObject++);
+		writeS32(savedObjects.size()+1);
+		savedObjects.add(object);
 		writeS32(keys.size());
 
 		for (Object key : keys) {
@@ -75,7 +174,8 @@ public abstract class SerializeTorch7 {
 	}
 
 	protected void serializeList( TorchList object ) throws IOException {
-		writeS32(counterObject++);
+		writeS32(savedObjects.size()+1);
+		savedObjects.add(object);
 		writeS32(object.list.size());
 
 		for ( int i = 0; i < object.list.size(); i++ ) {

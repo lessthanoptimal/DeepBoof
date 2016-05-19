@@ -25,7 +25,7 @@ import java.io.IOException;
  *
  * @author Peter Abeles
  */
-public class ParseBinaryTorch7 extends BaseParserTorch7 {
+public class ParseBinaryTorch7 extends ParseTorch7 {
 
 	// is the file saved in a little endian format or a big endian format
 	boolean littleEndian = true;

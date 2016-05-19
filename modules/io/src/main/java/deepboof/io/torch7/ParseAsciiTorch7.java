@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * @author Peter Abeles
  */
-public class ParseAsciiTorch7 extends BaseParserTorch7 {
+public class ParseAsciiTorch7 extends ParseTorch7 {
 	byte buffer[] = new byte[1024];
 
 	@Override

@@ -28,7 +28,7 @@ import java.util.*;
  *
  * @author Peter Abeles
  */
-public abstract class BaseParserTorch7 {
+public abstract class ParseTorch7 {
 	protected FileInputStream stream;
 	protected DataInput input;
 
@@ -380,7 +380,7 @@ public abstract class BaseParserTorch7 {
 		return verbose;
 	}
 
-	public BaseParserTorch7 setVerbose(boolean verbose) {
+	public ParseTorch7 setVerbose(boolean verbose) {
 		this.verbose = verbose;
 		return this;
 	}

@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class SerializeTorch7 {
 
 	OutputStream stream;
-	DataOutput out;
+	DataOutput output;
 
 	protected boolean verbose = false;
 
@@ -25,7 +25,7 @@ public abstract class SerializeTorch7 {
 
 	public void serialize(List<TorchObject> objects , OutputStream stream ) throws IOException {
 		this.stream = stream;
-		this.out = new DataOutputStream(stream);
+		this.output = new DataOutputStream(stream);
 
 		this.savedObjects.clear();
 

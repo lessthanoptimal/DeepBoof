@@ -1,5 +1,8 @@
 package deepboof.io.torch7;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
@@ -46,7 +49,7 @@ public class SerializeBinaryTorch7 extends SerializeTorch7 {
 		if( littleEndian ) {
 			a = Long.reverseBytes(a);
 		}
-		out.writeLong(a);
+		output.writeLong(a);
 	}
 
 	@Override
@@ -55,46 +58,96 @@ public class SerializeBinaryTorch7 extends SerializeTorch7 {
 		if( littleEndian ) {
 			a = Integer.reverseBytes(a);
 		}
-		out.writeFloat(Float.intBitsToFloat(a));
+		output.writeFloat(Float.intBitsToFloat(a));
 	}
 
 	@Override
 	public void writeString(String value) throws IOException {
-
+		writeS32(value.length());
+		for (int i = 0; i < value.length(); i++) {
+			byte b = (byte)value.charAt(i);
+			writeU8(b);
+		}
 	}
 
 	@Override
 	public void writeS64(long value) throws IOException {
-
+		if( littleEndian ) {
+			output.writeLong( Long.reverseBytes(value) );
+		} else {
+			output.writeLong( value );
+		}
 	}
 
 	@Override
 	public void writeS32(int value) throws IOException {
-
+		if( littleEndian ) {
+			output.writeInt( Integer.reverseBytes(value) );
+		} else {
+			output.writeInt( value );
+		}
 	}
 
 	@Override
 	public void writeU8(int value) throws IOException {
-
+		output.writeByte(value);
 	}
 
 	@Override
-	public void writeArrayDouble(double[] storage, int size) throws IOException {
+	public void writeArrayDouble(double[] storage, int size) throws IOException
+	{
+		ByteArrayOutputStream stream = new ByteArrayOutputStream(size*8);
+		DataOutput encode = new DataOutputStream(stream);
 
+		for (int i = 0; i < size; i++) {
+			long a = Double.doubleToLongBits(storage[i]);
+
+			if( littleEndian )
+				encode.writeLong(Long.reverseBytes(a));
+			else
+				encode.writeLong(a);
+		}
+
+		output.write(stream.toByteArray());
 	}
 
 	@Override
-	public void writeArrayFloat(float[] storage, int size) throws IOException {
+	public void writeArrayFloat(float[] storage, int size) throws IOException
+	{
+		ByteArrayOutputStream stream = new ByteArrayOutputStream(size*4);
+		DataOutput encode = new DataOutputStream(stream);
 
+		for (int i = 0; i < size; i++) {
+			int a = Float.floatToIntBits(storage[i]);
+
+			if( littleEndian )
+				encode.writeInt(Integer.reverseBytes(a));
+			else
+				encode.writeInt(a);
+		}
+
+		output.write(stream.toByteArray());
 	}
 
 	@Override
-	public void writeArrayChar(char[] storage, int size) throws IOException {
+	public void writeArrayChar(char[] storage, int size) throws IOException
+	{
+		ByteArrayOutputStream stream = new ByteArrayOutputStream(size*2);
+		DataOutput encode = new DataOutputStream(stream);
 
+		for (int i = 0; i < size; i++) {
+			if( littleEndian )
+				encode.writeShort(Short.reverseBytes((short)storage[i]));
+			else
+				encode.writeShort(storage[i]);
+		}
+
+		output.write(stream.toByteArray());
 	}
 
 	@Override
-	public void writeArrayByte(byte[] storage, int size) throws IOException {
-
+	public void writeArrayByte(byte[] storage, int size) throws IOException
+	{
+		output.write(storage,0,size);
 	}
 }

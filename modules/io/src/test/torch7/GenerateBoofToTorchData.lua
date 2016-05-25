@@ -9,7 +9,7 @@
 require 'torch'
 require 'nn'
 
-output_dir = "data"
+output_dir = "torch_data"
 
 os.execute("mkdir -p "..output_dir)
 

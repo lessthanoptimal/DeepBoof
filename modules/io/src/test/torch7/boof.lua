@@ -8,7 +8,7 @@
 boof = {}
 
 
-boof.output_base_directory = "data"
+boof.output_base_directory = "torch_layers"
 
 boof.float_types = {}
 boof.float_types[1] = "F32"

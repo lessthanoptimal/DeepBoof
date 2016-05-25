@@ -42,7 +42,7 @@ import static org.junit.Assert.*;
  */
 public class TestConvertTorchToBoofForward {
 
-	File pathToData = new File(TensorOps.pathToRoot(),"modules/io/src/test/torch7/data");
+	File pathToData = new File(TensorOps.pathToRoot(),"modules/io/src/test/torch7/torch_layers");
 
 	@Test
 	public void relu() {

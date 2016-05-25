@@ -139,7 +139,7 @@ public abstract class SerializeTorch7 {
 			writeShape(stride);
 
 			// sub-tensor parameters
-			writeS64(object.startIndex);
+			writeS64(object.startIndex+1);
 			serializeObject(object.storage);
 		} else {
 			// no idea what this is supposed to be

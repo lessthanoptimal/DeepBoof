@@ -33,10 +33,12 @@ import static deepboof.misc.TensorOps.WI;
 import static org.junit.Assert.assertEquals;
 
 /**
+ *
+ *
  * @author Peter Abeles
  */
 public abstract class ChecksBackwards_DSpatialWindow {
-		Random rand = new Random(234);
+	Random rand = new Random(234);
 
 	final int pad = 2;
 

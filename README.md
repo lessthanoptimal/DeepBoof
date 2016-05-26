@@ -5,9 +5,16 @@ Additional tools include visualization and network training.  It has been design
 ## Installation
 
 [Gradle](http://gradle.org) is used to build DeepBoof and will automatically download all dependencies.
+
+## Running
+
 To get started classifying images simply load the Gradle project into you favorite IDE (probably IntelliJ
-or Eclipse) and run ExampleTorchVggCifar10.  This example downloads the network and testing data, then
+or Eclipse) and run ExampleClassifyVggCifar10.  This example downloads the network and testing data, then
 starts the classifier.
+
+Alternatively, you can just build and run any example from the command-line using Gradle directly:
+
+  gradle exampleRun -Pwhich=ExampleClassifyVggCifar10
 
 ## Future Work
 

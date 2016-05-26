@@ -50,4 +50,8 @@ public class TorchTensor extends TorchReferenceable {
 		}
 		return total;
 	}
+
+	public <T extends TorchStorage>T getStorage() {
+		return (T)storage;
+	}
 }

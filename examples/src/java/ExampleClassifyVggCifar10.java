@@ -1,14 +1,8 @@
-import boofcv.alg.color.ColorYuv;
 import boofcv.alg.filter.stat.ImageLocalNormalization;
-import boofcv.core.image.GConvertImage;
 import boofcv.core.image.border.BorderType;
 import boofcv.factory.filter.kernel.FactoryKernelGaussian;
-import boofcv.gui.image.ImageGridPanel;
-import boofcv.gui.image.ShowImages;
-import boofcv.io.image.ConvertBufferedImage;
 import boofcv.struct.convolve.Kernel1D_F32;
 import boofcv.struct.image.GrayF32;
-import boofcv.struct.image.GrayU8;
 import boofcv.struct.image.Planar;
 import deepboof.Function;
 import deepboof.graph.ForwardSequence;
@@ -20,13 +14,12 @@ import deepboof.io.torch7.TorchUtilities;
 import deepboof.io.torch7.struct.TorchGeneric;
 import deepboof.io.torch7.struct.TorchObject;
 import deepboof.misc.DataManipulationOps;
+import deepboof.misc.DeepBoofOps;
 import deepboof.tensors.Tensor_F32;
 import deepboof.tensors.Tensor_U8;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,13 +39,13 @@ import static deepboof.misc.TensorOps.WI;
  *
  * @author Peter Abeles
  */
-public class ExampleTorchVggCifar10 {
+public class ExampleClassifyVggCifar10 {
 
 	public static void main(String[] args) throws IOException {
 
 		// Specify where all the prebuilt models and data sets are stored
-		File modelHome = new File("data/torch_models/likevgg_cifar10");
-		File inputFile = new File("data/cifar10/test_batch.t7");
+		File modelHome = DeepBoofOps.pathData("torch_models/likevgg_cifar10");
+		File inputFile = DeepBoofOps.pathData("cifar10/test_batch.t7");
 
 		// If needed, download required data sets and network model
 		if( !inputFile.exists() ) {
@@ -94,7 +87,7 @@ public class ExampleTorchVggCifar10 {
 		Tensor_U8 labels = convert(testMap.get("labels"));
 
 		// Convert the input RGB images into YUV color space and (optionally) display a few of them
-		List<Planar<GrayF32>> listTestYuv = convertToYuv(convert(testMap.get("data")),true);
+		List<Planar<GrayF32>> listTestYuv = UtilCifar10.convertToYuv(convert(testMap.get("data")),true);
 
 		// Number of images in the test set
 		int numTest = listTestYuv.size();
@@ -102,7 +95,7 @@ public class ExampleTorchVggCifar10 {
 		// Declare storage for the preprocessed input image and for the network's results
 		Tensor_F32 tensorYuv = new Tensor_F32(1,3,32,32);
 		Tensor_F32 output = new Tensor_F32(WI(1,network.getOutputShape()));
-		// WI() is a convinience function which allows you to prepend another dimension onto the tensor's shape
+		// WI() is a convenience function which allows you to prepend another dimension onto the tensor's shape
 
 		// Locally normalize using a gaussian kernel with zero padding
 		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, BorderType.ZERO);
@@ -155,55 +148,4 @@ public class ExampleTorchVggCifar10 {
 		}
 		System.out.println("Done!");
 	}
-
-	/**
-	 * The input test set tensor is stored in a weird format.  This will unroll each
-	 * image and convert it into a YUV image.
-	 */
-	public static List<Planar<GrayF32>> convertToYuv( Tensor_U8 raw , boolean showFirstImages ) {
-
-		List<Planar<GrayF32>> output = new ArrayList<>();
-
-		int numTest = raw.length(1);
-
-		Planar<GrayU8> color = new Planar<>(GrayU8.class,32,32,3);
-		Planar<GrayF32> rgb = new Planar<>(GrayF32.class,32,32,3);
-
-		ImageGridPanel gui = null;
-		if( showFirstImages ) {
-			gui = new ImageGridPanel(6,6);
-		}
-
-		for (int test = 0; test < numTest; test++) {
-			// parse the ass backwards RGB format that the test image was stored in
-			int imageIndex = 0;
-			for (int band = 0; band < 3; band++) {
-				GrayU8 gray = color.getBand(band);
-				for (int y = 0; y < 32; y++) {
-					for (int x = 0; x < 32; x++, imageIndex++) {
-						gray.data[y * 32 + x] = raw.d[raw.idx(imageIndex, test)];
-					}
-				}
-			}
-
-			if( showFirstImages && test < 36) {
-				BufferedImage buffered = ConvertBufferedImage.convertTo(rgb,null,true);
-				gui.setImage(test/6,test%6,buffered);
-			}
-
-			Planar<GrayF32> yuv = new Planar<>(GrayF32.class,32,32,3);
-			GConvertImage.convert(color,rgb);
-			ColorYuv.rgbToYuv_F32(rgb,yuv);
-
-			output.add( yuv );
-		}
-
-		if( showFirstImages ) {
-			gui.autoSetPreferredSize();
-			ShowImages.showWindow(gui,"CIFAR-10 Images",true);
-		}
-
-		return output;
-	}
-
 }

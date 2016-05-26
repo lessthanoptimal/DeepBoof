@@ -17,3 +17,16 @@ idea {
         name = "DeepBoof Examples"
     }
 }
+
+// Runs an application from the examples directory
+// gradle exampleRun -Pwhich=ExampleClassifyVggCifar10
+task exampleRun(dependsOn: 'classes' )<< {
+    if (project.hasProperty('which')) {
+        javaexec {
+            main = "$which"
+            classpath = sourceSets.main.runtimeClasspath
+        }
+    } else {
+        print 'Which not specified!!!!!'
+    }
+}

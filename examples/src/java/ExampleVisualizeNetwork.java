@@ -4,6 +4,7 @@ import deepboof.graph.ForwardSequence;
 import deepboof.io.DatabaseOps;
 import deepboof.io.torch7.ParseBinaryTorch7;
 import deepboof.io.torch7.SequenceAndParameters;
+import deepboof.misc.DeepBoofOps;
 import deepboof.tensors.Tensor_F32;
 import deepboof.visualization.SequentialNetworkDisplay;
 
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class ExampleVisualizeNetwork {
 	public static void main(String[] args) throws IOException {
-		File modelHome = new File("data/torch_models/likevgg_cifar10");
+		File modelHome = DeepBoofOps.pathData("torch_models/likevgg_cifar10");
 
 		if( !modelHome.exists() ) {
 			System.out.println("Obtaining network model.  size = 125 MB");

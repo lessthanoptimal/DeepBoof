@@ -6,9 +6,11 @@ network better and understand its behavior better.
 
 == Requirements
 
-Install the following first:
+First make sure you have Torch installed then add the luaposix package to your Torch setup.  This code 
+has only been tested in Linux and run through the command-line.
 
-luarocks install luaposix
+* [Install Torch 7](http://torch.ch/docs/getting-started.html#_)
+* luarocks install luaposix
 
 == Grid Search
 

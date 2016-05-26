@@ -1,10 +1,8 @@
 import boofcv.gui.image.ShowImages;
 import deepboof.Function;
 import deepboof.graph.ForwardSequence;
-import deepboof.io.DatabaseOps;
 import deepboof.io.torch7.ParseBinaryTorch7;
 import deepboof.io.torch7.SequenceAndParameters;
-import deepboof.misc.DeepBoofOps;
 import deepboof.tensors.Tensor_F32;
 import deepboof.visualization.SequentialNetworkDisplay;
 
@@ -19,14 +17,7 @@ import java.util.List;
  */
 public class ExampleVisualizeNetwork {
 	public static void main(String[] args) throws IOException {
-		File modelHome = DeepBoofOps.pathData("torch_models/likevgg_cifar10");
-
-		if( !modelHome.exists() ) {
-			System.out.println("Obtaining network model.  size = 125 MB");
-			File modelParent = modelHome.getParentFile();
-			DatabaseOps.download("http://heanet.dl.sourceforge.net/project/deepboof/networks/v1/likevgg_cifar10.zip",modelParent);
-			DatabaseOps.decompressZip(new File(modelParent,"likevgg_cifar10.zip"),modelParent,true);
-		}
+		File modelHome = UtilCifar10.downloadModel();
 
 		System.out.println("Load and convert to DeepBoof");
 		SequenceAndParameters<Tensor_F32, Function<Tensor_F32>> sequence =

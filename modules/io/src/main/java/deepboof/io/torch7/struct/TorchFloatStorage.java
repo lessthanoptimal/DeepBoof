@@ -26,7 +26,7 @@ public class TorchFloatStorage extends TorchStorage {
 
 	public TorchFloatStorage( int size ) {
 		this.data = new float[size];
-
+		this.torchName = "torch.FloatStorage";
 	}
 
 	@Override

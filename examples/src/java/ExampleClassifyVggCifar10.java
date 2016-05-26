@@ -6,15 +6,12 @@ import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.Planar;
 import deepboof.Function;
 import deepboof.graph.ForwardSequence;
-import deepboof.io.DatabaseOps;
 import deepboof.io.torch7.ParseAsciiTorch7;
 import deepboof.io.torch7.ParseBinaryTorch7;
 import deepboof.io.torch7.SequenceAndParameters;
-import deepboof.io.torch7.TorchUtilities;
 import deepboof.io.torch7.struct.TorchGeneric;
 import deepboof.io.torch7.struct.TorchObject;
 import deepboof.misc.DataManipulationOps;
-import deepboof.misc.DeepBoofOps;
 import deepboof.tensors.Tensor_F32;
 import deepboof.tensors.Tensor_U8;
 
@@ -44,26 +41,9 @@ public class ExampleClassifyVggCifar10 {
 	public static void main(String[] args) throws IOException {
 
 		// Specify where all the prebuilt models and data sets are stored
-		File modelHome = DeepBoofOps.pathData("torch_models/likevgg_cifar10");
-		File inputFile = DeepBoofOps.pathData("cifar10/test_batch.t7");
-
-		// If needed, download required data sets and network model
-		if( !inputFile.exists() ) {
-			System.out.println("Obtaining training and testing data. size = 175 MB");
-			File inputHome = inputFile.getParentFile();
-			DatabaseOps.download("http://torch7.s3-website-us-east-1.amazonaws.com/data/cifar-10-torch.tar.gz",inputHome);
-			DatabaseOps.decompressTGZ(new File(inputHome,"cifar-10-torch.tar.gz"),inputHome);
-			DatabaseOps.moveInsideAndDeleteDir(new File(inputHome,"cifar-10-batches-t7"),inputHome);
-		}
-
-		if( !modelHome.exists() ) {
-			System.out.println("Obtaining network model.  size = 125 MB");
-			File modelParent = modelHome.getParentFile();
-			DatabaseOps.download("http://heanet.dl.sourceforge.net/project/deepboof/networks/v1/likevgg_cifar10.zip",modelParent);
-			DatabaseOps.decompressZip(new File(modelParent,"likevgg_cifar10.zip"),modelParent,true);
-			System.out.println("Testing the network");
-			TorchUtilities.validateNetwork(modelHome,true);
-		}
+		File modelHome = UtilCifar10.downloadModel();
+		File inputDir = UtilCifar10.downloadData();
+		File inputFile = new File(inputDir,"test_batch.t7");
 
 		System.out.println("Load and convert to BoofCV");
 		SequenceAndParameters<Tensor_F32, Function<Tensor_F32>> sequence =

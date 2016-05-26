@@ -1,10 +1,10 @@
+import boofcv.alg.misc.ImageStatistics;
+import boofcv.alg.misc.PixelMath;
 import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.Planar;
-import deepboof.io.DatabaseOps;
 import deepboof.io.torch7.ParseAsciiTorch7;
 import deepboof.io.torch7.struct.TorchGeneric;
 import deepboof.io.torch7.struct.TorchObject;
-import deepboof.misc.DeepBoofOps;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,25 +15,19 @@ import java.util.Map;
 import static deepboof.io.torch7.ConvertTorchToBoofForward.convert;
 
 /**
+ * Computes statistics across the input data set and saves the found parameters.  Networks train better when inputs
+ * have been normalizes such that they are between -1 and 1.  This converts the input image from RGB into YUV color.
+ * Then computes the global mean and standard deviation for U and V bands, these are the color bands.  Then
+ * will perform a local gaussian weighted normalization in the Y (gray scale) band.
+ *
  * @author Peter Abeles
  */
 public class ExampleLearnNormalizationCifar10 {
-	public static int width = 32;
-	public static int height = 32;
 
 	public static void main(String[] args) throws IOException {
-		File trainingDir = DeepBoofOps.pathData("cifar10");
-
-				// If needed, download required data sets and network model
-		if( !trainingDir.exists() ) {
-			System.out.println("Obtaining training and testing data. size = 175 MB");
-			DatabaseOps.download("http://torch7.s3-website-us-east-1.amazonaws.com/data/cifar-10-torch.tar.gz",trainingDir);
-			DatabaseOps.decompressTGZ(new File(trainingDir,"cifar-10-torch.tar.gz"),trainingDir);
-			DatabaseOps.moveInsideAndDeleteDir(new File(trainingDir,"cifar-10-batches-t7"),trainingDir);
-		}
+		File trainingDir = UtilCifar10.downloadData();
 
 		// Compute the average for U and V bands
-		Planar<GrayF32> sum = new Planar<>(GrayF32.class,width,height,3);
 		ParseAsciiTorch7 ascii = new ParseAsciiTorch7();
 
 		// Load training data and convert into YUV image
@@ -47,11 +41,36 @@ public class ExampleLearnNormalizationCifar10 {
 		}
 
 		// Compute mean and standard deviation for U and V bands
+		double meanU = 0;
+		double meanV = 0;
 
+		for( Planar<GrayF32> yuv : listYuv ) {
+			meanU += ImageStatistics.sum(yuv.getBand(1));
+			meanV += ImageStatistics.sum(yuv.getBand(2));
+		}
+		meanU /= listYuv.size();
+		meanV /= listYuv.size();
 
-		// Apply spatial normalization to Y and global to U and V
+		// compute standard deviation using Sum(x[i]^2) - n*mean(x)^2
+		double stdevU = 0;
+		double stdevV = 0;
 
-		// Save the results
+		for( Planar<GrayF32> yuv : listYuv ) {
+			for (int i = 1; i < 3; i++) {
+				PixelMath.pow2(yuv.getBand(i),yuv.getBand(i));
+			}
+			stdevU += ImageStatistics.sum(yuv.getBand(1));
+			stdevV += ImageStatistics.sum(yuv.getBand(2));
+		}
+
+		stdevU = Math.sqrt( stdevU - meanU*meanU*listYuv.size());
+		stdevV = Math.sqrt( stdevV - meanV*meanV*listYuv.size());
+
+		// Save these statistics
+
+		// Spatial normalization on Y will be done using a Gaussian kernel.  Save the exact kernel to ensure
+		// its reproducible
+
 	}
 }
 

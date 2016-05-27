@@ -11,7 +11,7 @@ import deepboof.misc.DeepBoofOps;
 import deepboof.tensors.Tensor_U8;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +19,47 @@ import java.util.List;
  * @author Peter Abeles
  */
 public class UtilCifar10 {
+
+	public static void save(YuvStatistics params , File file ) throws FileNotFoundException {
+		PrintStream out = new PrintStream(file);
+
+		out.printf("meanU %f\n",params.meanU);
+		out.printf("meanV %f\n",params.meanV);
+		out.printf("stdevU %f\n",params.stdevU);
+		out.printf("stdevV %f\n",params.stdevV);
+		out.print("kernel");
+		for (int i = 0; i < params.kernel.length; i++) {
+			out.printf(" %.10f",params.kernel[i]);
+		}
+		out.println();
+		out.close();
+	}
+
+	public static YuvStatistics load(File file ) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+
+		YuvStatistics out = new YuvStatistics();
+		out.meanU = readDouble(reader.readLine());
+		out.meanV = readDouble(reader.readLine());
+		out.stdevU = readDouble(reader.readLine());
+		out.stdevV = readDouble(reader.readLine());
+		out.kernel = readArray(reader.readLine());
+
+		return out;
+	}
+
+	private static double readDouble( String line ) {
+		return Double.parseDouble(line.split(" ")[1]);
+	}
+
+	private static double[] readArray( String line ) {
+		String words[] = line.split(" ");
+		double[] out = new double[ words.length-1 ];
+		for (int i = 0; i < out.length; i++) {
+			out[i] = Double.parseDouble(words[i+1]);
+		}
+		return out;
+	}
 
 	public static File downloadModel() {
 		File modelHome = DeepBoofOps.pathData("torch_models/likevgg_cifar10");

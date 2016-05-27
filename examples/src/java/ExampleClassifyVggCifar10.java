@@ -36,6 +36,7 @@ import static deepboof.misc.TensorOps.WI;
  *
  * @author Peter Abeles
  */
+// TODO live update of confusion plot
 public class ExampleClassifyVggCifar10 {
 
 	public static void main(String[] args) throws IOException {
@@ -124,7 +125,8 @@ public class ExampleClassifyVggCifar10 {
 				totalCorrect++;
 			}
 
-			System.out.printf("FPS = %5.2f Selected %2d correct = %6.2f at index %5d\n",FPS,bestType,(totalCorrect/(double)totalConsidered++),test);
+			System.out.printf("FPS = %5.2f Selected %2d correct = %6.2f% at index %5d\n",
+					FPS,bestType,100*(totalCorrect/(double)totalConsidered++),test);
 		}
 		System.out.println("Done!");
 	}

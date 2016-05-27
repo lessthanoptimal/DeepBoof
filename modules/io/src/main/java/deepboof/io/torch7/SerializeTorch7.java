@@ -23,6 +23,13 @@ public abstract class SerializeTorch7 {
 
 	protected List<TorchObject> savedObjects = new ArrayList<>();
 
+	public void serialize(TorchObject object , OutputStream stream ) throws IOException {
+		List<TorchObject> objects = new ArrayList<>();
+		objects.add( object );
+
+		serialize(objects, stream);
+	}
+
 	public void serialize(List<TorchObject> objects , OutputStream stream ) throws IOException {
 		this.stream = stream;
 		this.output = new DataOutputStream(stream);

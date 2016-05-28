@@ -62,7 +62,7 @@ public class ConvertBoofToTorch {
 			storage.version = 1;
 
 			torch.storage = storage;
-			torch.torchName = "torch.FloatTensor";
+			torch.torchName = "torch.ByteTensor";
 		} else {
 			throw new RuntimeException("Add support for "+input.getClass().getSimpleName());
 		}

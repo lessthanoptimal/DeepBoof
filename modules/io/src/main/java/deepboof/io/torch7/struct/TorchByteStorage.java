@@ -26,7 +26,7 @@ public class TorchByteStorage extends TorchStorage {
 
 	public TorchByteStorage(int size ) {
 		this.data = new byte[size];
-
+		this.torchName = "torch.ByteStorage";
 	}
 
 	@Override

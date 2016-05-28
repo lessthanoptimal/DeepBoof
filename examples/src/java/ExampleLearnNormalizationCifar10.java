@@ -4,17 +4,10 @@ import boofcv.factory.filter.kernel.FactoryKernelGaussian;
 import boofcv.struct.convolve.Kernel1D_F64;
 import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.Planar;
-import deepboof.io.torch7.ParseAsciiTorch7;
-import deepboof.io.torch7.struct.TorchGeneric;
-import deepboof.io.torch7.struct.TorchObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import static deepboof.io.torch7.ConvertTorchToBoofForward.convert;
 
 /**
  * Computes statistics across the entire input data set so that it can be normalized to ensure
@@ -33,18 +26,7 @@ public class ExampleLearnNormalizationCifar10 {
 	public static void main(String[] args) throws IOException {
 
 		// Load training data and convert into YUV image
-		File trainingDir = UtilCifar10.downloadData();
-		ParseAsciiTorch7 ascii = new ParseAsciiTorch7();
-
-		System.out.println("Loading images");
-		List<Planar<GrayF32>> listYuv = new ArrayList<>();
-		for( File f : trainingDir.listFiles() ) {
-			if( !f.getName().startsWith("data_"))
-				continue;
-
-			Map<Object,TorchObject> map = ((TorchGeneric)ascii.parseOne(f)).map;
-			listYuv.addAll(UtilCifar10.convertToYuv(convert(map.get("data")),false));
-		}
+		List<Planar<GrayF32>> listYuv = UtilCifar10.loadTrainingYuv().images;
 
 		// Compute mean and standard deviation for U and V bands
 		System.out.println("Computing mean");

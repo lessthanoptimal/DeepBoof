@@ -35,6 +35,14 @@ public class Tensor_U8 extends Tensor<Tensor_U8> {
 
 	public Tensor_U8(){}
 
+	public static Tensor_U8 wrap( byte[] data , int...shape) {
+		Tensor_U8 t = new Tensor_U8();
+		t.d = data;
+		t.shape =shape.clone();
+		t.computeStrides();
+		return t;
+	}
+
 	@Override
 	public double getDouble(int... coordinate) {
 		return d[idx(coordinate)];

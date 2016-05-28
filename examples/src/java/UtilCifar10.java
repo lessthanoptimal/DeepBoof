@@ -7,13 +7,20 @@ import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.GrayU8;
 import boofcv.struct.image.Planar;
 import deepboof.io.DatabaseOps;
+import deepboof.io.torch7.ParseAsciiTorch7;
+import deepboof.io.torch7.struct.TorchGeneric;
+import deepboof.io.torch7.struct.TorchObject;
 import deepboof.misc.DeepBoofOps;
 import deepboof.tensors.Tensor_U8;
+import org.ddogleg.struct.GrowQueue_I8;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static deepboof.io.torch7.ConvertTorchToBoofForward.convert;
 
 /**
  * @author Peter Abeles
@@ -46,6 +53,44 @@ public class UtilCifar10 {
 		out.kernel = readArray(reader.readLine());
 
 		return out;
+	}
+
+	public static DataSet loadTrainingYuv() throws IOException {
+		File trainingDir = UtilCifar10.downloadData();
+		ParseAsciiTorch7 ascii = new ParseAsciiTorch7();
+
+		List<Planar<GrayF32>> listYuv = new ArrayList<>();
+		GrowQueue_I8 labels = new GrowQueue_I8();
+		for( File f : trainingDir.listFiles() ) {
+			if( !f.getName().startsWith("data_"))
+				continue;
+
+			Map<Object,TorchObject> map = ((TorchGeneric)ascii.parseOne(f)).map;
+			listYuv.addAll(UtilCifar10.convertToYuv(convert(map.get("data")),false));
+
+			Tensor_U8 l = convert(map.get("labels"));
+			labels.addAll(l.d,0,l.d.length);
+		}
+		byte d[] = new byte[labels.size()];
+		System.arraycopy(labels.data,0,d,0,labels.size());
+		labels.data = d;
+
+		Tensor_U8 l = Tensor_U8.wrap(labels.data,labels.size());
+
+		return new DataSet(listYuv,l);
+	}
+
+	public static DataSet loadTestYuv() throws IOException {
+		File trainingDir = UtilCifar10.downloadData();
+		ParseAsciiTorch7 ascii = new ParseAsciiTorch7();
+
+		File f = new File(trainingDir,"test_batch.t7");
+
+		Map<Object,TorchObject> map = ((TorchGeneric)ascii.parseOne(f)).map;
+		List<Planar<GrayF32>> listYuv =  UtilCifar10.convertToYuv(convert(map.get("data")),false);
+		Tensor_U8 labels = convert(map.get("labels"));
+
+		return new DataSet(listYuv,labels);
 	}
 
 	private static double readDouble( String line ) {
@@ -138,4 +183,13 @@ public class UtilCifar10 {
 		return output;
 	}
 
+	public static class DataSet {
+		public List<Planar<GrayF32>> images;
+		public Tensor_U8 labels;
+
+		public DataSet(List<Planar<GrayF32>> images, Tensor_U8 labels) {
+			this.images = images;
+			this.labels = labels;
+		}
+	}
 }

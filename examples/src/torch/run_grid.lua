@@ -18,7 +18,7 @@ package.path = package.path .. ";".. lfs.currentdir().."/grids/?.lua"
 print(sys.COLORS.red ..  '==> processing options')
 
 opt = lapp[[
-   -g,--parameterGrid      (default spread_adam)  Which set of parameters to run
+   -g,--parameterGrid      (default spread_sgd)  Which set of parameters to run
    -m,--model              (default version001)  which model to load
    -b,--batchSize          (default 128)         batch size
    -t,--threads            (default 1)           number of threads
@@ -91,14 +91,14 @@ while true do
 
 
     if opt.search == 'sgd' then
-        opt.learningRate      = selectValueLog(parameter_grid.minLearnRate  , parameter_grid.maxLearnRate)
-        opt.learningRateDecay = selectValueLog(parameter_grid.minLearnDecay , parameter_grid.maxLearnDecay)
-        opt.weightDecay       = selectValueLog(parameter_grid.minRegDecay   , parameter_grid.maxRegDecay)
-        opt.momentum          = selectValueLog(parameter_grid.minMomentum   , parameter_grid.maxMomentum)
+        opt.learningRate         = selectValueLog(parameter_grid.minLearnRate  , parameter_grid.maxLearnRate)
+        opt.sgdLearningRateDecay = selectValueLog(parameter_grid.minLearnDecay , parameter_grid.maxLearnDecay)
+        opt.sgdWeightDecay       = selectValueLog(parameter_grid.minRegDecay   , parameter_grid.maxRegDecay)
+        opt.sgdMomentum          = selectValueLog(parameter_grid.minMomentum   , parameter_grid.maxMomentum)
     elseif opt.search == 'adam' then
-        opt.learningRate      = selectValueLog(parameter_grid.minLearnRate  , parameter_grid.maxLearnRate)
-        opt.adamBeta1         = selectValueLog(parameter_grid.minBeta1      , parameter_grid.maxBeta1)
-        opt.adamBeta2         = selectValueLog(parameter_grid.minBeta2      , parameter_grid.maxBeta2)
+        opt.learningRate         = selectValueLog(parameter_grid.minLearnRate  , parameter_grid.maxLearnRate)
+        opt.adamBeta1            = selectValueLog(parameter_grid.minBeta1      , parameter_grid.maxBeta1)
+        opt.adamBeta2            = selectValueLog(parameter_grid.minBeta2      , parameter_grid.maxBeta2)
     end
 
     local ttrain = require 'train'

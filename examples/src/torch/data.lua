@@ -29,28 +29,25 @@ function file_exists(name)
    if f~=nil then io.close(f) return true else return false end
 end
 
-train_dir = 'input_data'
+train_dir = '../../..'
 
-if not file_exists(train_dir .. '/cifar10-train.t7') then
-   os.execute('mkdir -p ' .. train_dir)
-   os.execute('cd ' .. train_dir)
-   os.execute('wget -c https://s3.amazonaws.com/torch7/data/cifar10torchsmall.zip -P ' .. train_dir)
-   os.execute('unzip '.. train_dir ..'/cifar10torchsmall.zip -d ' .. train_dir)
+if not file_exists(train_dir .. '/train_normalized_cifar10.t7') then
+    print("Please generate normalized input data using java examples")
+    os.exit(1)
 end
 
-local trainset = torch.load(train_dir..'/cifar10-train.t7')
-local testset = torch.load(train_dir..'/cifar10-test.t7')
+local trainset = torch.load(train_dir..'/train_normalized_cifar10.t7')
+local testset = torch.load(train_dir..'/test_normalized_cifar10.t7')
 local classes = {'airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'}
 
 print("Train set size: " .. trainset.data:size(1) .. " test set size " .. testset.data:size(1))
+print("      set size: " .. trainset.label:storage():size() .. " test set size " .. testset.label:storage():size())
 
 setmetatable(trainset,
     {__index = function(t, i)
                     return {t.data[i], t.label[i]}
                 end}
 );
-testset.data = testset.data:double()
-trainset.data = trainset.data:double() -- convert the data from a ByteTensor to a DoubleTensor.
 
 function trainset:size()
     return self.data:size(1)
@@ -60,43 +57,21 @@ function testset:size()
     return self.data:size(1)
 end
 
-print(sys.COLORS.red ..  '==> normalizing dataset')
-
-local mean = {} -- store the mean, to normalize the test set in the future
-local stdv  = {} -- store the standard-deviation for the future
-for i=1,3 do -- over each image channel
-    mean[i] = trainset.data[{ {}, {i}, {}, {}  }]:mean() -- mean estimation
-    print('Channel ' .. i .. ', Mean: ' .. mean[i])
-    trainset.data[{ {}, {i}, {}, {}  }]:add(-mean[i]) -- mean subtraction
-
-    stdv[i] = trainset.data[{ {}, {i}, {}, {}  }]:std() -- std estimation
-    print('Channel ' .. i .. ', Standard Deviation: ' .. stdv[i])
-    trainset.data[{ {}, {i}, {}, {}  }]:div(stdv[i]) -- std scaling
-end
-
-testset.data = testset.data:double()   -- convert from Byte tensor to Double tensor
-for i=1,3 do -- over each image channel
-    testset.data[{ {}, {i}, {}, {}  }]:add(-mean[i]) -- mean subtraction
-    testset.data[{ {}, {i}, {}, {}  }]:div(stdv[i]) -- std scaling
-end
-
-if opt.visualize == true then
-  print("WTF it's visualizing? ",opt.visualize)
-  image.display{image=testset.data[100], legend='test 100'}
-end
-
 
 function reduceData( dataHolder , fraction)
   local dataShuffle = torch.randperm(dataHolder:size(1))
   
   local smallSize = torch.floor(dataHolder:size(1)*fraction)
   local tmp = {}
+
+  local labelStorage = dataHolder.label:storage()
+
   tmp.data = torch.Tensor(smallSize, dataHolder.data:size(2), dataHolder.data:size(3), dataHolder.data:size(4))
   tmp.label = torch.Tensor(smallSize)
-  
+
   for i=1,smallSize do
     tmp.data[i] = dataHolder.data[dataShuffle[i]]
-    tmp.label[i] = dataHolder.label[dataShuffle[i]]
+    tmp.label[i] = labelStorage[dataShuffle[i]]
   end
 
   function tmp:size()
@@ -105,6 +80,10 @@ function reduceData( dataHolder , fraction)
   
   return tmp
 end
+
+-- Should be 1 indexed not 0
+trainset.label:add(1)
+testset.label:add(1)
 
 -- Adjust size of training set based on request
 if opt.size == 'small' then
@@ -122,7 +101,5 @@ testset.labels = testset.label
 return {
    trainData = trainset,
    testData = testset,
-   mean = mean,
-   std = std,
    classes = classes
 }

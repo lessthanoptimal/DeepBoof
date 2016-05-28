@@ -77,9 +77,9 @@ local function reset()
    if opt.search == 'sgd' then
       optimState = {
          learningRate = opt.learningRate,
-         momentum = opt.momentum,
-         weightDecay = opt.weightDecay,
-         learningRateDecay = opt.learningRateDecay
+         momentum = opt.sgdMomentum,
+         weightDecay = opt.sgdWeightDecay,
+         learningRateDecay = opt.sgdLearningRateDecay
       }
    elseif opt.search == 'adam' then
       optimState = {

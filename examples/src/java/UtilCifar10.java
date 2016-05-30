@@ -89,6 +89,7 @@ public class UtilCifar10 {
 		Map<Object,TorchObject> map = ((TorchGeneric)ascii.parseOne(f)).map;
 		List<Planar<GrayF32>> listYuv =  UtilCifar10.convertToYuv(convert(map.get("data")),false);
 		Tensor_U8 labels = convert(map.get("labels"));
+		labels.reshape(labels.length());// it's saved with a weird shape that messes stuff up
 
 		return new DataSet(listYuv,labels);
 	}

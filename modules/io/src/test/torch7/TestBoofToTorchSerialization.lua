@@ -43,15 +43,19 @@ function compareTensors( a , b )
         print("Tensors not equal, val[1] = "..a:storage()[1].." "..b:storage()[1])
         return false
     end
+
     totalPassed = totalPassed + 1
     return true
 end
 
 local a = torch.load(paths.concat(torch_dir,'Tensor_F32'))
-local b = torch.load(paths.concat(boof_dir,'Tensor_F32'))
+local b = torch.load(paths.concat(boof_dir, 'Tensor_F32'))
 compareTensors(a,b)
 local a = torch.load(paths.concat(torch_dir,'Tensor_F64'))
-local b = torch.load(paths.concat(boof_dir,'Tensor_F64'))
+local b = torch.load(paths.concat(boof_dir, 'Tensor_F64'))
+compareTensors(a,b)
+local a = torch.load(paths.concat(torch_dir,'Tensor_U8'))
+local b = torch.load(paths.concat(boof_dir, 'Tensor_U8'))
 compareTensors(a,b)
 
 print("Total tests:  "..totalTests)

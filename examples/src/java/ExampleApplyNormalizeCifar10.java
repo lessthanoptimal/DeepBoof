@@ -21,7 +21,6 @@ import java.io.IOException;
  * @author Peter Abeles
  */
 public class ExampleApplyNormalizeCifar10 {
-	// TODO create data for train and test
 	private static void applyNormalization(UtilCifar10.DataSet data, YuvStatistics stats,
 										   String outputName )
 			throws IOException

@@ -20,6 +20,9 @@ import java.io.IOException;
  *
  * @author Peter Abeles
  */
+//  For training sets
+// TODO add flips
+// TODO add other distortions
 public class ExampleApplyNormalizeCifar10 {
 	private static void applyNormalization(UtilCifar10.DataSet data, YuvStatistics stats,
 										   String outputName )

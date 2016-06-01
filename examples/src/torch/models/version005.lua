@@ -8,13 +8,10 @@ end
 ----------------------------------------------------------------------
 print(sys.COLORS.red ..  '==> construct CNN')
 
--- This gets around 73.0% on test starting around epoc 140
---                  91.1% on training
+-- This gets around ????% on test starting around epoc ??
+--                  ????% on training
 --
---  the above was with some SGD configuration
-
--- Test = 68.8%  Train = 89.6% at epoc 75
--- th run.lua --search adam -r 0.00280 --adamBeta2 0.98489 --adamBeta1 0.70996 -l version005 -t 2 -s full -p cuda -b 125
+-- th run.lua
 
 local function ConvBatchReLUDrop(CNN, input, output, dropFrac )
    CNN:add(nn.SpatialConvolution(input, output, 3,3, 1,1, 1,1))
@@ -55,7 +52,6 @@ classifier:add(nn.BatchNormalization(512))
 classifier:add(nn.ReLU())
 classifier:add(nn.Dropout(0.5))
 classifier:add(nn.Linear(512, 10))
-classifier:add(nn.LogSoftMax())
 
 
 local model = nn.Sequential()
@@ -63,7 +59,7 @@ model:add(CNN)
 model:add(classifier)
 
 -- Loss: NLL
-local loss = nn.ClassNLLCriterion()
+local loss = nn.CrossEntropyCriterion()
 
 
 -- initialization from MSR

@@ -8,10 +8,10 @@ end
 ----------------------------------------------------------------------
 print(sys.COLORS.red ..  '==> construct CNN')
 
--- This gets around 72.5% on test starting around epoc 129
---                  88.8% on training
+-- This gets around ????% on test starting around epoc ??
+--                  ????% on training
 --
--- th run.lua -r 0.1 -w 1e-4 -threads 2 -l version004 -s full -p cuda -b 125
+-- th run.lua
 
 local function ConvBatchDropReLU(CNN, input, output, dropFrac )
    CNN:add(nn.SpatialConvolution(input, output, 3,3, 1,1, 1,1))

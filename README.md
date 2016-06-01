@@ -14,7 +14,9 @@ starts the classifier.
 
 Alternatively, you can just build and run any example from the command-line using Gradle directly:
 
-  gradle exampleRun -Pwhich=ExampleClassifyVggCifar10
+```bash
+gradle exampleRun -Pwhich=ExampleClassifyVggCifar10
+```
 
 ## Future Work
 

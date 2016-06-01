@@ -11,9 +11,7 @@ print(sys.COLORS.red ..  '==> construct CNN')
 -- This gets around ????% on test starting around epoc ??
 --                  ????% on training
 --
--- qlua run.lua -r 0.1 -w 1e-4 -threads 2 -l version003 -s full
-
--- 69.9% test for previous version
+-- th run.lua
 
 local CNN = nn.Sequential()
 CNN:add(nn.SpatialConvolution(3, 64, 3, 3, 1, 1, 1, 1))

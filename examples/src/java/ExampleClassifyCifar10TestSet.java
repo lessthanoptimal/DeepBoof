@@ -125,7 +125,7 @@ public class ExampleClassifyCifar10TestSet {
 				totalCorrect++;
 			}
 
-			System.out.printf("FPS = %5.2f Selected %2d correct = %6.2f% at index %5d\n",
+			System.out.printf("FPS = %5.2f Selected %2d correct = %6.2f at index %5d\n",
 					FPS,bestType,100*(totalCorrect/(double)totalConsidered++),test);
 		}
 		System.out.println("Done!");

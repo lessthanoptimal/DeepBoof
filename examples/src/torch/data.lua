@@ -87,8 +87,8 @@ testset.label:add(1)
 
 -- Adjust size of training set based on request
 if opt.size == 'small' then
-  trainset = reduceData(trainset,0.25)
-  testset = reduceData(testset,0.25)
+  trainset = reduceData(trainset,0.1)
+  testset = reduceData(testset,0.15)
 
   print("Reduced size of sets to ",trainset:size()," ",testset:size())
 end

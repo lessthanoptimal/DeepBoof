@@ -25,6 +25,8 @@ task exampleRun(dependsOn: 'classes' )<< {
         javaexec {
             main = "$which"
             classpath = sourceSets.main.runtimeClasspath
+            minHeapSize = "2048m"
+            maxHeapSize = "8192m"
         }
     } else {
         print 'Which not specified!!!!!'

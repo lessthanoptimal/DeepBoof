@@ -37,7 +37,7 @@ import static deepboof.misc.TensorOps.WI;
  * @author Peter Abeles
  */
 // TODO live update of confusion plot
-public class ExampleClassifyVggCifar10 {
+public class ExampleClassifyCifar10TestSet {
 
 	public static void main(String[] args) throws IOException {
 

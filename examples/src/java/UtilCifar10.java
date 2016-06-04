@@ -184,6 +184,23 @@ public class UtilCifar10 {
 		return output;
 	}
 
+	public static List<String> getClassNames() {
+		List<String> names = new ArrayList<>();
+
+		names.add("airplane");
+		names.add("automobile");
+		names.add("bird");
+		names.add("cat");
+		names.add("deer");
+		names.add("dog");
+		names.add("frog");
+		names.add("horse");
+		names.add("ship");
+		names.add("truck");
+
+		return names;
+	}
+
 	public static class DataSet {
 		public List<Planar<GrayF32>> images;
 		public Tensor_U8 labels;
@@ -191,6 +208,9 @@ public class UtilCifar10 {
 		public DataSet(List<Planar<GrayF32>> images, Tensor_U8 labels) {
 			this.images = images;
 			this.labels = labels;
+		}
+
+		public DataSet() {
 		}
 	}
 }

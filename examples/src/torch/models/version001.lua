@@ -8,10 +8,10 @@ end
 ----------------------------------------------------------------------
 print(sys.COLORS.red ..  '==> construct CNN')
 
--- This gets around 60.8% on test starting around epoc 45
---                  74.3% on training
+-- This gets around 70.6% on test starting around epoc 115
+--                  73.6% on training
 --
--- qlua run.lua -r 0.1 -w 1e-4 -s full
+-- th run.lua -r 1.48242 --sgdLearningRateDecay 0.00195 --sgdMomentum 0.09982 --sgdWeightDecay 2.46e-05 -s full
 
 local CNN = nn.Sequential()
 CNN:add(nn.SpatialConvolution(3, 10, 3, 3, 1, 1, 1, 1))

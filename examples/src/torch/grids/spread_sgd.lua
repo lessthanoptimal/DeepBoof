@@ -4,8 +4,8 @@ local grid = {}
 grid.minLearnRate = 1e-3
 grid.maxLearnRate = 50.0
 
-grid.minLearnDecay = 0.001 -- 0 is no change
-grid.maxLearnDecay = 1
+grid.minLearnDecay = 0.00001 -- 0 is no change
+grid.maxLearnDecay = 0.1
 
 grid.minRegDecay = 1e-7
 grid.maxRegDecay = 1e-2

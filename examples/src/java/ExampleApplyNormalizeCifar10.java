@@ -44,7 +44,11 @@ public class ExampleApplyNormalizeCifar10 {
 										   String outputName )
 			throws IOException
 	{
-		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, BorderType.ZERO);
+		// TODO do with a border of extend.  See how that changes score
+		// ZERO border       = 72.03 at 69
+		// EXTENDED border   = 70.14 at 81
+		// NORMALIZED border = 70.95 at 147
+		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, BorderType.NORMALIZED);
 		Kernel1D_F32 kernel = stats.create1D_F32();
 
 		GrayF32 workspace = new GrayF32(32,32);

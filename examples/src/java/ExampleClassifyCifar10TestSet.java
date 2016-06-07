@@ -1,26 +1,18 @@
 import boofcv.alg.filter.stat.ImageLocalNormalization;
 import boofcv.core.image.border.BorderType;
-import boofcv.factory.filter.kernel.FactoryKernelGaussian;
 import boofcv.struct.convolve.Kernel1D_F32;
 import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.Planar;
 import deepboof.Function;
 import deepboof.graph.ForwardSequence;
-import deepboof.io.torch7.ParseAsciiTorch7;
 import deepboof.io.torch7.ParseBinaryTorch7;
 import deepboof.io.torch7.SequenceAndParameters;
-import deepboof.io.torch7.struct.TorchGeneric;
-import deepboof.io.torch7.struct.TorchObject;
 import deepboof.misc.DataManipulationOps;
 import deepboof.tensors.Tensor_F32;
-import deepboof.tensors.Tensor_U8;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
-import static deepboof.io.torch7.ConvertTorchToBoofForward.convert;
 import static deepboof.misc.TensorOps.WI;
 
 /**
@@ -43,35 +35,19 @@ public class ExampleClassifyCifar10TestSet {
 
 		// Specify where all the prebuilt models and data sets are stored
 		File modelHome = UtilCifar10.downloadModel();
-		File inputDir = UtilCifar10.downloadData();
-		File inputFile = new File(inputDir,"test_batch.t7");
+		YuvStatistics stats = UtilCifar10.load(new File(modelHome,"YuvStatistics.txt"));
 
-		System.out.println("Load and convert to BoofCV");
+		System.out.println("Load and convert model to BoofCV");
 		SequenceAndParameters<Tensor_F32, Function<Tensor_F32>> sequence =
 				new ParseBinaryTorch7().parseIntoBoof(new File(modelHome,"model.net"));
 
 		ForwardSequence<Tensor_F32,Function<Tensor_F32>> network = sequence.createForward(3,32,32);
 
-		System.out.println("Loading evaluation data");
-		ParseAsciiTorch7 ascii = new ParseAsciiTorch7();
-		Map<Object,TorchObject> testMap = ((TorchGeneric)ascii.parseOne(inputFile)).map;
-
-		// This file describes how to normalize part of the input image
-		TorchGeneric normParam = ascii.parseOne(new File(modelHome,"normalization_parameters.t7"));
-
-		float mean_u = (float)normParam.getNumber("mean_u");
-		float mean_v = (float)normParam.getNumber("mean_u");
-		float std_u = (float)normParam.getNumber("std_u");
-		float std_v = (float)normParam.getNumber("std_v");
-
-		// Ground truth labels for each of the images
-		Tensor_U8 labels = convert(testMap.get("labels"));
-
-		// Convert the input RGB images into YUV color space and (optionally) display a few of them
-		List<Planar<GrayF32>> listTestYuv = UtilCifar10.convertToYuv(convert(testMap.get("data")),true);
+		System.out.println("Loading test set data and converting into YUV");
+		UtilCifar10.DataSet data = UtilCifar10.loadTrainingYuv();
 
 		// Number of images in the test set
-		int numTest = listTestYuv.size();
+		int numTest = data.images.size();
 
 		// Declare storage for the preprocessed input image and for the network's results
 		Tensor_F32 tensorYuv = new Tensor_F32(1,3,32,32);
@@ -80,8 +56,7 @@ public class ExampleClassifyCifar10TestSet {
 
 		// Locally normalize using a gaussian kernel with zero padding
 		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, BorderType.ZERO);
-		// TODO This is probably not the same kernel it was processed with
-		Kernel1D_F32 kernel = FactoryKernelGaussian.gaussian(1,true,32,-1,3);
+		Kernel1D_F32 kernel = stats.create1D_F32();
 
 		// Total number of correct guesses and number of guesses made
 		int totalCorrect = 0;
@@ -95,12 +70,12 @@ public class ExampleClassifyCifar10TestSet {
 		for (int test = 0; test < numTest; test++) {
 			long start = System.nanoTime();
 
-			Planar<GrayF32> yuv = listTestYuv.get(test);
+			Planar<GrayF32> yuv = data.images.get(test);
 
 			// Normalize the image
 			localNorm.zeroMeanStdOne(kernel,yuv.getBand(0),255.0,1e-4,yuv.getBand(0));
-			DataManipulationOps.normalize(yuv.getBand(1), mean_u, std_u);
-			DataManipulationOps.normalize(yuv.getBand(2), mean_v, std_v);
+			DataManipulationOps.normalize(yuv.getBand(1), (float)stats.meanU, (float)stats.stdevU);
+			DataManipulationOps.normalize(yuv.getBand(2), (float)stats.meanV, (float)stats.stdevV);
 
 			// Convert it from an image into a tensor
 			DataManipulationOps.imageToTensor(yuv,tensorYuv,0);
@@ -121,7 +96,7 @@ public class ExampleClassifyCifar10TestSet {
 				}
 			}
 
-			if( labels.d[test] == bestType ) {
+			if( data.labels.d[test] == bestType ) {
 				totalCorrect++;
 			}
 

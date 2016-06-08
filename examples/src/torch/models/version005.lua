@@ -8,8 +8,8 @@ end
 ----------------------------------------------------------------------
 print(sys.COLORS.red ..  '==> construct CNN')
 
--- This gets around ????% on test starting around epoc ??
---                  ????% on training
+-- This gets around 83.86% on test starting around epoc 80
+--                  94.35% on training
 --
 -- th run.lua
 

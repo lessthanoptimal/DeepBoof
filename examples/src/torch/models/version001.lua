@@ -8,8 +8,14 @@ end
 ----------------------------------------------------------------------
 print(sys.COLORS.red ..  '==> construct CNN')
 
--- This gets around 70.6% on test starting around epoc 115
---                  73.6% on training
+
+-- Raw training set
+-- This gets around 70.6 % on test starting around epoc 115
+--                  73.6 % on training
+--
+-- With horizontal flipping
+-- This gets around 74.5 % on test starting around epoc 156
+--                  72.1 % on training
 --
 -- th run.lua -r 1.48242 --sgdLearningRateDecay 0.00195 --sgdMomentum 0.09982 --sgdWeightDecay 2.46e-05 -s full
 

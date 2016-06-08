@@ -22,6 +22,7 @@ import boofcv.struct.Tuple2;
 import deepboof.Function;
 import deepboof.Tensor;
 import deepboof.misc.TensorFactory;
+import deepboof.misc.TensorOps;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +51,8 @@ public class ForwardSequence<T extends Tensor<T>, F extends Function<T>>
 
 	// used to create tensors
 	protected TensorFactory<T> factory;
+
+	boolean verbose = false;
 
 	/**
 	 * Configures the sequence
@@ -87,12 +90,17 @@ public class ForwardSequence<T extends Tensor<T>, F extends Function<T>>
 		if( sequence.get(0).sources.size() != 0 )
 			throw new RuntimeException("Input sequence can't have a source address!");
 
+		if( verbose )
+			System.out.println("ROOT ========= "+sequence.get(0).name);
 		List<int[]> inputs = new ArrayList<>();
 		sequence.get(0).function.initialize(inputShape);
 		outputStorage.put( sequence.get(0).name, new Tuple2<>(factory.create(),factory.create()) );
+		printOutput(sequence.get(0),inputShape);
 
 		for (int i = 1; i < sequence.size(); i++) {
 			Node<T,F> node = sequence.get(i);
+			if( verbose )
+				System.out.println("============== "+node.name);
 			outputStorage.put( node.name, new Tuple2<>(factory.create(),factory.create()) );
 			if( node.sources.size() == 0 )
 				throw new RuntimeException("No sources!  Node = "+node.name);
@@ -106,19 +114,33 @@ public class ForwardSequence<T extends Tensor<T>, F extends Function<T>>
 				if( src == null )
 					throw new RuntimeException("Can't find input node from name.  Bad network");
 				inputs.add( src.function.getOutputShape() );
+				if( verbose )
+					System.out.println("   input addr "+addr.nodeName);
 			}
 
 			// If just one input then it goes to a function, otherwise it gets combined and then passed to the function
 			if( inputs.size() == 1 ) {
 				node.function.initialize(inputs.get(0));
+				if( verbose )
+					printOutput(node,inputs.get(0));
 			} else {
 				if( node.combine == null )
 					throw new RuntimeException("Must specify a combine operator if there are multiple sources");
 				node.combine.initialize(inputs);
 				node.function.initialize(node.combine.getOutputShape());
+				if( verbose )
+					printOutput(node,node.combine.getOutputShape());
 			}
 		}
 	}
+
+	private void printOutput( Node<T,F> node , int[] input  ) {
+		int[] output = node.function.getOutputShape();
+		String sin = TensorOps.toStringShape(input);
+		String sout = TensorOps.toStringShape(output);
+		System.out.printf("%30s input %25s  out = %25s\n",node.function.getClass().getSimpleName(),sin,sout);
+	}
+
 
 	/**
 	 * Declare and save output tensors for each node and combine function

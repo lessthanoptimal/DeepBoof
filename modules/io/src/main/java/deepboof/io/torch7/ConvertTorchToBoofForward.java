@@ -213,7 +213,6 @@ public class ConvertTorchToBoofForward {
 				throw new RuntimeException("Unknown type "+_type);
 		}
 
-		int indexConverted = 0; // the index in the DeepBoof list.  Takes in account skipping
 		for( int i =0; i < listTorch.list.size(); i++ ) {
 			TorchReferenceable object = listTorch.list.get(i);
 
@@ -228,9 +227,9 @@ public class ConvertTorchToBoofForward {
 				n.name = "idx="+object.index;
 				ret.parameters.put(n.name,f.parameters);
 
-				if( indexConverted > 0 ) {
+				if( ret.sequence.size() > 0 ) {
 					InputAddress addr = new InputAddress();
-					addr.nodeName = ((Node)ret.sequence.get(indexConverted-1)).name;
+					addr.nodeName = ((Node)ret.sequence.get(ret.sequence.size()-1)).name;
 					n.sources.add(addr);
 				}
 
@@ -240,9 +239,9 @@ public class ConvertTorchToBoofForward {
 				for (int j = 0; j < s.sequence.size(); j++) {
 					Node n = (Node)s.sequence.get(j);
 
-					if( j == 0 && indexConverted != 0 ) {
+					if( j == 0 && ret.sequence.size() > 0 ) {
 						InputAddress addr = new InputAddress();
-						addr.nodeName = ((Node)ret.sequence.get(indexConverted-1)).name;
+						addr.nodeName = ((Node)ret.sequence.get(ret.sequence.size()-1)).name;
 						n.sources.add(addr);
 					}
 
@@ -252,7 +251,6 @@ public class ConvertTorchToBoofForward {
 			} else {
 				throw new RuntimeException("Unexpected type");
 			}
-			indexConverted++;
 		}
 
 		return ret;

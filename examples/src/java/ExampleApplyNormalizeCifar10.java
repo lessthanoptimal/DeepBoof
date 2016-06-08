@@ -95,11 +95,11 @@ public class ExampleApplyNormalizeCifar10 {
 		YuvStatistics stats = UtilCifar10.load(new File("YuvStatistics.txt"));
 
 		System.out.println("Loading training data");
-		UtilCifar10.DataSet data = UtilCifar10.loadTrainingYuv();
+		UtilCifar10.DataSet data = UtilCifar10.loadTrainingYuv(false);
 		applyNormalization(data, stats,true, "train_normalized_cifar10.t7");
 
 		System.out.println("Loading test data");
-		data = UtilCifar10.loadTestYuv();
+		data = UtilCifar10.loadTestYuv(false);
 		applyNormalization(data, stats,false, "test_normalized_cifar10.t7");
 
 		System.out.println("   finished");

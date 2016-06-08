@@ -32,6 +32,7 @@ opt = lapp[[
    -i,--devid                 (default 1)           device ID (if using CUDA)
    -s,--size                  (default small)       dataset: small or full or extra
    -o,--save                  (default results)     save directory
+      --maxNoImprovement      (default 0)           How long it will run since it last improved.  0 to distable
       --patches               (default all)         percentage of samples to use for testing'
       --visualize             (default false)       visualize dataset
       --search                (default sgd)         optimization algorithm (sgd,adam)
@@ -95,7 +96,7 @@ while true do
    end
 
    -- If performance hasn't improved in a long time stop
-   if epoc - last_best >= 20 then
+   if opt.maxNoImprovement > 0 and epoc - last_best >= opt.maxNoImprovement then
       break
    else
       print("Epocs since improvement "..(epoc - last_best))

@@ -26,7 +26,7 @@ public class ExampleLearnNormalizationCifar10 {
 	public static void main(String[] args) throws IOException {
 
 		// Load training data and convert into YUV image
-		List<Planar<GrayF32>> listYuv = UtilCifar10.loadTrainingYuv().images;
+		List<Planar<GrayF32>> listYuv = UtilCifar10.loadTrainingYuv(false).images;
 
 		// Compute mean and standard deviation for U and V bands
 		System.out.println("Computing mean");

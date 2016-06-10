@@ -55,7 +55,7 @@ public class UtilCifar10 {
 		return out;
 	}
 
-	public static DataSet loadTrainingYuv() throws IOException {
+	public static DataSet loadTrainingYuv(boolean show) throws IOException {
 		File trainingDir = UtilCifar10.downloadData();
 		ParseAsciiTorch7 ascii = new ParseAsciiTorch7();
 
@@ -66,7 +66,7 @@ public class UtilCifar10 {
 				continue;
 
 			Map<Object,TorchObject> map = ((TorchGeneric)ascii.parseOne(f)).map;
-			listYuv.addAll(UtilCifar10.convertToYuv(convert(map.get("data")),false));
+			listYuv.addAll(UtilCifar10.convertToYuv(convert(map.get("data")),show));
 
 			Tensor_U8 l = convert(map.get("labels"));
 			labels.addAll(l.d,0,l.d.length);
@@ -80,14 +80,14 @@ public class UtilCifar10 {
 		return new DataSet(listYuv,l);
 	}
 
-	public static DataSet loadTestYuv() throws IOException {
+	public static DataSet loadTestYuv(boolean show) throws IOException {
 		File trainingDir = UtilCifar10.downloadData();
 		ParseAsciiTorch7 ascii = new ParseAsciiTorch7();
 
 		File f = new File(trainingDir,"test_batch.t7");
 
 		Map<Object,TorchObject> map = ((TorchGeneric)ascii.parseOne(f)).map;
-		List<Planar<GrayF32>> listYuv =  UtilCifar10.convertToYuv(convert(map.get("data")),false);
+		List<Planar<GrayF32>> listYuv =  UtilCifar10.convertToYuv(convert(map.get("data")),show);
 		Tensor_U8 labels = convert(map.get("labels"));
 		labels.reshape(labels.length());// it's saved with a weird shape that messes stuff up
 

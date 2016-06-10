@@ -8,8 +8,8 @@ end
 ----------------------------------------------------------------------
 print(sys.COLORS.red ..  '==> construct CNN')
 
--- This gets around ????% on test starting around epoc ??
---                  ????% on training
+-- This gets around 83.86% on test starting around epoc 80
+--                  94.35% on training
 --
 -- th run.lua -r 0.29106 -sgdLearningRateDecay 0.00119 --sgdMomentum 0.00152 --sgdWeightDecay 3.24e-06 -s full --model version005 -p cuda -t 2
 

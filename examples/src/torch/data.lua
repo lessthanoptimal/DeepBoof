@@ -29,7 +29,7 @@ function file_exists(name)
    if f~=nil then io.close(f) return true else return false end
 end
 
-train_dir = '../..'
+train_dir = '../../..'
 
 print("training directory "..train_dir)
 if not file_exists(train_dir .. '/train_normalized_cifar10.t7') then

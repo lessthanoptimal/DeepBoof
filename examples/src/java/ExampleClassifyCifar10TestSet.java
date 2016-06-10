@@ -44,7 +44,7 @@ public class ExampleClassifyCifar10TestSet {
 		ForwardSequence<Tensor_F32,Function<Tensor_F32>> network = sequence.createForward(3,32,32);
 
 		System.out.println("Loading test set data and converting into YUV");
-		UtilCifar10.DataSet data = UtilCifar10.loadTrainingYuv();
+		UtilCifar10.DataSet data = UtilCifar10.loadTestYuv(true);
 
 		// Number of images in the test set
 		int numTest = data.images.size();

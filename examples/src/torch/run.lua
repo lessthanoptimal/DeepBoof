@@ -99,7 +99,7 @@ while true do
    if opt.maxNoImprovement > 0 and epoc - last_best >= opt.maxNoImprovement then
       break
    else
-      print("Epocs since improvement "..(epoc - last_best))
+      print("Epocs since improvement "..(epoc - last_best).." max allowed "..opt.maxNoImprovement)
    end
 
    epoc = epoc + 1

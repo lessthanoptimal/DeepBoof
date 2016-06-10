@@ -31,6 +31,7 @@ end
 
 train_dir = '../..'
 
+print("training directory "..train_dir)
 if not file_exists(train_dir .. '/train_normalized_cifar10.t7') then
     print("Please generate normalized input data using java examples")
     os.exit(1)

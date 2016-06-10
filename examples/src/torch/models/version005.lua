@@ -26,27 +26,33 @@ end
 
 local CNN = nn.Sequential()
 
-ConvBatchReLUDrop(CNN,3,64,0.2)
+ConvBatchReLUDrop(CNN,3,64,0.3)
+ConvBatchReLUDrop(CNN,64,64,0.0)
 CNN:add(nn.SpatialMaxPooling(2,2,2,2)) -- 16
+
 ConvBatchReLUDrop(CNN,64,128,0.4)
+ConvBatchReLUDrop(CNN,128,128,0.0)
 CNN:add(nn.SpatialMaxPooling(2,2,2,2)) -- 8
+
 ConvBatchReLUDrop(CNN,128,256,0.4)
 ConvBatchReLUDrop(CNN,256,256,0.4)
 ConvBatchReLUDrop(CNN,256,256,0.0)
 CNN:add(nn.SpatialMaxPooling(2,2,2,2)) -- 4
+
 ConvBatchReLUDrop(CNN,256,512,0.4)
-ConvBatchReLUDrop(CNN,512,512,0.0)
+ConvBatchReLUDrop(CNN,512,512,0.4)
 ConvBatchReLUDrop(CNN,512,512,0.0)
 CNN:add(nn.SpatialMaxPooling(2,2,2,2)) -- 2
+
 ConvBatchReLUDrop(CNN,512,512,0.4)
 ConvBatchReLUDrop(CNN,512,512,0.4)
 ConvBatchReLUDrop(CNN,512,512,0.0)
 CNN:add(nn.SpatialMaxPooling(2,2,2,2)) -- 1
 
 CNN:add(nn.View(512))
-CNN:add(nn.Dropout(0.5))
 
 local classifier = nn.Sequential()
+classifier:add(nn.Dropout(0.5))
 classifier:add(nn.Linear(512, 512))
 classifier:add(nn.BatchNormalization(512))
 classifier:add(nn.ReLU())

@@ -81,6 +81,9 @@ local best_test = 0
 local epoc = 0
 local last_best = 0
 
+-- save all command line arguments to disk
+torch.save(paths.concat(opt.save, 'arguments.t7'), opt, 'ascii')
+
 while true do
    local results_train,model_train = train(data.trainData)
    local results_test  = test(data.testData)

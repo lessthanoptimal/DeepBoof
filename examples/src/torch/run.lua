@@ -81,6 +81,9 @@ local best_test = 0
 local epoc = 0
 local last_best = 0
 
+-- save all command line arguments to disk
+torch.save(paths.concat(opt.save, 'arguments.t7'), opt, 'ascii')
+
 while true do
    local results_train,model_train = train(data.trainData)
    local results_test  = test(data.testData)
@@ -99,7 +102,7 @@ while true do
    if opt.maxNoImprovement > 0 and epoc - last_best >= opt.maxNoImprovement then
       break
    else
-      print("Epocs since improvement "..(epoc - last_best))
+      print("Epocs since improvement "..(epoc - last_best).." max allowed "..opt.maxNoImprovement)
    end
 
    epoc = epoc + 1

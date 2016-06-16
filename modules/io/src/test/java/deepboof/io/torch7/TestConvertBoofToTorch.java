@@ -20,8 +20,6 @@ package deepboof.io.torch7;
 
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
-
 /**
  * Converts a DeepBoof object into a torch object then saves it to disk
  *
@@ -29,32 +27,7 @@ import static org.junit.Assert.fail;
  */
 public class TestConvertBoofToTorch {
 	@Test
-	public void tensor_F64() {
-		fail("implement");
-	}
-
-	@Test
-	public void tensor_F32() {
-		fail("implement");
-	}
-
-	@Test
-	public void tensor_U8() {
-		fail("implement");
-	}
-
-	@Test
-	public void valueNumber() {
-		fail("implement");
-	}
-
-	@Test
-	public void valueString() {
-		fail("implement");
-	}
-
-	@Test
-	public void valueBoolean() {
-		fail("implement");
+	public void dummy() {
+		// intentionally blank.  Tested by {@link TestConvertTorchToBoofForward}
 	}
 }

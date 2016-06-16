@@ -90,12 +90,13 @@ public class ForwardSequence<T extends Tensor<T>, F extends Function<T>>
 		if( sequence.get(0).sources.size() != 0 )
 			throw new RuntimeException("Input sequence can't have a source address!");
 
-		if( verbose )
-			System.out.println("ROOT ========= "+sequence.get(0).name);
 		List<int[]> inputs = new ArrayList<>();
 		sequence.get(0).function.initialize(inputShape);
 		outputStorage.put( sequence.get(0).name, new Tuple2<>(factory.create(),factory.create()) );
-		printOutput(sequence.get(0),inputShape);
+		if( verbose ) {
+			System.out.println("ROOT ========= " + sequence.get(0).name);
+			printOutput(sequence.get(0), inputShape);
+		}
 
 		for (int i = 1; i < sequence.size(); i++) {
 			Node<T,F> node = sequence.get(i);

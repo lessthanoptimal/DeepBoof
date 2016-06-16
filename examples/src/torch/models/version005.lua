@@ -8,10 +8,10 @@ end
 ----------------------------------------------------------------------
 print(sys.COLORS.red ..  '==> construct CNN')
 
--- This gets around ????% on test starting around epoc ??
---                  ????% on training
+-- This gets around 83.86% on test starting around epoc 80
+--                  94.35% on training
 --
--- th run.lua
+-- th run.lua -r 0.29106 -sgdLearningRateDecay 0.00119 --sgdMomentum 0.00152 --sgdWeightDecay 3.24e-06 -s full --model version005 -p cuda -t 2
 
 local function ConvBatchReLUDrop(CNN, input, output, dropFrac )
    CNN:add(nn.SpatialConvolution(input, output, 3,3, 1,1, 1,1))
@@ -26,27 +26,33 @@ end
 
 local CNN = nn.Sequential()
 
-ConvBatchReLUDrop(CNN,3,64,0.2)
+ConvBatchReLUDrop(CNN,3,64,0.3)
+ConvBatchReLUDrop(CNN,64,64,0.0)
 CNN:add(nn.SpatialMaxPooling(2,2,2,2)) -- 16
+
 ConvBatchReLUDrop(CNN,64,128,0.4)
+ConvBatchReLUDrop(CNN,128,128,0.0)
 CNN:add(nn.SpatialMaxPooling(2,2,2,2)) -- 8
+
 ConvBatchReLUDrop(CNN,128,256,0.4)
 ConvBatchReLUDrop(CNN,256,256,0.4)
 ConvBatchReLUDrop(CNN,256,256,0.0)
 CNN:add(nn.SpatialMaxPooling(2,2,2,2)) -- 4
+
 ConvBatchReLUDrop(CNN,256,512,0.4)
-ConvBatchReLUDrop(CNN,512,512,0.0)
+ConvBatchReLUDrop(CNN,512,512,0.4)
 ConvBatchReLUDrop(CNN,512,512,0.0)
 CNN:add(nn.SpatialMaxPooling(2,2,2,2)) -- 2
+
 ConvBatchReLUDrop(CNN,512,512,0.4)
 ConvBatchReLUDrop(CNN,512,512,0.4)
 ConvBatchReLUDrop(CNN,512,512,0.0)
 CNN:add(nn.SpatialMaxPooling(2,2,2,2)) -- 1
 
 CNN:add(nn.View(512))
-CNN:add(nn.Dropout(0.5))
 
 local classifier = nn.Sequential()
+classifier:add(nn.Dropout(0.5))
 classifier:add(nn.Linear(512, 512))
 classifier:add(nn.BatchNormalization(512))
 classifier:add(nn.ReLU())

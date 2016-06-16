@@ -211,7 +211,7 @@ public class TestConvertTorchToBoofForward {
 
 	private <T extends TorchObject>T readAscii(File path ) {
 		try {
-			List<TorchObject> found = new ParseAsciiTorch7().setVerbose(true).parse(path);
+			List<TorchObject> found = new ParseAsciiTorch7().parse(path);
 			assertEquals(1,found.size());
 			return (T)found.get(0);
 		} catch (IOException e) {

@@ -99,15 +99,17 @@ public class ExampleClassifyCifar10TestSet {
 				}
 			}
 
+			String equality = "!=";
 			if( data.labels.d[test] == bestType ) {
+				equality = "==";
 				totalCorrect++;
 			}
 
 			String found = classNames.get(bestType);
 			String actual = classNames.get(data.labels.d[test]);
 
-			System.out.printf("FPS = %5.2f Correct %6.2f%% out of %7d    %11s / %11s \n",
-					FPS,100*(totalCorrect/(double)totalConsidered++),test+1,found,actual);
+			System.out.printf("FPS = %5.2f Correct %6.2f%% out of %7d    %11s  %2s  %11s \n",
+					FPS,100*(totalCorrect/(double)totalConsidered++),test+1,found,equality,actual);
 		}
 		System.out.println("Done!");
 	}

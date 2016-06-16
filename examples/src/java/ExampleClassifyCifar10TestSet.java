@@ -12,6 +12,7 @@ import deepboof.tensors.Tensor_F32;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import static deepboof.misc.TensorOps.WI;
 
@@ -62,6 +63,8 @@ public class ExampleClassifyCifar10TestSet {
 		int totalCorrect = 0;
 		int totalConsidered = 1;
 
+		List<String> classNames = UtilCifar10.getClassNames();
+
 		// Currently estimated FPS and constant for how quickly the FPS estimate adapts
 		double FPS = 0.0;
 		double fpsFade = 0.85;
@@ -100,8 +103,11 @@ public class ExampleClassifyCifar10TestSet {
 				totalCorrect++;
 			}
 
-			System.out.printf("FPS = %5.2f Selected %2d correct = %6.2f at index %5d\n",
-					FPS,bestType,100*(totalCorrect/(double)totalConsidered++),test);
+			String found = classNames.get(bestType);
+			String actual = classNames.get(data.labels.d[test]);
+
+			System.out.printf("FPS = %5.2f Correct %6.2f%% out of %7d    %11s / %11s \n",
+					FPS,100*(totalCorrect/(double)totalConsidered++),test+1,found,actual);
 		}
 		System.out.println("Done!");
 	}

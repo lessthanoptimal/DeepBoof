@@ -1,5 +1,6 @@
 import boofcv.alg.misc.ImageStatistics;
 import boofcv.alg.misc.PixelMath;
+import boofcv.core.image.border.BorderType;
 import boofcv.factory.filter.kernel.FactoryKernelGaussian;
 import boofcv.struct.convolve.Kernel1D_F64;
 import boofcv.struct.image.GrayF32;
@@ -68,6 +69,7 @@ public class ExampleLearnNormalizationCifar10 {
 		params.stdevU = stdevU;
 		params.stdevV = stdevV;
 		params.kernel = kernel.data;
+		params.border = BorderType.ZERO.name();
 
 		UtilCifar10.save(params,new File("YuvStatistics.txt"));
 	}

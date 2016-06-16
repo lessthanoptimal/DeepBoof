@@ -48,7 +48,8 @@ public class ExampleApplyNormalizeCifar10 {
 		// ZERO border       = 72.03 at 69
 		// EXTENDED border   = 70.14 at 81
 		// NORMALIZED border = 70.95 at 147
-		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, BorderType.NORMALIZED);
+		BorderType type = BorderType.valueOf(stats.border);
+		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, type);
 		Kernel1D_F32 kernel = stats.create1D_F32();
 
 		GrayF32 workspace = new GrayF32(32,32);

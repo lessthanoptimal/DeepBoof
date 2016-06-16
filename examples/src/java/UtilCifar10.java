@@ -34,6 +34,7 @@ public class UtilCifar10 {
 		out.printf("meanV %f\n",params.meanV);
 		out.printf("stdevU %f\n",params.stdevU);
 		out.printf("stdevV %f\n",params.stdevV);
+		out.printf("border %s\n",params.border);
 		out.print("kernel");
 		for (int i = 0; i < params.kernel.length; i++) {
 			out.printf(" %.10f",params.kernel[i]);
@@ -50,6 +51,7 @@ public class UtilCifar10 {
 		out.meanV = readDouble(reader.readLine());
 		out.stdevU = readDouble(reader.readLine());
 		out.stdevV = readDouble(reader.readLine());
+		out.border = readString(reader.readLine());
 		out.kernel = readArray(reader.readLine());
 
 		return out;
@@ -92,6 +94,10 @@ public class UtilCifar10 {
 		labels.reshape(labels.length());// it's saved with a weird shape that messes stuff up
 
 		return new DataSet(listYuv,labels);
+	}
+
+	private static String readString( String line ) {
+		return line.split(" ")[1];
 	}
 
 	private static double readDouble( String line ) {

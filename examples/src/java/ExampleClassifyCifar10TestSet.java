@@ -56,7 +56,8 @@ public class ExampleClassifyCifar10TestSet {
 		// WI() is a convenience function which allows you to prepend another dimension onto the tensor's shape
 
 		// Locally normalize using a gaussian kernel with zero padding
-		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, BorderType.ZERO);
+		BorderType type = BorderType.valueOf(stats.border);
+		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, type);
 		Kernel1D_F32 kernel = stats.create1D_F32();
 
 		// Total number of correct guesses and number of guesses made

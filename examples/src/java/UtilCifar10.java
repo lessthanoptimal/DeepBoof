@@ -184,7 +184,7 @@ public class UtilCifar10 {
 
 		if( showFirstImages ) {
 			gui.autoSetPreferredSize();
-			ShowImages.showWindow(gui,"CIFAR-10 Images",true);
+			ShowImages.showWindow(gui,"CIFAR-10 Images",false);
 		}
 
 		return output;

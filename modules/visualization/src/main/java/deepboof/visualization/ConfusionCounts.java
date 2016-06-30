@@ -75,6 +75,10 @@ public class ConfusionCounts {
 		}
 	}
 
+	public void increment( int actual , int predicted ) {
+		counts[actual*N+predicted]++;
+	}
+
 	public void set( int row , int col , int num ) {
 		counts[row*N+col] = num;
 	}

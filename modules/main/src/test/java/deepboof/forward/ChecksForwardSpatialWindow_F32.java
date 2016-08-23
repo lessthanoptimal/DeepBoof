@@ -93,7 +93,6 @@ public abstract class ChecksForwardSpatialWindow_F32<C extends ConfigSpatial>
 	@Test
 	public void checkOutputValues() {
 
-		int N = 3;
 
 		for( boolean sub : new boolean[]{false,true}) {
 			List<Case> testCases = createTestInputs();
@@ -111,8 +110,10 @@ public abstract class ChecksForwardSpatialWindow_F32<C extends ConfigSpatial>
 
 					int outputShape[] = alg.getOutputShape();
 
-					Tensor_F32 input = TensorFactory_F32.randomMM(random,sub,-1,1,WI(N,testCase.inputShape));
-					Tensor_F32 output = TensorFactory_F32.randomMM(random,sub,-1,1,WI(N,outputShape));
+					Tensor_F32 input = TensorFactory_F32.
+							randomMM(random,sub,-1,1,WI(testCase.minibatch,testCase.inputShape));
+					Tensor_F32 output = TensorFactory_F32.
+							randomMM(random,sub,-1,1,WI(testCase.minibatch,outputShape));
 
 					List<Tensor_F32> parameters = TensorFactory_F32.randomMM(random,sub,-1,-1,alg.getParameterShapes());
 

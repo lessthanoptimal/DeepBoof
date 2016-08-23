@@ -88,11 +88,11 @@ public abstract class ChecksFunctionLinear_F32 extends ChecksForward<Tensor_F32>
 
 		List<Case> inputs = new ArrayList<>();
 
-		inputs.add( new Case( 1 ) );
-		inputs.add( new Case( 1,1) );
-		inputs.add( new Case( 3,6,2) );
-		inputs.add( new Case( 2,1,8) );
-		inputs.add( new Case( 2,3,4,2) );
+		inputs.add( new Case(1) );
+		inputs.add( new Case(1,1) );
+		inputs.add( new Case(3,6,2) );
+		inputs.add( new Case(2,1,8) );
+		inputs.add( new Case(2,3,4,2) );
 
 		return inputs;
 	}

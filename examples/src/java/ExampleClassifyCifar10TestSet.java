@@ -1,5 +1,7 @@
 import boofcv.alg.filter.stat.ImageLocalNormalization;
 import boofcv.core.image.border.BorderType;
+import boofcv.gui.image.ShowImages;
+import boofcv.gui.learning.ConfusionMatrixPanel;
 import boofcv.struct.convolve.Kernel1D_F32;
 import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.Planar;
@@ -9,6 +11,8 @@ import deepboof.io.torch7.ParseBinaryTorch7;
 import deepboof.io.torch7.SequenceAndParameters;
 import deepboof.misc.DataManipulationOps;
 import deepboof.tensors.Tensor_F32;
+import deepboof.visualization.ConfusionCounts;
+import deepboof.visualization.ConfusionFraction;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +60,8 @@ public class ExampleClassifyCifar10TestSet {
 		// WI() is a convenience function which allows you to prepend another dimension onto the tensor's shape
 
 		// Locally normalize using a gaussian kernel with zero padding
-		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, BorderType.ZERO);
+		BorderType type = BorderType.valueOf(stats.border);
+		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, type);
 		Kernel1D_F32 kernel = stats.create1D_F32();
 
 		// Total number of correct guesses and number of guesses made
@@ -64,6 +69,13 @@ public class ExampleClassifyCifar10TestSet {
 		int totalConsidered = 1;
 
 		List<String> classNames = UtilCifar10.getClassNames();
+
+		// Storage for computing confusion matrix
+		ConfusionCounts matrixCounts = new ConfusionCounts(classNames);
+		ConfusionMatrixPanel confusionTrainPanel = new ConfusionMatrixPanel(600,true);
+		confusionTrainPanel.setLabels(classNames);
+		confusionTrainPanel.setGray(true);
+		ShowImages.showWindow(confusionTrainPanel,"Confusion Matrix",true);
 
 		// Currently estimated FPS and constant for how quickly the FPS estimate adapts
 		double FPS = 0.0;
@@ -99,10 +111,18 @@ public class ExampleClassifyCifar10TestSet {
 				}
 			}
 
+			// see if it was correct or not
 			String equality = "!=";
 			if( data.labels.d[test] == bestType ) {
 				equality = "==";
 				totalCorrect++;
+			}
+
+			// Update confusion matrix
+			matrixCounts.increment(data.labels.d[test],bestType);
+			if(  test%20 == 0 ) {
+				confusionTrainPanel.setMatrix(new ConfusionFraction(matrixCounts).M);
+				confusionTrainPanel.repaint();
 			}
 
 			String found = classNames.get(bestType);

@@ -65,7 +65,10 @@ public class ConfusionFraction {
 		for (int row = 0; row < N; row++) {
 			double total = counts.sumRows[row];
 			for (int col = 0; col < N; col++) {
-				M.unsafe_set(row,col, counts.get(row,col)/total );
+				if( total == 0)
+					M.unsafe_set(row,col, 0 );
+				else
+					M.unsafe_set(row,col, counts.get(row,col)/total );
 			}
 		}
 		precompute();

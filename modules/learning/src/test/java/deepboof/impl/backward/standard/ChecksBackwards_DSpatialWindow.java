@@ -20,6 +20,9 @@ package deepboof.impl.backward.standard;
 
 import deepboof.DFunction;
 import deepboof.DeepBoofConstants;
+import deepboof.backward.DSpatialPadding2D;
+import deepboof.backward.DSpatialPadding2D_F64;
+import deepboof.forward.ConfigPadding;
 import deepboof.forward.ConfigSpatial;
 import deepboof.misc.TensorFactory_F64;
 import deepboof.tensors.Tensor_F64;
@@ -46,7 +49,19 @@ public abstract class ChecksBackwards_DSpatialWindow {
 	int C = 4;
 	ConfigSpatial configSpatial;
 
-	public abstract DFunction<Tensor_F64> create(ConfigSpatial config );
+	DSpatialPadding2D<Tensor_F64> padding;
+
+	public abstract DFunction<Tensor_F64> create(ConfigSpatial config , DSpatialPadding2D_F64 padding );
+
+	private DSpatialPadding2D_F64 createPadding() {
+		ConfigPadding config = new ConfigPadding();
+		config.y0 = pad;
+		config.x0 = pad;
+		config.y1 = pad;
+		config.x1 = pad;
+
+		return new DConstantPadding2D_F64(config);
+	}
 
 	@Test
 	public void entirelyInside() {
@@ -57,7 +72,7 @@ public abstract class ChecksBackwards_DSpatialWindow {
 			configSpatial.WW = 3;
 			configSpatial.HH = 3;
 
-			DFunction<Tensor_F64> helper = create(configSpatial);
+			DFunction<Tensor_F64> helper = create(configSpatial, createPadding());
 
 			helper.initialize(C,6,8);
 
@@ -81,6 +96,8 @@ public abstract class ChecksBackwards_DSpatialWindow {
 
 	protected void compareToBruteForce(Tensor_F64 input , Tensor_F64 dout, Tensor_F64 gradientInput ) {
 
+		DSpatialPadding2D_F64 padding = createPadding();
+
 		int periodY = configSpatial.periodY;
 		int periodX = configSpatial.periodX;
 		int HH = configSpatial.HH;
@@ -95,7 +112,7 @@ public abstract class ChecksBackwards_DSpatialWindow {
 				for (int y = 0; y <= H-HH; y += periodY, outY++) {
 					int outX = 0;
 					for (int x = 0; x <= W-WW; x += periodX, outX++) {
-						double expected = sumWindow(input,batch,channel, y, x, HH, WW);
+						double expected = sumWindow(padding,batch,channel, y, x, HH, WW);
 						expected *= dout.get(batch,channel,y,x);
 						double foundValue = gradientInput.get(batch,channel,outY,outX);
 						assertEquals(y+" "+x,expected,foundValue, DeepBoofConstants.TEST_TOL_F64);
@@ -105,21 +122,14 @@ public abstract class ChecksBackwards_DSpatialWindow {
 		}
 	}
 
-	private double sumWindow(Tensor_F64 input, int b, int c, int y0, int x0, int HH, int WW) {
-		int H = input.length(2)+pad*2;
-		int W = input.length(3)+pad*2;
-
+	private double sumWindow(DSpatialPadding2D_F64 input , int b, int c, int y0, int x0, int HH, int WW) {
 		double sum = 0;
 
 		for (int y = 0; y < HH; y++) {
 			int yy = y+y0;
 			for (int x = 0; x < WW; x++) {
 				int xx = x+x0;
-
-				// border is all zero
-				if( xx >= pad && xx < W-pad && yy >= pad && yy < H-pad ) {
-					sum += input.get(b,c,yy-pad,xx-pad);
-				}
+				sum += input.get(b,c,yy,xx);
 			}
 		}
 

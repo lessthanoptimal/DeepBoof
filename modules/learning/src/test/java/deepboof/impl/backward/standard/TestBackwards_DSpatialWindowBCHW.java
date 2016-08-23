@@ -19,7 +19,7 @@
 package deepboof.impl.backward.standard;
 
 import deepboof.DFunction;
-import deepboof.forward.ConfigPadding;
+import deepboof.backward.DSpatialPadding2D_F64;
 import deepboof.forward.ConfigSpatial;
 import deepboof.tensors.Tensor_F64;
 
@@ -31,25 +31,16 @@ import java.util.List;
 public class TestBackwards_DSpatialWindowBCHW extends ChecksBackwards_DSpatialWindow{
 
 	@Override
-	public DFunction<Tensor_F64> create(ConfigSpatial config) {
-		return new Helper(config,createPadding());
+	public DFunction<Tensor_F64> create(ConfigSpatial config, DSpatialPadding2D_F64 padding ) {
+		return new Helper(config, padding);
 	}
 
-	private DConstantPadding2D_F64 createPadding() {
-		ConfigPadding config = new ConfigPadding();
-		config.y0 = pad;
-		config.x0 = pad;
-		config.y1 = pad;
-		config.x1 = pad;
 
-		return new DConstantPadding2D_F64(config);
-	}
-
-	public class Helper extends DSpatialWindowBCHW<Tensor_F64,DConstantPadding2D_F64> {
+	public class Helper extends DSpatialWindowBCHW<Tensor_F64,DSpatialPadding2D_F64> {
 
 		Tensor_F64 dout;
 
-		public Helper(ConfigSpatial configSpatial, DConstantPadding2D_F64 padding ) {
+		public Helper(ConfigSpatial configSpatial, DSpatialPadding2D_F64 padding ) {
 			super(configSpatial, padding);
 		}
 
@@ -58,7 +49,7 @@ public class TestBackwards_DSpatialWindowBCHW extends ChecksBackwards_DSpatialWi
 										int inY, int inX, int outY, int outX) {}
 
 		@Override
-		protected void forwardsAt_border(DConstantPadding2D_F64 padded, int batch,
+		protected void forwardsAt_border(DSpatialPadding2D_F64 padded, int batch,
 										 int channel, int padY, int padX, int outY, int outX) {}
 
 		@Override
@@ -83,7 +74,7 @@ public class TestBackwards_DSpatialWindowBCHW extends ChecksBackwards_DSpatialWi
 		}
 
 		@Override
-		protected void backwardsAt_border(DConstantPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
+		protected void backwardsAt_border(DSpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
 			double sum = 0;
 			for (int y = 0; y < HH; y++) {
 				for (int x = 0; x < WW; x++) {

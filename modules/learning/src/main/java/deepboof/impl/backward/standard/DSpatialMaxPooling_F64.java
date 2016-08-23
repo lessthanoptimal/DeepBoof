@@ -26,7 +26,7 @@ import deepboof.tensors.Tensor_S32;
 import java.util.List;
 
 /**
- * TODO Comment
+ * Implementation of {@link DSpatialPadding2D_F64} for {@link Tensor_F64} that extends {@link DSpatialWindowBCHW}.
  *
  * @author Peter Abeles
  */
@@ -41,7 +41,6 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 	public DSpatialMaxPooling_F64(ConfigSpatial config, DSpatialPadding2D_F64 padding) {
 		super(config, padding);
 	}
-
 
 	@Override
 	public void _setParameters(List<Tensor_F64> parameters) {}

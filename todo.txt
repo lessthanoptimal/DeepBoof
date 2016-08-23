@@ -6,8 +6,5 @@
   * spatial batch norm
   * Convolution 2D
 
-- Save Torch Object
-  * Tensors
-
 - Train a sequential network
 - Train and Run LSTM

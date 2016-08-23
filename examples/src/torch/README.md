@@ -12,6 +12,10 @@ has only been tested in Linux and run through the command-line.
 * [Install Torch 7](http://torch.ch/docs/getting-started.html#_)
 * luarocks install luaposix
 
+Optional For CUDA
+* luarocks install cutorch
+* luarocks install cunn
+
 ## Data Normalization
 
 DeepBoof is used to normalize the raw input data and this must be done before any training can

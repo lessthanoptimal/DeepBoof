@@ -93,26 +93,27 @@ public abstract class ChecksForwardSpatialWindow_F64<C extends ConfigSpatial>
 	@Test
 	public void checkOutputValues() {
 
-		int N = 3;
 
 		for( boolean sub : new boolean[]{false,true}) {
-			List<int[]> inputShapes = createTestInputs();
+			List<Case> testCases = createTestInputs();
 
 			for (int config = 0; config < numberOfConfigurations; config++) {
 				Function<Tensor_F64> alg = createForwards(config);
 				SpatialPadding2D_F64 padding = createPadding(config);
 
-				for( int[] inputShape : inputShapes ) {
+				for( Case testCase : testCases ) {
 					try {
-						alg.initialize(inputShape);
+						alg.initialize(testCase.inputShape);
 					} catch( RuntimeException ignore ) {
 						continue;
 					}
 
 					int outputShape[] = alg.getOutputShape();
 
-					Tensor_F64 input = TensorFactory_F64.randomMM(random,sub,-1,1,WI(N,inputShape));
-					Tensor_F64 output = TensorFactory_F64.randomMM(random,sub,-1,1,WI(N,outputShape));
+					Tensor_F64 input = TensorFactory_F64.
+							randomMM(random,sub,-1,1,WI(testCase.minibatch,testCase.inputShape));
+					Tensor_F64 output = TensorFactory_F64.
+							randomMM(random,sub,-1,1,WI(testCase.minibatch,outputShape));
 
 					List<Tensor_F64> parameters = TensorFactory_F64.randomMM(random,sub,-1,-1,alg.getParameterShapes());
 

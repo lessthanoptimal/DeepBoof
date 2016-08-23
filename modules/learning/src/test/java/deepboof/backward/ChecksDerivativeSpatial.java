@@ -26,8 +26,6 @@ import deepboof.impl.backward.standard.DConstantPadding2D_F64;
 import java.util.ArrayList;
 import java.util.List;
 
-import static deepboof.misc.TensorOps.WI;
-
 /**
  * @author Peter Abeles
  */
@@ -63,17 +61,18 @@ public abstract class ChecksDerivativeSpatial<T extends Tensor<T>>
 
 
 	@Override
-	public List<int[]> createTestInputs() {
-		List<int[]> valid = new ArrayList<>();
+	public List<Case> createTestInputs() {
+		List<Case> valid = new ArrayList<>();
 
-		int numBatch = 4;
-		int numChannels = 3;
+		// Just one channel for simplicity
+		valid.add( minione(1,3,3) );
 
-		// Every window will go outside the input's border
-		valid.add( WI(numChannels,2,2));
-
-		// Some will be border and some will not
-		valid.add( WI(numChannels,7,8));
+//		int numChannels = 3;
+//		// Every window will go outside the input's border
+//		valid.add( new Case(numChannels,2,2));
+//
+//		// Some will be border and some will not
+//		valid.add( new Case(numChannels,7,8));
 
 		return valid;
 	}

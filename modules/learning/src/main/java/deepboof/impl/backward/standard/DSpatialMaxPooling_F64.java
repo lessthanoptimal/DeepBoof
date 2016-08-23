@@ -28,6 +28,11 @@ import java.util.List;
 /**
  * Implementation of {@link DSpatialPadding2D_F64} for {@link Tensor_F64} that extends {@link DSpatialWindowBCHW}.
  *
+ * Comments:<br>
+ *     dpadding is a 2D tensor of the spatial region only.  In the forwards pass the partial coordinate's index is
+ *     saved and the batch + channel indexes are implicit saved in the output index tensor.
+ *
+ *
  * @author Peter Abeles
  */
 public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpatialPadding2D_F64> {
@@ -64,6 +69,7 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 	@Override
 	protected void backwardsAt_inner(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
 
+		// The padded index is only for the spatial region
 		int paddedIdx = outputToPaddingIdx.d[outputToPaddingIdx.idx(batch,channel,outY,outX)];
 		dpadding.d[paddedIdx] += dout.get(batch,channel,outY,outX);
 	}
@@ -97,6 +103,8 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 			inputIndexRow += W;
 		}
 
+		System.out.println("inner ( "+(inY+maxI)+" , "+(inX+maxJ)+" ) = "+max);
+
 		// save the results
 		output.d[ output.idx(batch,channel,outY,outX) ] = max;
 
@@ -126,6 +134,9 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 				}
 			}
 		}
+
+		System.out.println("border ( "+(padY+maxI)+" , "+(padX+maxJ)+" ) = "+max);
+
 		// Compute index of maximum in padded image coordinates
 		int index = (padY+maxI)*Wp + (padX+maxJ);
 

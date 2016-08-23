@@ -23,8 +23,6 @@ import deepboof.Tensor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static deepboof.misc.TensorOps.WI;
-
 /**
  * @author Peter Abeles
  */
@@ -32,13 +30,13 @@ public abstract class ChecksDerivativeElementWise<T extends Tensor<T>>
 	extends ChecksDerivative<T>
 {
 	@Override
-	public List<int[]> createTestInputs() {
-		List<int[]> valid = new ArrayList<>();
+	public List<Case> createTestInputs() {
+		List<Case> valid = new ArrayList<>();
 
-		valid.add( WI());
-		valid.add( WI(1));
-		valid.add( WI(4,1,2));
-		valid.add( WI(2,4,5,2));
+		valid.add( new Case());
+		valid.add( new Case(1));
+		valid.add( new Case(4,1,2));
+		valid.add( new Case(2,4,5,2));
 
 		return valid;
 	}

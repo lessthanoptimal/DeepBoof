@@ -26,7 +26,6 @@ import deepboof.tensors.Tensor_F64;
 import java.util.ArrayList;
 import java.util.List;
 
-import static deepboof.misc.TensorOps.WI;
 import static deepboof.misc.TensorOps.WT;
 
 /**
@@ -50,13 +49,13 @@ public class TestBackwards_DFunctionLinear_F64 extends ChecksDerivative<Tensor_F
 	}
 
 	@Override
-	public List<int[]> createTestInputs() {
-		List<int[]> valid = new ArrayList<>();
+	public List<Case> createTestInputs() {
+		List<Case> valid = new ArrayList<>();
 
-		valid.add( WI(1));
-		valid.add( WI(1,1));
-		valid.add( WI(4,1,2));
-		valid.add( WI(2,4,5,2));
+		valid.add( new Case(1));
+		valid.add( new Case(1,1));
+		valid.add( new Case(4,1,2));
+		valid.add( new Case(2,4,5,2));
 
 		return valid;
 	}

@@ -25,6 +25,8 @@ import deepboof.Tensor;
 import deepboof.factory.FactoryBackwards;
 import deepboof.forward.ChecksGenericFunction;
 import deepboof.misc.TensorFactory;
+import deepboof.misc.TensorOps_F64;
+import deepboof.tensors.Tensor_F64;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,34 +64,44 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 
 			numeric.setFunction(alg);
 
-			List<int[]> inputShapes = createTestInputs();
+			List<Case> testCases = createTestInputs();
 
 			for (boolean sub : new boolean[]{false, true}) {
-				for (int[] input : inputShapes) {
-					T inputTensor = tensorFactory.randomM(random, sub, minibatch, input);
+				for (Case testCase : testCases) {
+					System.out.println("sub "+sub+"  input.length "+testCase.inputShape.length);
+					T inputTensor = tensorFactory.randomM(random, sub, testCase.minibatch, testCase.inputShape);
 
-					alg.initialize(input);
+					alg.initialize(testCase.inputShape);
 
 					List<T> parameters = createParameters(alg, inputTensor);
 
-					T outputTensor = tensorFactory.randomM(random, sub, minibatch, alg.getOutputShape());
-					T dout = tensorFactory.randomM(random, sub, minibatch, alg.getOutputShape());
+					T outputTensor = tensorFactory.randomM(random, sub, testCase.minibatch, alg.getOutputShape());
+					T dout = tensorFactory.randomM(random, sub, testCase.minibatch, alg.getOutputShape());
 
 					// User the numerical gradient as ground truth for the gradient
-					T expectedXD = tensorFactory.randomM(random, sub, minibatch, input);
+					T expectedXD = tensorFactory.randomM(random, sub, testCase.minibatch, testCase.inputShape);
 					List<T> expectedWD = createParameters(alg, inputTensor);
 					numeric.differentiate(inputTensor,parameters,dout,expectedXD,expectedWD);
 
 					// invoke the forwards pass first.  Some algorithms require it be called first
 					alg.setParameters(parameters);
 					alg.forward(inputTensor, outputTensor);
+
 					// compute the gradient using the function being tested
-					T foundXD = tensorFactory.randomM(random, sub, minibatch, input);
+					T foundXD = tensorFactory.randomM(random, sub, testCase.minibatch, testCase.inputShape);
 					List<T> foundWD = createParameters(alg, inputTensor);
 					alg.backwards(inputTensor,dout,foundXD,foundWD);
 
+					TensorOps_F64.printSpatial((Tensor_F64)expectedXD,0,0);
+					TensorOps_F64.printSpatial((Tensor_F64)foundXD,0,0);
+
 					// compare results
 					DeepUnitTest.assertEquals(expectedXD,foundXD, tolerance );
+					for (int i = 0; i < expectedWD.size(); i++) {
+						T e = expectedWD.get(i);
+						T f = foundWD.get(i);
+						DeepUnitTest.assertEquals(e, f, tolerance );
+					}
 				}
 			}
 		}

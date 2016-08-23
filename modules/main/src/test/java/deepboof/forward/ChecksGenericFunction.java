@@ -32,8 +32,6 @@ import java.util.Random;
 public abstract class ChecksGenericFunction<T extends Tensor<T>> {
 
 	protected Random random = new Random(234);
-	// length of mini-batch
-	protected int minibatch = 3;
 
 	protected TensorFactory<T> tensorFactory;
 
@@ -49,5 +47,22 @@ public abstract class ChecksGenericFunction<T extends Tensor<T>> {
 	public ChecksGenericFunction() {
 	}
 
-	public abstract List<int[]> createTestInputs();
+	public abstract List<Case> createTestInputs();
+
+	public static class Case {
+		// shape of input tensor
+		public int[] inputShape;
+		// number of minibatches
+		public int minibatch = 3;
+
+		public Case( int ...shape ) {
+			this.inputShape = shape;
+		}
+	}
+
+	public static Case minione( int ...shape ) {
+		Case c = new Case(shape);
+		c.minibatch = 1;
+		return c;
+	}
 }

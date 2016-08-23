@@ -96,22 +96,22 @@ public abstract class ChecksForwardSpatialWindow_F32<C extends ConfigSpatial>
 		int N = 3;
 
 		for( boolean sub : new boolean[]{false,true}) {
-			List<int[]> inputShapes = createTestInputs();
+			List<Case> testCases = createTestInputs();
 
 			for (int config = 0; config < numberOfConfigurations; config++) {
 				Function<Tensor_F32> alg = createForwards(config);
 				SpatialPadding2D_F32 padding = createPadding(config);
 
-				for( int[] inputShape : inputShapes ) {
+				for( Case testCase : testCases ) {
 					try {
-						alg.initialize(inputShape);
+						alg.initialize(testCase.inputShape);
 					} catch( RuntimeException ignore ) {
 						continue;
 					}
 
 					int outputShape[] = alg.getOutputShape();
 
-					Tensor_F32 input = TensorFactory_F32.randomMM(random,sub,-1,1,WI(N,inputShape));
+					Tensor_F32 input = TensorFactory_F32.randomMM(random,sub,-1,1,WI(N,testCase.inputShape));
 					Tensor_F32 output = TensorFactory_F32.randomMM(random,sub,-1,1,WI(N,outputShape));
 
 					List<Tensor_F32> parameters = TensorFactory_F32.randomMM(random,sub,-1,-1,alg.getParameterShapes());

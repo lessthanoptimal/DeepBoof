@@ -49,16 +49,16 @@ public abstract class ChecksForwardElementWise<T extends Tensor<T>>
 		for (int algConfig = 0; algConfig < numberOfConfigurations ; algConfig++) {
 			Function<T> alg = createForwards(algConfig);
 
-			List<int[]> inputShapes = createTestInputs();
+			List<Case> testCases = createTestInputs();
 
 			for (boolean sub : new boolean[]{false, true}) {
-				for (int[] input : inputShapes) {
-					T inputTensor = tensorFactory.randomM(random, sub, minibatch, input);
+				for (Case testCase : testCases) {
+					T inputTensor = tensorFactory.randomM(random, sub, testCase.minibatch, testCase.inputShape);
 
-					alg.initialize(input);
+					alg.initialize(testCase.inputShape);
 
 					List<T> parameters = createParameters(alg, inputTensor);
-					T outputTensor = tensorFactory.randomM(random, sub, minibatch, alg.getOutputShape());
+					T outputTensor = tensorFactory.randomM(random, sub, testCase.minibatch, alg.getOutputShape());
 
 					alg.setParameters(parameters);
 					alg.forward(inputTensor, outputTensor);
@@ -73,13 +73,13 @@ public abstract class ChecksForwardElementWise<T extends Tensor<T>>
 	public abstract void checkForwardResults(T input , T output );
 
 	@Override
-	public List<int[]> createTestInputs() {
-		List<int[]> valid = new ArrayList<>();
+	public List<Case> createTestInputs() {
+		List<Case> valid = new ArrayList<>();
 
-		valid.add( WI());
-		valid.add( WI(1));
-		valid.add( WI(4,1,2));
-		valid.add( WI(2,4,5,2));
+		valid.add( new Case(WI()));
+		valid.add( new Case(WI(1)));
+		valid.add( new Case(WI(4,1,2)));
+		valid.add( new Case(WI(2,4,5,2)));
 
 		return valid;
 	}

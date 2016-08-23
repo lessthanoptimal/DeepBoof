@@ -71,25 +71,25 @@ public abstract class ChecksForward<T extends Tensor<T>> extends ChecksGenericFu
 		for (int algConfig = 0; algConfig < numberOfConfigurations ; algConfig++) {
 			Function<T> alg = createForwards(algConfig);
 
-			List<int[]> inputs = createTestInputs();
+			List<Case> testCases = createTestInputs();
 
 			for( boolean sub : new boolean[]{false,true}) {
-				for (int[] input : inputs) {
-					T tensor = tensorFactory.randomM(random,sub,minibatch,input);
+				for (Case test : testCases) {
+					T tensor = tensorFactory.randomM(random,sub,test.minibatch,test.inputShape);
 
 					List<T> parameters = new ArrayList<>();
 
 					try {
-						alg.initialize(input);
-						assertFalse( areExceptionsExpected(alg,input));
+						alg.initialize(test.inputShape);
+						assertFalse( areExceptionsExpected(alg,test.inputShape));
 					} catch( RuntimeException ignore ) {
-						assertTrue( areExceptionsExpected(alg,input));
+						assertTrue( areExceptionsExpected(alg,test.inputShape));
 						continue;
 					}
 					for( int[] s : alg.getParameterShapes() ) {
 						parameters.add( tensorFactory.random(random,sub,s) );
 					}
-					T output = tensorFactory.randomM(random,sub,minibatch,alg.getOutputShape());
+					T output = tensorFactory.randomM(random,sub,test.minibatch,alg.getOutputShape());
 
 					alg.setParameters(parameters);
 					alg.forward(tensor,output);
@@ -106,19 +106,19 @@ public abstract class ChecksForward<T extends Tensor<T>> extends ChecksGenericFu
 	public void init_to_getters() {
 		for (int algConfig = 0; algConfig < numberOfConfigurations; algConfig++) {
 			Function<T> alg = createForwards(algConfig);
-			List<int[]> inputs = createTestInputs();
+			List<Case> testCases = createTestInputs();
 
-			for (int[] input : inputs) {
+			for (Case testCase : testCases) {
 				try {
-					alg.initialize(input);
-					assertFalse( areExceptionsExpected(alg,input));
+					alg.initialize(testCase.inputShape);
+					assertFalse( areExceptionsExpected(alg,testCase.inputShape));
 				} catch( RuntimeException ignore ) {
-					assertTrue( areExceptionsExpected(alg,input));
+					assertTrue( areExceptionsExpected(alg,testCase.inputShape));
 					continue;
 				}
 
-				checkParameterShapes(input, alg.getParameterShapes());
-				checkOutputShapes(input, alg.getOutputShape());
+				checkParameterShapes(testCase.inputShape, alg.getParameterShapes());
+				checkOutputShapes(testCase.inputShape, alg.getOutputShape());
 			}
 		}
 	}

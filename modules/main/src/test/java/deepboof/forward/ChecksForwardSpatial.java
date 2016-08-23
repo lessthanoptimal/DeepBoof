@@ -34,14 +34,14 @@ public abstract class ChecksForwardSpatial<T extends Tensor<T>>
 		extends ChecksForward<T> {
 
 	@Override
-	public List<int[]> createTestInputs() {
-		List<int[]> inputs = new ArrayList<>();
+	public List<Case> createTestInputs() {
+		List<Case> inputs = new ArrayList<>();
 
-		inputs.add( WI(1,1,1));
-		inputs.add( WI(1,5,6));
-		inputs.add( WI(3,5,6));
-		inputs.add( WI(2,6,5));
-		inputs.add( WI(2,12,14));
+		inputs.add( new Case(WI(1,1,1)));
+		inputs.add( new Case(WI(1,5,6)));
+		inputs.add( new Case(WI(3,5,6)));
+		inputs.add( new Case(WI(2,6,5)));
+		inputs.add( new Case(WI(2,12,14)));
 
 		return inputs;
 	}

@@ -133,11 +133,11 @@ public class TestFunctionBatchNorm_F64 extends ChecksForward<Tensor_F64> {
 	}
 
 	@Override
-	public List<int[]> createTestInputs() {
-		List<int[]> inputs = new ArrayList<int[]>();
+	public List<Case> createTestInputs() {
+		List<Case> inputs = new ArrayList<>();
 
-		inputs.add( new int[]{5,1});
-		inputs.add( new int[]{5,2,3,4});
+		inputs.add( new Case( 5,1 ));
+		inputs.add( new Case( 5,2,3,4 ));
 
 		return inputs;
 	}

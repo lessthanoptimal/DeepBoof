@@ -84,15 +84,15 @@ public abstract class ChecksFunctionLinear_F64 extends ChecksForward<Tensor_F64>
 	}
 
 	@Override
-	public List<int[]> createTestInputs() {
+	public List<Case> createTestInputs() {
 
-		List<int[]> inputs = new ArrayList<>();
+		List<Case> inputs = new ArrayList<>();
 
-		inputs.add( WI(1) );
-		inputs.add( WI(1,1) );
-		inputs.add( WI(3,6,2) );
-		inputs.add( WI(2,1,8) );
-		inputs.add( WI(2,3,4,2) );
+		inputs.add( new Case(1) );
+		inputs.add( new Case(1,1) );
+		inputs.add( new Case(3,6,2) );
+		inputs.add( new Case(2,1,8) );
+		inputs.add( new Case(2,3,4,2) );
 
 		return inputs;
 	}

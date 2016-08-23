@@ -256,4 +256,25 @@ public class TensorOps_F64 {
 			}
 		}
 	}
+
+	/**
+	 * Prints a single batch and channel in a spatial tensor
+	 * @param tensor The tensor
+	 * @param batch Batch number
+	 * @param channel channel
+	 */
+	public static void printSpatial( Tensor_F64 tensor , int batch , int channel ) {
+		int rows = tensor.length(2);
+		int cols = tensor.length(3);
+
+		System.out.println(tensor.getClass().getSimpleName()+" batch "+batch+"  channel "+channel );
+		System.out.println("     rows "+rows+" columns "+cols);
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < cols; col++) {
+				System.out.printf("%10.3e ",tensor.get(batch,channel,row,col));
+			}
+			System.out.println();
+		}
+
+	}
 }

@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static org.junit.Assert.fail;
+
 /**
  * @author Peter Abeles
  */
@@ -52,7 +54,29 @@ public abstract class CheckDerivativePadding<T extends Tensor<T>,P extends DSpat
 		alg = createBackwards();
 	}
 
-		/**
+	/**
+	 * If it's not a 2D tensor it should throw an exception
+	 */
+	@Test
+	public void sanityCheckPaddedShape() {
+		int inputShape[] = new int[]{3,4,10,12};
+
+		int padRow = alg.getPaddingRow0()+alg.getPaddingRow1();
+		int padCol = alg.getPaddingCol0()+alg.getPaddingCol1();
+
+		int paddedSpatial[] = new int[]{ inputShape[0],inputShape[1],inputShape[2]+padRow, inputShape[3]+padCol};
+
+
+		T dpadded = tensorFactory.random(random, false , paddedSpatial);
+		T foundDInput = tensorFactory.random(random, false , paddedSpatial);
+
+		try {
+			alg.backwardsChannel(dpadded, 0, 0, foundDInput);
+			fail("Exception should have been thrown");
+		} catch( RuntimeException e) {}
+	}
+
+	/**
 	 * Tests the {@link DFunction#backwards}
 	 */
 	@Test

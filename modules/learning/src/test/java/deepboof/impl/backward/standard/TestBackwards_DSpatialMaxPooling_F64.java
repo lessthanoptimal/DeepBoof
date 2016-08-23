@@ -18,16 +18,25 @@
 
 package deepboof.impl.backward.standard;
 
-import org.junit.Test;
+import deepboof.DFunction;
+import deepboof.Tensor;
+import deepboof.backward.ChecksDerivativeSpatial;
 
-import static org.junit.Assert.fail;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Peter Abeles
  */
-public class TestBackwards_DSpatialMaxPooling_F64 {
-	@Test
-	public void implement() {
-		fail("Implement");
+public class TestBackwards_DSpatialMaxPooling_F64 extends ChecksDerivativeSpatial {
+
+	@Override
+	public DFunction createBackwards(int type) {
+		return new DSpatialMaxPooling_F64(configSpatial, createPadding());
+	}
+
+	@Override
+	public List createParameters(DFunction function, Tensor input) {
+		return new ArrayList<>();
 	}
 }

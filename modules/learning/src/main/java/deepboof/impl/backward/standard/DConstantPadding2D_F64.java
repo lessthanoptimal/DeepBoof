@@ -41,6 +41,9 @@ public class DConstantPadding2D_F64 extends ConstantPadding2D_F64
 	public void backwardsChannel(Tensor_F64 gradientPadded, int batch, int channel,
 								 Tensor_F64 gradientInput)
 	{
+		if( gradientPadded.shape.length != 2 )
+			throw new IllegalArgumentException("Padded gradient should only be the 2-DOF spatial component");
+
 		// Padded gradient is a 2D tensor
 		int indexSrc = gradientPadded.idx(ROW0,COL0);
 		int strideSrc = gradientPadded.length(1);

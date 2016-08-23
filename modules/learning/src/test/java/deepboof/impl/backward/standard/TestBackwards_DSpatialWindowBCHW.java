@@ -63,26 +63,26 @@ public class TestBackwards_DSpatialWindowBCHW extends ChecksBackwards_DSpatialWi
 
 		@Override
 		protected void backwardsAt_inner(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
-			double sum = 0;
+
+			int PY0 = padding.getPaddingRow0();
+			int PX0 = padding.getPaddingCol0();
+
 			for (int y = 0; y < HH; y++) {
 				for (int x = 0; x < WW; x++) {
-					sum += input.get(batch,channel,y+inY,x+inX);
+					int index = dpadding.idx( y + inY + PY0, x + inX + PX0);
+					dpadding.d[index] += input.get(batch, channel, y + inY, x + inX);
 				}
 			}
-
-			dpadding.d[dpadding.idx(batch,channel,outY,outX)] = sum*dout.get(batch,channel,outY,outX);
 		}
 
 		@Override
 		protected void backwardsAt_border(DSpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
-			double sum = 0;
 			for (int y = 0; y < HH; y++) {
 				for (int x = 0; x < WW; x++) {
-					sum += padded.get(batch,channel,y+padY,x+padX);
+					int index = dpadding.idx( y + padY, x + padX);
+					dpadding.d[index] += padded.get(batch, channel, y + padY, x + padX);
 				}
 			}
-
-			dpadding.d[dpadding.idx(batch,channel,outY,outX)] = sum*dout.get(batch,channel,outY,outX);
 		}
 
 		@Override

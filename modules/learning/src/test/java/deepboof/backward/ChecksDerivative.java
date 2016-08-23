@@ -25,8 +25,6 @@ import deepboof.Tensor;
 import deepboof.factory.FactoryBackwards;
 import deepboof.forward.ChecksGenericFunction;
 import deepboof.misc.TensorFactory;
-import deepboof.misc.TensorOps_F64;
-import deepboof.tensors.Tensor_F64;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,7 +66,7 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 
 			for (boolean sub : new boolean[]{false, true}) {
 				for (Case testCase : testCases) {
-					System.out.println("sub "+sub+"  input.length "+testCase.inputShape.length);
+//					System.out.println("sub "+sub+"  input.length "+testCase.inputShape.length);
 					T inputTensor = tensorFactory.randomM(random, sub, testCase.minibatch, testCase.inputShape);
 
 					alg.initialize(testCase.inputShape);
@@ -81,7 +79,9 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 					// User the numerical gradient as ground truth for the gradient
 					T expectedXD = tensorFactory.randomM(random, sub, testCase.minibatch, testCase.inputShape);
 					List<T> expectedWD = createParameters(alg, inputTensor);
+//					System.out.println("===== NUMERICAL GRADIENT START");
 					numeric.differentiate(inputTensor,parameters,dout,expectedXD,expectedWD);
+//					System.out.println("===== NUMERICAL GRADIENT STOP");
 
 					// invoke the forwards pass first.  Some algorithms require it be called first
 					alg.setParameters(parameters);
@@ -91,9 +91,6 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 					T foundXD = tensorFactory.randomM(random, sub, testCase.minibatch, testCase.inputShape);
 					List<T> foundWD = createParameters(alg, inputTensor);
 					alg.backwards(inputTensor,dout,foundXD,foundWD);
-
-					TensorOps_F64.printSpatial((Tensor_F64)expectedXD,0,0);
-					TensorOps_F64.printSpatial((Tensor_F64)foundXD,0,0);
 
 					// compare results
 					DeepUnitTest.assertEquals(expectedXD,foundXD, tolerance );

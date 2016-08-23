@@ -77,7 +77,7 @@ public abstract class DSpatialWindowBCHW<T extends Tensor<T>, P extends DSpatial
 
 		// only need to do the spatial component for 1 channel
 		int[] paddingShape = padding.getShape();
-		dpadding.reshape(TensorOps.WI(paddingShape[2],paddingShape[3]));
+		dpadding.reshape(paddingShape[2],paddingShape[3]);
 
 		// extract constants which describe the convolution from inputs and parameters
 		N = input.length(0);

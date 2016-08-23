@@ -29,6 +29,7 @@ import java.util.List;
 /**
  * @author Peter Abeles
  */
+// TODO specify padding and kernel size in tests cases
 public abstract class ChecksDerivativeSpatial<T extends Tensor<T>>
 	extends ChecksDerivative<T>
 {
@@ -65,14 +66,14 @@ public abstract class ChecksDerivativeSpatial<T extends Tensor<T>>
 		List<Case> valid = new ArrayList<>();
 
 		// Just one channel for simplicity
-		valid.add( minione(1,3,3) );
+		valid.add( minione(1,2,2) );
 
-//		int numChannels = 3;
-//		// Every window will go outside the input's border
-//		valid.add( new Case(numChannels,2,2));
-//
-//		// Some will be border and some will not
-//		valid.add( new Case(numChannels,7,8));
+		int numChannels = 3;
+		// Every window will go outside the input's border
+		valid.add( new Case(numChannels,2,2));
+
+		// Some will be border and some will not
+		valid.add( new Case(numChannels,7,8));
 
 		return valid;
 	}

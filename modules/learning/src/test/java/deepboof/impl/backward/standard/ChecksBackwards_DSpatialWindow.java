@@ -46,7 +46,7 @@ import static org.junit.Assert.assertTrue;
 public abstract class ChecksBackwards_DSpatialWindow {
 	Random rand = new Random(234);
 
-	final int pad = 2;
+	int pad = 2;
 
 	int N = 3;
 	int C = 4;
@@ -73,6 +73,7 @@ public abstract class ChecksBackwards_DSpatialWindow {
 	@Test
 	public void isEntirelyBorder() {
 		for( boolean sub : new boolean[]{false,true}) {
+			pad = 2;
 			standardCheck(1,1,5,5,sub);
 		}
 	}
@@ -83,6 +84,11 @@ public abstract class ChecksBackwards_DSpatialWindow {
 	@Test
 	public void insideAndOutside() {
 		for (boolean sub : new boolean[]{false, true}) {
+			// single window no border
+			pad = 0;
+			standardCheck(3,3,3,3,sub);
+			// multiple windows in border and entirely inside
+			pad = 2;
 			standardCheck(6,7,3,3,sub);
 		}
 	}

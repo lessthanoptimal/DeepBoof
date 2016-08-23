@@ -86,24 +86,22 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 		int inputIndexRow = input.idx(batch,channel,inY,inX);
 
 		double max = -Double.MAX_VALUE;
-		int maxI = -1, maxJ = -1;
+		int maxX = -1, maxY = -1;
 
-		for (int j = 0; j < HH; j++) {
+		for (int i = 0; i < HH; i++) {
 			int inputIndex = inputIndexRow;
 
-			for (int i = 0; i < WW; i++ , inputIndex++) {
+			for (int j = 0; j < WW; j++ , inputIndex++) {
 				double value = input.d[inputIndex];
 				if( value > max ) {
 					max = value;
-					maxI = i;
-					maxJ = j;
+					maxX = j;
+					maxY = i;
 				}
 			}
 
 			inputIndexRow += W;
 		}
-
-		System.out.println("inner ( "+(inY+maxI)+" , "+(inX+maxJ)+" ) = "+max);
 
 		// save the results
 		output.d[ output.idx(batch,channel,outY,outX) ] = max;
@@ -112,7 +110,7 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 		int padRow0 = padding.getPaddingRow0();
 		int padCol0 = padding.getPaddingCol0();
 
-		int index = (inY+maxI+padRow0)*Wp + (inX+maxJ+padCol0);
+		int index = (inY+maxY+padRow0)*Wp + (inX+maxX+padCol0);
 		outputToPaddingIdx.d[ outputToPaddingIdx.idx(batch,channel,outY,outX) ] = index;
 	}
 
@@ -121,24 +119,22 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 
 		double max = -Double.MAX_VALUE;
 
-		int maxI = -1, maxJ = -1;
+		int maxX = -1, maxY = -1;
 
-		for (int j = 0; j < HH; j++) {
+		for (int i = 0; i < HH; i++) {
 
-			for (int i = 0; i < WW; i++ ) {
-				double value = padded.get(batch,channel, padY +j, padX +i);
+			for (int j = 0; j < WW; j++ ) {
+				double value = padded.get(batch,channel, padY +i, padX +j);
 				if( value > max ) {
 					max = value;
-					maxI = i;
-					maxJ = j;
+					maxX = j;
+					maxY = i;
 				}
 			}
 		}
 
-		System.out.println("border ( "+(padY+maxI)+" , "+(padX+maxJ)+" ) = "+max);
-
 		// Compute index of maximum in padded image coordinates
-		int index = (padY+maxI)*Wp + (padX+maxJ);
+		int index = (padY+maxY)*Wp + (padX+maxX);
 
 		// save the results
 		output.d[ output.idx(batch,channel,outY,outX) ] = max;

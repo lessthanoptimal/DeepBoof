@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @author Peter Abeles
  */
-public interface SpatialBatchNorm<T extends Tensor> extends Function<T> {
+public interface SpatialBatchNorm<T extends Tensor<T>> extends Function<T> {
 	/**
 	 * Performs batch norm on spatial data.
 	 *

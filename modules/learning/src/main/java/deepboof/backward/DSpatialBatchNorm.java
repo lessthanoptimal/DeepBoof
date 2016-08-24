@@ -20,20 +20,20 @@ package deepboof.backward;
 
 import deepboof.DFunction;
 import deepboof.Tensor;
-import deepboof.forward.FunctionBatchNorm;
+import deepboof.forward.SpatialBatchNorm;
 
 /**
- * <p>Implementation of {@link FunctionBatchNorm Batch Normalization} for training networks.</p>
+ * <p>Implementation of {@link SpatialBatchNorm Spatial Batch Normalization} for training networks.</p>
  *
  * @author Peter Abeles
  */
-public interface DFunctionBatchNorm<T extends Tensor<T>> extends FunctionBatchNorm<T>, DFunction<T> {
+public interface DSpatialBatchNorm<T extends Tensor<T>> extends SpatialBatchNorm<T>, DFunction<T> {
 
-	/**
-	 * Returns learning rate for computing the moving average of the training sets mean and standard
-	 * deviation.  Higher numbers for faster learning.
-	 *
-	 * @return Learning rate. 0 to 1.
-	 */
-	double getLearningRate();
+    /**
+     * Returns learning rate for computing the moving average of the training sets mean and standard
+     * deviation.  Higher numbers for faster learning.
+     *
+     * @return Learning rate. 0 to 1.
+     */
+    double getLearningRate();
 }

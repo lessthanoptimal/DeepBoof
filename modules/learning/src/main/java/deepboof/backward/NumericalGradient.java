@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Peter Abeles
  */
-public interface NumericalGradient<T extends Tensor> {
+public interface NumericalGradient<T extends Tensor<T>> {
 
 	/**
 	 * Overrides default settings for computing numerical gradient.

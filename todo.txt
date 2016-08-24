@@ -1,7 +1,4 @@
-- Visualize sequential network
-
 - Backwards Functions
-  * max pooling
   * batch norm
   * spatial batch norm
   * Convolution 2D

@@ -16,24 +16,10 @@
  * limitations under the License.
  */
 
-package deepboof.backward;
-
-import deepboof.DFunction;
-import deepboof.Tensor;
-import deepboof.forward.FunctionBatchNorm;
+package deepboof.impl.backward.standard;
 
 /**
- * <p>Implementation of {@link FunctionBatchNorm Batch Normalization} for training networks.</p>
- *
  * @author Peter Abeles
  */
-public interface DFunctionBatchNorm<T extends Tensor<T>> extends FunctionBatchNorm<T>, DFunction<T> {
-
-	/**
-	 * Returns learning rate for computing the moving average of the training sets mean and standard
-	 * deviation.  Higher numbers for faster learning.
-	 *
-	 * @return Learning rate. 0 to 1.
-	 */
-	double getLearningRate();
+public class DSpatialBatchNorm_F64 {
 }

@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author Peter Abeles
  */
-public interface DFunction<T extends Tensor> extends Function<T> {
+public interface DFunction<T extends Tensor<T>> extends Function<T> {
 	/**
 	 * Puts the function into learning mode.
 	 */

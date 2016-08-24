@@ -70,7 +70,7 @@ import java.util.List;
  *
  * @author Peter Abeles
  */
-public interface FunctionBatchNorm<T extends Tensor> extends Function<T> {
+public interface FunctionBatchNorm<T extends Tensor<T>> extends Function<T> {
 
 	/**
 	 * <p>Applies batch normalization to each variable in the input.</p>

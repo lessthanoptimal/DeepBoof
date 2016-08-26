@@ -46,6 +46,15 @@ public class TensorFactory<T extends Tensor> {
 		}
 	}
 
+	/**
+	 * Creates a random tensor with the specified shape and values from -1 to 1
+	 *
+	 * @param rand Random number generator
+	 * @param subTensor Should it be a sub-tensor or not?
+	 * @param minibatch Number of mini-batches
+	 * @param shape Shape of the tensor, without minibatch
+	 * @return The random tensor
+	 */
 	public T randomM(Random rand , boolean subTensor , int minibatch , int shape[] ) {
 
 		int modshape[] = new int[ shape.length + 1];

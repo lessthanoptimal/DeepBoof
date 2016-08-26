@@ -18,16 +18,56 @@
 
 package deepboof.impl.backward.standard;
 
-import org.junit.Test;
+import deepboof.DFunction;
+import deepboof.backward.ChecksDerivative;
+import deepboof.misc.TensorOps;
+import deepboof.tensors.Tensor_F64;
 
-import static org.junit.Assert.fail;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Peter Abeles
  */
-public class TestBackwards_DSpatialBatchNorm_F64 {
-    @Test
-    public void stuff() {
-        fail("implement");
+public class TestBackwards_DSpatialBatchNorm_F64 extends ChecksDerivative<Tensor_F64> {
+    private boolean gammaBeta;
+    public TestBackwards_DSpatialBatchNorm_F64() {
+        numberOfConfigurations = 2;
+    }
+
+    @Override
+    public DFunction<Tensor_F64> createBackwards(int type) {
+        gammaBeta = type == 0;
+        return new DFunctionBatchNorm_F64(gammaBeta);
+    }
+
+    @Override
+    public List<Tensor_F64> createParameters(DFunction<Tensor_F64> function, Tensor_F64 input) {
+        if( !gammaBeta )
+            return new ArrayList<>();
+
+
+        Tensor_F64 p = new Tensor_F64( TensorOps.WI(TensorOps.TH(input.shape),2) );
+
+        for (int i = 0; i < p.d.length; i += 2) {
+            p.d[i] = random.nextDouble()*5+0.5;
+            p.d[i] = random.nextDouble()*2+0.5;
+        }
+
+        return Arrays.asList(p);
+    }
+
+    @Override
+    public List<Case> createTestInputs() {
+
+        Case a = new Case(1);
+        a.minibatch = 10;
+        Case b = new Case(10);
+        b.minibatch = 20;
+        Case c = new Case(2,3,4);
+        c.minibatch = 20;
+
+        return Arrays.asList(a,b,c);
     }
 }

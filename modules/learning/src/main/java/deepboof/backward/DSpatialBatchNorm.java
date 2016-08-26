@@ -29,11 +29,4 @@ import deepboof.forward.SpatialBatchNorm;
  */
 public interface DSpatialBatchNorm<T extends Tensor<T>> extends SpatialBatchNorm<T>, DFunction<T> {
 
-    /**
-     * Returns learning rate for computing the moving average of the training sets mean and standard
-     * deviation.  Higher numbers for faster learning.
-     *
-     * @return Learning rate. 0 to 1.
-     */
-    double getLearningRate();
 }

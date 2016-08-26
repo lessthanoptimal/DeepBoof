@@ -29,12 +29,11 @@ import java.util.List;
  * Thus the input tensor (N,C,H,W) is "reshaped" such that it is (N*H*W,C) and it's treated like a mini-batch
  * with N*H*W elements.</p>
  *
- * <p>[1] Sergey Ioffe, Christian Szegedy, "Batch Normalization: Accelerating Deep Network Training by Reducing
- * Internal Covariate Shift" 11 Feb 2015, http://arxiv.org/abs/1502.03167</p>
+ * <p>See {@link BatchNorm} for a general discussion of Batch Normalization</p>
  *
  * @author Peter Abeles
  */
-public interface SpatialBatchNorm<T extends Tensor<T>> extends Function<T> {
+public interface SpatialBatchNorm<T extends Tensor<T>> extends Function<T>, BatchNorm {
 	/**
 	 * Performs batch norm on spatial data.
 	 *
@@ -66,10 +65,4 @@ public interface SpatialBatchNorm<T extends Tensor<T>> extends Function<T> {
 	 */
 	@Override
 	void setParameters(List<T> parameters );
-
-		/**
-	 * If it returns true then it expects a second set of parameters that defines gamma and beta.
-	 * @return true if gamma and beta is returned.
-	 */
-	boolean hasGammaBeta();
 }

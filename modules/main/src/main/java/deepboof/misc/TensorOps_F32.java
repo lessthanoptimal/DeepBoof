@@ -275,6 +275,14 @@ public class TensorOps_F32 {
 			}
 			System.out.println();
 		}
+	}
 
+	/**
+	 * Fills the tensor with the specified value
+	 * @param tensor The tensor
+	 * @param value fill value
+	 */
+	public static void fill( Tensor_F32 tensor , float value ) {
+		Arrays.fill(tensor.d,tensor.startIndex,tensor.startIndex+tensor.length(),value);
 	}
 }

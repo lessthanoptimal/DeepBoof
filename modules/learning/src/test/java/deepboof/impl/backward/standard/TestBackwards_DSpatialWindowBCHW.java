@@ -19,6 +19,7 @@
 package deepboof.impl.backward.standard;
 
 import deepboof.DFunction;
+import deepboof.backward.ChecksBackwards_DSpatialWindow;
 import deepboof.backward.DSpatialPadding2D_F64;
 import deepboof.forward.ConfigSpatial;
 import deepboof.tensors.Tensor_F64;
@@ -28,7 +29,7 @@ import java.util.List;
 /**
  * @author Peter Abeles
  */
-public class TestBackwards_DSpatialWindowBCHW extends ChecksBackwards_DSpatialWindow{
+public class TestBackwards_DSpatialWindowBCHW extends ChecksBackwards_DSpatialWindow {
 
 	@Override
 	public DFunction<Tensor_F64> create(ConfigSpatial config, DSpatialPadding2D_F64 padding ) {

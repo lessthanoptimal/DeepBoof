@@ -19,6 +19,7 @@
 package deepboof.misc;
 
 import deepboof.Tensor;
+import deepboof.tensors.Tensor_F32;
 import deepboof.tensors.Tensor_F64;
 
 import java.io.File;
@@ -52,11 +53,26 @@ public class TensorOps {
 
 	/**
 	 * Convenience function for making it easy to create an array of ints
+	 *
+	 * @return [ a , elements[0] , ..., elements[N-1] ]
 	 */
 	public static int[] WI( int a , int[] elements ) {
 		int out[] = new int[1+elements.length];
 		out[0] = a;
 		System.arraycopy(elements,0,out,1,elements.length);
+
+		return out;
+	}
+
+	/**
+	 * Convenience function for making it easy to create an array of ints
+	 *
+	 * @return [ elements[0] , ..., elements[N-1], a ]
+	 */
+	public static int[] WI( int[] elements , int a ) {
+		int out[] = new int[1+elements.length];
+		System.arraycopy(elements,0,out,0,elements.length);
+		out[elements.length] = a;
 
 		return out;
 	}
@@ -271,5 +287,29 @@ public class TensorOps {
 		}
 		throw new RuntimeException("Cant find the project root directory");
 
+	}
+
+	/**
+	 * Computes the sum of all the elements in the tensor
+	 * @param tensor Tensor
+	 */
+	public static double elementSum( Tensor tensor ) {
+		if( tensor instanceof Tensor_F64 ) {
+			return TensorOps_F64.elementSum( (Tensor_F64)tensor );
+		} else if( tensor instanceof Tensor_F32 ) {
+			return TensorOps_F32.elementSum( (Tensor_F32)tensor );
+		} else {
+			throw new IllegalArgumentException("Support not added yet for this tensor type");
+		}
+	}
+
+	public static void fill( Tensor t , double value ) {
+		if( t instanceof Tensor_F64 ) {
+			TensorOps_F64.fill( (Tensor_F64)t, value );
+		} else if( t instanceof Tensor_F32 ) {
+			TensorOps_F32.fill( (Tensor_F32)t, (float)value );
+		} else {
+			throw new IllegalArgumentException("Support not added yet for this tensor type");
+		}
 	}
 }

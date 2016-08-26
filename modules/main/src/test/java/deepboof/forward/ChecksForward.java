@@ -47,7 +47,7 @@ public abstract class ChecksForward<T extends Tensor<T>> extends ChecksGenericFu
 	/**
 	 * Create a Function for testing very basic functionality
 	 */
-	public abstract Function<T> createForwards(int which );
+	public abstract <F extends Function<T>> F createForwards(int which );
 
 	/**
 	 * If true is returned then an exception is expected on init() when this combination of function and input

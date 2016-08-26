@@ -244,4 +244,26 @@ public class TestTensorOps_F32 {
 		}
 	}
 
+	@Test
+	public void fill() {
+		Tensor_F32 a = new Tensor_F32(1,2,3,4);
+
+		TensorOps_F32.fill(a,2.0f);
+
+		for (int i = 0; i < a.d.length; i++) {
+			assertEquals(2.0f,a.d[i], DeepBoofConstants.TEST_TOL_F32);
+		}
+
+		// try it with a sub-matrix now
+		a = a.subtensor(5,new int[]{4});
+		TensorOps_F32.fill(a,3.0f);
+
+		for (int i = 0; i < 5; i++) {
+			assertEquals(2.0f,a.d[i], DeepBoofConstants.TEST_TOL_F32);
+		}
+		for (int i = 0; i < 4; i++) {
+			assertEquals(3.0f,a.d[a.startIndex+i], DeepBoofConstants.TEST_TOL_F32);
+		}
+	}
+
 }

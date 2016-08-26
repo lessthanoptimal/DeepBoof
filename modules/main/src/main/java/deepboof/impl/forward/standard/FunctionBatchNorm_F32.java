@@ -48,9 +48,7 @@ public class FunctionBatchNorm_F32
 	public void _initialize() {
 		this.shapeOutput = shapeInput.clone();
 
-		int shapeParam[] = new int[shapeInput.length+1];
-		System.arraycopy(shapeInput,0,shapeParam,0,shapeInput.length);
-		shapeParam[shapeInput.length] = requiresGammaBeta ? 4 : 2;
+		int shapeParam[] = TensorOps.WI( shapeInput, requiresGammaBeta ? 4 : 2 );
 
 		this.shapeParameters.add(shapeParam);
 		params.reshape(shapeParam);
@@ -70,7 +68,7 @@ public class FunctionBatchNorm_F32
 	@Override
 	public void _forward(Tensor_F32 input, Tensor_F32 output) {
 		if( input.getDimension() <= 1 ) {
-			throw new IllegalArgumentException("Input tensor must be at least 2D");
+			throw new IllegalArgumentException("Input tensor must be at least 2D.  First dimension of batch.");
 		}
 
 		int D = TensorOps.outerLength(input.shape,1);
@@ -105,17 +103,14 @@ public class FunctionBatchNorm_F32
 		}
 	}
 
-	public float getEPS() {
+	@Override
+	public /**/double getEPS() {
 		return EPS;
 	}
 
-	/**
-	 * Used to specify the EPS value.  Must be invoked before {@link #setParameters}
-	 *
-	 * @param EPS Value of EPS
-	 */
-	public void setEPS(float EPS) {
-		this.EPS = EPS;
+	@Override
+	public void setEPS( /**/double EPS) {
+		this.EPS = (float)EPS;
 	}
 
 	@Override

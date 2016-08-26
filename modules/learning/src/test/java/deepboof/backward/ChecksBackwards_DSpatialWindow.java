@@ -16,15 +16,14 @@
  * limitations under the License.
  */
 
-package deepboof.impl.backward.standard;
+package deepboof.backward;
 
 import deepboof.DFunction;
 import deepboof.DeepBoofConstants;
 import deepboof.DeepUnitTest;
-import deepboof.backward.DSpatialPadding2D;
-import deepboof.backward.DSpatialPadding2D_F64;
 import deepboof.forward.ConfigPadding;
 import deepboof.forward.ConfigSpatial;
+import deepboof.impl.backward.standard.DConstantPadding2D_F64;
 import deepboof.misc.TensorFactory_F64;
 import deepboof.misc.TensorOps;
 import deepboof.misc.TensorOps_F64;

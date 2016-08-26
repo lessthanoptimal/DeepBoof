@@ -18,16 +18,17 @@
 
 package deepboof.impl.backward.standard;
 
-import org.junit.Test;
-
-import static org.junit.Assert.fail;
+import deepboof.backward.ChecksForward_DFunctionBatchNorm_F64;
+import deepboof.backward.DFunctionBatchNorm;
+import deepboof.tensors.Tensor_F64;
 
 /**
  * @author Peter Abeles
  */
-public class TestForward_DFunctionBatchNorm_F64 {
-    @Test
-    public void stuff() {
-        fail("implement");
+public class TestForward_DFunctionBatchNorm_F64 extends ChecksForward_DFunctionBatchNorm_F64 {
+
+    @Override
+    public DFunctionBatchNorm<Tensor_F64> createForwards(boolean gammaBeta) {
+        return new DFunctionBatchNorm_F64(gammaBeta);
     }
 }

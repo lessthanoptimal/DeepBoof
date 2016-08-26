@@ -42,6 +42,12 @@ public class DFunctionBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements
     // storage for the normalized input  (e.g. stdev = 1, mean = 1)
     protected Tensor_F64 tensorXhat = new Tensor_F64();
 
+    // storage for gradient of variance and mean
+    protected Tensor_F64 tensorDVar = new Tensor_F64();
+    protected Tensor_F64 tensorDMean = new Tensor_F64();
+    // temporary storage
+    protected Tensor_F64 tensorTmp = new Tensor_F64();
+
     // Internal storage for gamma and beta parameters
     protected Tensor_F64 params = new Tensor_F64(0);
     protected double EPS = DeepBoofConstants.TEST_TOL_F64*0.1;
@@ -54,6 +60,9 @@ public class DFunctionBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements
     public void _initialize() {
         tensorMean.reshape( shapeInput );
         tensorStd.reshape( shapeInput );
+        tensorDVar.reshape( shapeInput );
+        tensorDMean.reshape( shapeInput );
+        tensorTmp.reshape( shapeInput );
 
         this.shapeOutput = shapeInput.clone();
 
@@ -161,6 +170,55 @@ public class DFunctionBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements
 
     @Override
     protected void _backwards(Tensor_F64 input, Tensor_F64 dout, Tensor_F64 gradientInput, List<Tensor_F64> gradientParameters) {
+        tensorDMean.zero();
+        tensorDVar.zero();
+        gradientInput.zero();
+        tensorTmp.zero();
+
+
+        // length of the tensor outside of the batch norm
+        int D = TensorOps.outerLength(input.shape,1);
+
+        // compute the variance partial
+        // @l/@var = sum( @l/@x[i] * (x[i] - x_mean) *(-1/2)*(var + EPS)^(3/2)
+        int indexIn = input.startIndex;
+        int indexDOut = dout.startIndex;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for( int indexMV = 0; indexMV < D; indexMV++ ) {
+                double x_m_mean = input.d[indexIn++] - tensorMean.d[indexMV];
+                double sigmaPow3 = tensorStd.d[indexMV];
+                sigmaPow3 = sigmaPow3*sigmaPow3*sigmaPow3;
+                tensorDVar.d[indexMV] += dout.d[indexDOut++]*x_m_mean*(-0.5)*sigmaPow3;
+            }
+        }
+
+        // compute the mean partial
+        // @l/@mean = (sum( @l/@x[i] * (-1/sqrt(var + EPS)) ) - @l/@var * (2/D) * sum( (x[i] - mean) )
+
+        indexIn = input.startIndex;
+        indexDOut = dout.startIndex;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for( int indexMV = 0; indexMV < D; indexMV++ ) {
+                // x[i] - mean
+                tensorTmp.d[indexMV] += input.d[indexIn++] - tensorMean.d[indexMV];
+
+                // @l/@x[i] * (-1/sqrt(var + EPS))
+                tensorDVar.d[indexMV] -= dout.d[indexDOut++]/tensorStd.d[indexMV];
+            }
+        }
+
+        for( int indexMV = 0; indexMV < D; indexMV++ ) {
+            tensorDVar.d[indexMV] -= 2.0*tensorDVar.d[indexMV]*tensorTmp.d[indexMV]/D;
+        }
+
+        // compute partial of the input x
+        int indexDIn = gradientInput.startIndex;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for (int indexMV = 0; indexMV < D; indexMV++) {
+
+            }
+        }
+
 
     }
 

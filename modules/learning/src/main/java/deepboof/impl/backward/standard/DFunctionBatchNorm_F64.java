@@ -46,7 +46,6 @@ public class DFunctionBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements
     protected Tensor_F64 tensorDVar = new Tensor_F64();
     protected Tensor_F64 tensorDMean = new Tensor_F64();
     protected Tensor_F64 tensorDXhat = new Tensor_F64();
-    protected Tensor_F64 tensorDX = new Tensor_F64();
     protected Tensor_F64 tensorDParam = new Tensor_F64();
 
     // x[i] - mean(x)
@@ -56,9 +55,11 @@ public class DFunctionBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements
     protected Tensor_F64 tensorTmp = new Tensor_F64();
 
     // number of elements in input tensor (excluding mini-batch)
-    int D;
+    // NOTE: In the paper this variable is 'm'
+    private int D;
 
     // Internal storage for gamma and beta parameters.  Stored interleaved gamma then beta.  1 for each input variable
+    // params = [ gamma[0], beta[0], gamma[1], beta[1],  ... , gamma[D], beta[D]]
     protected Tensor_F64 params = new Tensor_F64(0);
     protected double EPS = DeepBoofConstants.TEST_TOL_F64*0.1;
 
@@ -102,12 +103,11 @@ public class DFunctionBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements
 
         tensorDiffX.reshape( input.shape );
         tensorDXhat.reshape( input.shape );
-        tensorDX.reshape( input.shape );
 
         if( requiresGammaBeta ) {
             tensorXhat.reshape( input.shape );
             computeStatisticsAndNormalize(input,tensorXhat);
-            applyGammaBeta(input, output);
+            applyGammaBeta(output);
         } else {
             // is gamma and beta is off then the output is the normalized x_hat
             computeStatisticsAndNormalize(input,output);
@@ -117,7 +117,7 @@ public class DFunctionBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements
     /**
      * Apply gamma and beta to normalized input x_hat
      */
-    private void applyGammaBeta(Tensor_F64 input, Tensor_F64 output) {
+    private void applyGammaBeta(Tensor_F64 output) {
         int indexOut = output.startIndex;
         int indexXHat = 0;
         int end = params.length();
@@ -189,38 +189,92 @@ public class DFunctionBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements
 
     @Override
     protected void _backwards(Tensor_F64 input, Tensor_F64 dout, Tensor_F64 gradientInput, List<Tensor_F64> gradientParameters) {
-        tensorDMean.zero();
-        tensorDVar.zero();
-        gradientInput.zero();
-        tensorTmp.zero();
 
-        // length of the tensor outside of the batch norm
-        int D = TensorOps.outerLength(input.shape,1);
+        // NOTE: @l/@y = dout
 
-        // compute partial to x_hat
-        // @l/@x_hat[i] = @l/@y[i] * gamma
+        Tensor_F64 tensorDXhat;
+
+        if( requiresGammaBeta ) {
+            partialXHat(dout);
+            tensorDXhat = this.tensorDXhat;
+        } else {
+            // if gamma and beta is not required then gamma effectively = 1 and Dxhat = dout
+            tensorDXhat = dout;
+        }
+
+        partialVariance(tensorDXhat);
+        partialMean(tensorDXhat);
+        partialX(gradientInput, tensorDXhat);
+
+        if( requiresGammaBeta ) {
+            partialParameters(dout);
+        }
+    }
+
+    /**
+     * compute partial of gamma and Beta
+     *
+     * <pre> @l/@gamma = sum( @l/y[i]  * x_hat[i] ) </pre>
+     * <pre> @l/@Beta = sum( @l/y[i] )              </pre>
+     */
+    private void partialParameters(Tensor_F64 dout) {
+        tensorDParam.zero();
+        int indexDOut = dout.startIndex;
+        int indexXHat = 0;
+        int indexDParam = 0;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for (int indexMV = 0; indexMV < D; indexMV++, indexXHat++, indexDOut++) {
+                double d = dout.d[indexDOut];
+                tensorDParam.d[indexDParam++] += d*tensorXhat.d[indexXHat];
+                tensorDParam.d[indexDParam++] += d;
+            }
+        }
+    }
+
+    /**
+     * compute partial to x_hat
+     *
+     * <pre> @l/@x_hat[i] = @l/@y[i] * gamma  </pre>
+     */
+    private void partialXHat(Tensor_F64 dout) {
         int indexDOut = dout.startIndex;
         int indexXHat = 0;
         for (int stack = 0; stack < miniBatchSize; stack++) {
             for( int indexMV = 0; indexMV < D; indexMV++ ) {
+                // see encoding of params
                 tensorDXhat.d[indexXHat++] = dout.d[indexDOut++]*params.d[indexMV*2];
             }
-        } // TODO make this a parameter that's passed in.  No need to compute if gamma is always 1
+        }
+    }
 
-        // compute the variance partial
-        // @l/@var = sum( @l/@x_hat[i] * (x[i] - x_mean) *(-1/2)*(var + EPS)^(3/2)
-        indexXHat = 0;
+    /**
+     * compute partial of the input x
+     *
+     * <pre> @l/@x[i] = @l/@x_hat[i] / sqrt(sigma^2 + eps) + @l/@var * 2*(x[i]-mean)/D + @l/@mean * 1/D </pre>
+     */
+    private void partialX( Tensor_F64 tensorDX , Tensor_F64 tensorDXhat ) {
+        int indexXHat = 0;
+        int indexX = tensorDX.startIndex;
         for (int stack = 0; stack < miniBatchSize; stack++) {
-            for( int indexMV = 0; indexMV < D; indexMV++, indexXHat++ ) {
-                double x_m_mean = tensorDiffX.d[indexXHat];
-                double sigmaPow3 = tensorStd.d[indexMV];
-                sigmaPow3 = sigmaPow3*sigmaPow3*sigmaPow3;
-                tensorDVar.d[indexMV] += tensorDXhat.d[indexXHat]*x_m_mean*(-0.5)*sigmaPow3;
+            for (int indexMV = 0; indexMV < D; indexMV++, indexXHat++, indexX++ ) {
+                double val = tensorDXhat.d[indexXHat] / tensorStd.d[indexMV];
+                val += tensorDVar.d[indexMV]*2*tensorDiffX.d[indexXHat]/D + tensorDMean.d[indexMV]/D;
+
+                tensorDX.d[indexX] = val;
             }
         }
+    }
 
-        // compute the mean partial
-        // @l/@mean = (sum( @l/@x_hat[i] * (-1/sqrt(var + EPS)) ) - @l/@var * (2/D) * sum( x[i] - mean )
+    /**
+     * compute the mean partial
+     *
+     * <pre> @l/@mean = (sum( @l/@x_hat[i] * (-1/sqrt(var + EPS)) ) - @l/@var * (2/D) * sum( x[i] - mean )</pre>
+     */
+    private void partialMean( Tensor_F64 tensorDXhat  ) {
+        tensorDMean.zero();
+        tensorTmp.zero();
+
+        int indexXHat;
         indexXHat = 0;
         for (int stack = 0; stack < miniBatchSize; stack++) {
             for( int indexMV = 0; indexMV < D; indexMV++, indexXHat++ ) {
@@ -234,31 +288,24 @@ public class DFunctionBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements
         for( int indexMV = 0; indexMV < D; indexMV++ ) {
             tensorDMean.d[indexMV] -= 2.0*tensorDVar.d[indexMV]*tensorTmp.d[indexMV]/D;
         }
+    }
 
-        // compute partial of the input x
-        // @l/@x[i] = @l/@x_hat[i] / sqrt(sigma^2 + eps) + @l/@var * 2*(x[i]-mean)/D + @l/@mean * 1/D
+    /**
+     * compute the variance partial
+     *
+     * <pre> @l/@var = sum( @l/@x_hat[i] * (x[i] - x_mean) *(-1/2)*(var + EPS)^(3/2) </pre>
+     */
+    private void partialVariance( Tensor_F64 tensorDXhat ) {
+        tensorDVar.zero();
+
+        int indexXHat;
         indexXHat = 0;
         for (int stack = 0; stack < miniBatchSize; stack++) {
-            for (int indexMV = 0; indexMV < D; indexMV++, indexXHat++) {
-                double val = tensorDXhat.d[indexXHat] / tensorStd.d[indexMV];
-                val += tensorDVar.d[indexMV]*2*tensorDiffX.d[indexXHat]/D + tensorDMean.d[indexMV]/D;
-
-                tensorDX.d[indexXHat] = val;
-            }
-        }
-
-        // compute partial of gamma and Beta
-        // @l/@gamma = sum( @l/y[i]  * x_hat[i] )
-        // @l/@Beta = sum( @l/y[i] )
-        tensorDParam.zero();
-        indexDOut = dout.startIndex;
-        indexXHat = 0;
-        int indexDParam = 0;
-        for (int stack = 0; stack < miniBatchSize; stack++) {
-            for (int indexMV = 0; indexMV < D; indexMV++, indexXHat++, indexDOut++) {
-                double d = dout.d[indexDOut];
-                tensorDParam.d[indexDParam++] += d*tensorXhat.d[indexXHat];
-                tensorDParam.d[indexDParam++] += d;
+            for( int indexMV = 0; indexMV < D; indexMV++, indexXHat++ ) {
+                double x_m_mean = tensorDiffX.d[indexXHat];
+                double sigmaPow3 = tensorStd.d[indexMV];
+                sigmaPow3 = sigmaPow3*sigmaPow3*sigmaPow3;
+                tensorDVar.d[indexMV] += tensorDXhat.d[indexXHat]*x_m_mean*(-0.5)*sigmaPow3;
             }
         }
     }

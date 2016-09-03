@@ -31,7 +31,12 @@ import java.util.List;
  * implementation those statistics are known already and not recomputed.</p>
  *
  * <p>The above described change in behavior also changes how parameters are specified.  mean and variance
- * are no longer input parameters but are computed dynamically.</p>
+ * are no longer input parameters but are computed dynamically in the forwards pass.</p>
+ *
+ * NOTES:
+ * <ul>
+ *     <li>Variance is computed the unbiased formulation, i.e. divide by N-1 instead of N</li>
+ * </ul>
  *
  * @author Peter Abeles
  */

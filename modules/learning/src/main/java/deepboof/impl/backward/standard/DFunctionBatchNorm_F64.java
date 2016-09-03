@@ -26,8 +26,8 @@ import deepboof.tensors.Tensor_F64;
 import java.util.List;
 
 /**
- * Implementation of {@link DFunctionBatchNorm} for {@link Tensor_F64}.  In the forward pass BLAH is cached
- * for use in the backwards pass.
+ * Implementation of {@link DFunctionBatchNorm} for {@link Tensor_F64}.  Intermediate variables are cached in the
+ * forward pass.
  *
  * @author Peter Abeles
  */

@@ -92,6 +92,13 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 					List<T> foundWD = createParameters(alg, inputTensor);
 					alg.backwards(inputTensor,dout,foundXD,foundWD);
 
+//					System.out.println("   sub "+sub+"  "+testCase.inputShape.length);
+//					for (int i = 0; i < expectedXD.length(); i++) {
+//						double e = ((Tensor_F64)expectedXD).d[i];
+//						double f = ((Tensor_F64)foundXD).d[i];
+//						System.out.printf("%6.2e   %6.2e\n",e,f);
+//					}
+
 					// compare results
 					DeepUnitTest.assertEquals(expectedXD,foundXD, tolerance );
 					for (int i = 0; i < expectedWD.size(); i++) {

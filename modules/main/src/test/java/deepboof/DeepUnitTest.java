@@ -52,7 +52,7 @@ public class DeepUnitTest {
 		int N = expected.length();
 
 		for (int i = 0; i < N; i++) {
-			org.junit.Assert.assertEquals(indexE+" "+indexF,expected.d[indexE++], found.d[indexF++], tol);
+			org.junit.Assert.assertEquals("i = "+i+" indexes "+indexE+" "+indexF,expected.d[indexE++], found.d[indexF++], tol);
 		}
 	}
 

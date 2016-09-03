@@ -51,7 +51,7 @@ public class TestBackwards_DFunctionBatchNorm_F64  extends ChecksDerivative<Tens
 
         for (int i = 0; i < p.d.length; i += 2) {
             p.d[i] = random.nextDouble()*5+0.5;
-            p.d[i+1] = random.nextDouble()*2+0.5;
+            p.d[i+1] = (random.nextDouble()-0.5)*3;
         }
 
         return Arrays.asList(p);

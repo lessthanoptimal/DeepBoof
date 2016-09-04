@@ -1,7 +1,11 @@
 - Backwards Functions
-  * batch norm
-  * spatial batch norm
   * Convolution 2D
+  * Drop Out
+
+- Optimization
+  * Momentum
+  * Nesterov Momentum
+  * Adam
 
 - Train a sequential network
 - Train and Run LSTM

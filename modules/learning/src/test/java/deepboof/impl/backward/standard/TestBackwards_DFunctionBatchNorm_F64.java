@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * @author Peter Abeles
  */
-public class TestBackwards_DFunctionBatchNorm_F64  extends ChecksDerivative<Tensor_F64> {
+public class TestBackwards_DFunctionBatchNorm_F64 extends ChecksDerivative<Tensor_F64> {
     private boolean gammaBeta;
     public TestBackwards_DFunctionBatchNorm_F64() {
         numberOfConfigurations = 2;

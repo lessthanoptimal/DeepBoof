@@ -39,7 +39,7 @@ public class TestBackwards_DSpatialBatchNorm_F64 extends ChecksDerivative<Tensor
     @Override
     public DFunction<Tensor_F64> createBackwards(int type) {
         gammaBeta = type == 0;
-        return null;//new DSpatialBatchNorm_F64(gammaBeta);
+        return new DSpatialBatchNorm_F64(gammaBeta);
     }
 
     @Override
@@ -47,11 +47,11 @@ public class TestBackwards_DSpatialBatchNorm_F64 extends ChecksDerivative<Tensor
         if( !gammaBeta )
             return new ArrayList<>();
 
-        Tensor_F64 p = new Tensor_F64( TensorOps.WI(TensorOps.TH(input.shape),2) );
+        Tensor_F64 p = new Tensor_F64( TensorOps.WI(input.length(1),2) );
 
         for (int i = 0; i < p.d.length; i += 2) {
-            p.d[i] = random.nextDouble()*5+0.5;
-            p.d[i] = random.nextDouble()*2+0.5;
+            p.d[i] = random.nextDouble()*5+0.5;   // gamma
+            p.d[i] = (random.nextDouble()-0.5)*4; // beta
         }
 
         return Arrays.asList(p);

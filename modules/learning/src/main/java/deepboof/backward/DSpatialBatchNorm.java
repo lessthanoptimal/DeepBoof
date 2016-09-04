@@ -23,7 +23,10 @@ import deepboof.Tensor;
 import deepboof.forward.SpatialBatchNorm;
 
 /**
- * <p>Implementation of {@link SpatialBatchNorm Spatial Batch Normalization} for training networks.</p>
+ * <p>Interface of {@link SpatialBatchNorm Spatial Batch Normalization} for training networks.  Spatial batch norm
+ * can be made to be functionally equivalent to regular batch norm by simply reordering each band so that all
+ * the pixels inside are treated as one variable.  See {@link DFunctionBatchNorm} for additional details on
+ * training method.</p>
  *
  * @author Peter Abeles
  */

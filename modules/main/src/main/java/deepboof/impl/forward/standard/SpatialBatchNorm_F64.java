@@ -81,7 +81,6 @@ public class SpatialBatchNorm_F64 extends FunctionBatchNorm_F64 implements Spati
 
 					int end = indexIn + D;
 					while (indexIn < end) {
-
 						output.d[indexOut++] = (input.d[indexIn++] - mean) * inv_stdev_eps;
 					}
 				}

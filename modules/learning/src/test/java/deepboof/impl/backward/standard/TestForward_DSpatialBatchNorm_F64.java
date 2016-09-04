@@ -30,4 +30,20 @@ public class TestForward_DSpatialBatchNorm_F64 {
     public void stuff() {
         fail("implement");
     }
+
+    /**
+     * Manually checks the structure to make sure it's correct
+     */
+    @Test
+    public void spatialToFunction_structural() {
+        fail("implement");
+    }
+
+    /**
+     * Checks to see if these two functions can convert the format of a matrix back and forth
+     */
+    @Test
+    public void spatialToFunction_and_functionToSpatial() {
+        fail("implement");
+    }
 }

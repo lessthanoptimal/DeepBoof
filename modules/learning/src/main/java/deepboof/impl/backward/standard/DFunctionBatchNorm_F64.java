@@ -18,9 +18,7 @@
 
 package deepboof.impl.backward.standard;
 
-import deepboof.DeepBoofConstants;
 import deepboof.backward.DFunctionBatchNorm;
-import deepboof.misc.TensorOps;
 import deepboof.tensors.Tensor_F64;
 
 import java.util.List;
@@ -31,66 +29,16 @@ import java.util.List;
  *
  * @author Peter Abeles
  */
-public class DFunctionBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements DFunctionBatchNorm<Tensor_F64>
+public class DFunctionBatchNorm_F64 extends BaseDBatchNorm_F64
+        implements DFunctionBatchNorm<Tensor_F64>
 {
-    // If gamma and beta are used as parameters
-    protected boolean requiresGammaBeta;
-
-    // storage for mean and standard deviation tensor
-    protected Tensor_F64 tensorMean = new Tensor_F64();
-    protected Tensor_F64 tensorStd = new Tensor_F64();  // really is sqrt( stdev^2 + eps) ~= stdev
-    // storage for the normalized input  (e.g. stdev = 1, mean = 1)
-    protected Tensor_F64 tensorXhat = new Tensor_F64();
-
-    // storage for gradient of variance, mean, and others
-    protected Tensor_F64 tensorDVar = new Tensor_F64();
-    protected Tensor_F64 tensorDMean = new Tensor_F64();
-    protected Tensor_F64 tensorDXhat = new Tensor_F64();
-
-    // x[i] - mean(x)
-    protected Tensor_F64 tensorDiffX = new Tensor_F64();
-
-    // temporary storage
-    protected Tensor_F64 tensorTmp = new Tensor_F64();
-
-    // number of elements in input tensor (excluding mini-batch)
-    private int D;
-
-    // Internal storage for gamma and beta parameters.  Stored interleaved gamma then beta.  1 for each input variable
-    // params = [ gamma[0], beta[0], gamma[1], beta[1],  ... , gamma[D], beta[D]]
-    protected Tensor_F64 params = new Tensor_F64(0);
-    protected double EPS = DeepBoofConstants.TEST_TOL_F64*0.1;
-
     public DFunctionBatchNorm_F64(boolean requiresGammaBeta) {
-        this.requiresGammaBeta = requiresGammaBeta;
+        super(requiresGammaBeta);
     }
 
     @Override
-    public void _initialize() {
-        tensorMean.reshape( shapeInput );
-        tensorStd.reshape( shapeInput );
-        tensorDVar.reshape( shapeInput );
-        tensorDMean.reshape( shapeInput );
-        tensorTmp.reshape( shapeInput );
-
-        this.shapeOutput = shapeInput.clone();
-
-        if( requiresGammaBeta ) {
-            int shapeParam[] = TensorOps.WI(shapeInput, 2);
-            this.shapeParameters.add(shapeParam);
-            params.reshape(shapeParam);
-        }
-
-        D = TensorOps.tensorLength(shapeInput);
-    }
-
-    @Override
-    public void _setParameters(List<Tensor_F64> parameters) {
-        if( requiresGammaBeta ) {
-            params.setTo(parameters.get(0));
-        } else if( parameters.size() != 0 ){
-            throw new IllegalArgumentException("There are no parameters since gamma and beta have been turned off");
-        }
+    protected int[] createShapeVariables(int[] shapeInput) {
+        return shapeInput;
     }
 
     @Override
@@ -303,55 +251,5 @@ public class DFunctionBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements
             tensorDVar.d[indexMV] /= (-2.0*sigmaPow3);
         }
 
-    }
-
-    @Override
-    public double getEPS() {
-        return EPS;
-    }
-
-    @Override
-    public void setEPS(double EPS) {
-        this.EPS = EPS;
-    }
-
-    @Override
-    public boolean hasGammaBeta() {
-        return requiresGammaBeta;
-    }
-
-    @Override
-    public Class<Tensor_F64> getTensorType() {
-        return Tensor_F64.class;
-    }
-
-    @Override
-    public Tensor_F64 getMean( Tensor_F64 output ) {
-        if( output == null )
-            output = tensorMean.createLike();
-
-        output.setTo(tensorMean);
-
-        return output;
-    }
-
-    @Override
-    public Tensor_F64 getVariance( Tensor_F64 output ) {
-        if( output == null )
-            output = tensorStd.createLike();
-
-        output.reshape(tensorStd.getShape());
-
-        int indexOut = output.startIndex;
-        int indexStd = 0;
-
-        int length = tensorStd.length();
-
-        for (int i = 0; i < length; i++) {
-            double d = tensorStd.d[indexStd++];
-            output.d[indexOut++] = d*d - EPS;
-        }
-
-        return output;
     }
 }

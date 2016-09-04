@@ -18,32 +18,17 @@
 
 package deepboof.impl.backward.standard;
 
-import org.junit.Test;
-
-import static org.junit.Assert.fail;
+import deepboof.backward.ChecksForward_DSpatialBatchNorm_F64;
+import deepboof.backward.DSpatialBatchNorm;
+import deepboof.tensors.Tensor_F64;
 
 /**
  * @author Peter Abeles
  */
-public class TestForward_DSpatialBatchNorm_F64 {
-    @Test
-    public void stuff() {
-        fail("implement");
-    }
+public class TestForward_DSpatialBatchNorm_F64 extends ChecksForward_DSpatialBatchNorm_F64 {
 
-    /**
-     * Manually checks the structure to make sure it's correct
-     */
-    @Test
-    public void spatialToFunction_structural() {
-        fail("implement");
-    }
-
-    /**
-     * Checks to see if these two functions can convert the format of a matrix back and forth
-     */
-    @Test
-    public void spatialToFunction_and_functionToSpatial() {
-        fail("implement");
+    @Override
+    public DSpatialBatchNorm<Tensor_F64> createForwards(boolean gammaBeta) {
+        return new DSpatialBatchNorm_F64( gammaBeta );
     }
 }

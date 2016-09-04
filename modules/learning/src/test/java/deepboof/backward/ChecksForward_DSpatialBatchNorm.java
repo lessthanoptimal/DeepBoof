@@ -33,26 +33,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Special checks for learning implementations of batch norm.  The behavior is very different from forwards
+ * Special checks for learning implementations of spatial batch norm.  The behavior is very different from forwards
  * only since the statics are computed in the forwards pass
  *
  * @author Peter Abeles
  */
-public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>> extends ChecksForward<T> {
+public abstract class ChecksForward_DSpatialBatchNorm<T extends Tensor<T>> extends ChecksForward<T> {
 
     protected boolean gammaBeta;
 
     double tolerance;
 
-    public ChecksForward_DFunctionBatchNorm( double tolerance ) {
+    public ChecksForward_DSpatialBatchNorm(double tolerance ) {
         super(2);
         this.tolerance = tolerance;
     }
 
-    public abstract DFunctionBatchNorm<T> createForwards( boolean gammaBeta );
+    public abstract DSpatialBatchNorm<T> createForwards( boolean gammaBeta );
 
     @Override
-    public DFunctionBatchNorm<T> createForwards(int which) {
+    public DSpatialBatchNorm<T> createForwards(int which) {
         gammaBeta = which == 0;
         return createForwards(gammaBeta);
     }
@@ -63,12 +63,10 @@ public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>> exte
             assertEquals(1, parameters.size());
             int[] paramShape = parameters.get(0);
 
-            assertEquals(input.length + 1, paramShape.length);
+            assertEquals(2, paramShape.length);
 
-            for (int i = 0; i < input.length; i++) {
-                assertEquals(input[i], paramShape[i]);
-            }
-            assertEquals(2, paramShape[paramShape.length - 1]);
+            assertEquals(input[0], paramShape[0]);
+            assertEquals(2, paramShape[1]);
         } else {
             assertEquals(0,parameters.size());
         }
@@ -84,7 +82,7 @@ public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>> exte
 
         List<Case> cases = new ArrayList<Case>();
 
-        cases.add( new Case(10));
+        cases.add( new Case(1,1,1));
         cases.add( new Case(3,4,5));
 
         // do a bunch of mini-batches so that the statistics are meaningful
@@ -101,7 +99,7 @@ public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>> exte
     @Test
     public void checkOutputStatistics() {
         for( int config = 0; config < numberOfConfigurations; config++ ) {
-            DFunctionBatchNorm<T> alg = createForwards(config);
+            DSpatialBatchNorm<T> alg = createForwards(config);
             for (Case test : createTestInputs()) {
                 T input = tensorFactory.randomM(random,false,test.minibatch,test.inputShape);
                 T output = tensorFactory.randomM(random,false,test.minibatch,test.inputShape);
@@ -109,7 +107,7 @@ public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>> exte
                 alg.initialize(test.inputShape);
                 if( alg.hasGammaBeta() ) {
                     // declare the parameters such that they will not shift the output
-                    T params = createParameter(1,0,test.inputShape);
+                    T params = createParameter(1,0,test.inputShape[0]);
                     alg.setParameters(Arrays.asList(params));
                 }
                 alg.forward(input,output);
@@ -126,7 +124,8 @@ public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>> exte
                 double foundVarAve = TensorOps.elementSum(foundVariance)/foundVariance.length();
 
                 // standard deviation of the mean
-                double sampleMeanStd = 0.333/Math.sqrt(test.minibatch);
+                int N = test.minibatch*test.inputShape[1]*test.inputShape[2];
+                double sampleMeanStd = 0.333/Math.sqrt(N);
 
                 // the mean should be within this tolerance almost all of the time
                 assertEquals(0, foundMeanAve, sampleMeanStd*3);
@@ -140,16 +139,17 @@ public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>> exte
      */
     @Test
     public void checkGammaBeta() {
-        DFunctionBatchNorm<T> alg = createForwards(true);
+        DSpatialBatchNorm<T> alg = createForwards(true);
 
         assertTrue( alg.hasGammaBeta() );
 
-        int shape[] = new int[]{20};
+        int numBands = 3;
+        int shape[] = new int[]{numBands,4,5};
 
         T input = tensorFactory.randomM(random,false,30,shape);
         T output = tensorFactory.randomM(random,false,30,shape);
 
-        T params = createParameter(1.5,20,shape);
+        T params = createParameter(1.5,20,numBands);
         alg.initialize(shape);
         alg.setParameters(Arrays.asList(params));
         alg.forward(input,output);
@@ -157,7 +157,7 @@ public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>> exte
         verifyStd(output, 20, 1.5,  DeepBoofConstants.TEST_TOL_B_F64);
     }
 
-    protected abstract T createParameter( double gamma , double beta , int shape[] );
+    protected abstract T createParameter( double gamma , double beta , int numBands );
 
     protected abstract void verifyMean( T tensor , double expected , double tol );
 

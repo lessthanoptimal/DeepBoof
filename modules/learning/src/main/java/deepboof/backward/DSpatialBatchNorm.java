@@ -18,9 +18,10 @@
 
 package deepboof.backward;
 
-import deepboof.DFunction;
 import deepboof.Tensor;
 import deepboof.forward.SpatialBatchNorm;
+
+import java.util.List;
 
 /**
  * <p>Interface of {@link SpatialBatchNorm Spatial Batch Normalization} for training networks.  Spatial batch norm
@@ -30,6 +31,39 @@ import deepboof.forward.SpatialBatchNorm;
  *
  * @author Peter Abeles
  */
-public interface DSpatialBatchNorm<T extends Tensor<T>> extends SpatialBatchNorm<T>, DFunction<T> {
+public interface DSpatialBatchNorm<T extends Tensor<T>>
+        extends DBatchNorm<T> {
 
+    /**
+     * <p>Performs batch normalization on spatial data.</p>
+     *
+     * <p>There is only a parameter tensor if {@link #hasGammaBeta()} returns true.  If true then
+     * gamma, and beta are encoded in a single tensor in an interleaved fashion (gamma, beta).</p>
+     * <pre>
+     * Summary Table
+     * -------------------------------------------------
+     * Input   shape = (N, C, H,  W)
+     * Output  shape = (N, C, H,  W)
+     * Params  shape = (C, 2)
+     * -------------------------------------------------
+     * N   = Size of mini-batch
+     * C   = Number of channels in input image
+     * H   = Height of input image
+     * W   = With of input image
+     * </pre>
+     *
+     * @param input  Input tensor = (N,C,H,W)
+     * @param output Output tensor = (N,C,H,W). Modified.
+     */
+    @Override
+    void forward(T input, T output);
+
+    /**
+     * There are only parameters when gamma-beta is used.  See {@link #forward} for a description
+     * parameter encoding.
+     *
+     * @param parameters Single tensor with shape (C, 2). Not modified.
+     */
+    @Override
+    void setParameters(List<T> parameters);
 }

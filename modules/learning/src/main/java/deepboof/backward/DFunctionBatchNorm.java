@@ -18,7 +18,6 @@
 
 package deepboof.backward;
 
-import deepboof.DFunction;
 import deepboof.Tensor;
 import deepboof.forward.FunctionBatchNorm;
 
@@ -40,29 +39,27 @@ import java.util.List;
  *
  * @author Peter Abeles
  */
-public interface DFunctionBatchNorm<T extends Tensor<T>> extends FunctionBatchNorm<T>, DFunction<T> {
+public interface DFunctionBatchNorm<T extends Tensor<T>>
+        extends DBatchNorm<T> {
     /**
      * <p>Applies batch normalization to each variable in the input.</p>
      *
-     * <p>Either two or four variables are stored in the parameter tensor as interleaved variables.  If
-     * {@link #hasGammaBeta()} returns true then mean, variance, gamma, and beta are saved.  Otherwise just
-     * mean, and variance are saved. These are also the order in which variables are interleaved together.</p>
+     * <p>There is only a parameter tensor if {@link #hasGammaBeta()} returns true.  If true then
+     * gamma, and beta are encoded in a single tensor in an interleaved fashion (gamma, beta).</p>
      *
      * <pre>
      * Summary Table
      * -------------------------------------------------
      * Input   shape = (N, d[i], ... , d[k])
      * Output  shape = (N, d[i], ... , d[k])
-     * Params  shape = (d[i], ... , d[k], M)
+     * Params  shape = (d[i], ... , d[k], 2)
      * -------------------------------------------------
      * N    = Size of mini-batch
      * d[i] = length of a dimension
-     * M    = Number of parameters.  0 or 2 if gamma-beta is being used.
-     *       in order of: gamma, beta
      * </pre>
      *
-     * <p>NOTE: Interleaving is used instead of multiple tensors to improve memory locality, which reduces cache
-     * misses.</p>
+     * <p>NOTE: Interleaving is used in the parameters instead of multiple tensors to improve memory locality,
+     * which reduces cache misses.</p>
      *
      * @param input Input tensor.  Tensor with a shape of (N, d[i], ... , d[k]), where N is mini-batch size
      * @param output Output tensor. Same shape as input tensor Modified.
@@ -73,24 +70,8 @@ public interface DFunctionBatchNorm<T extends Tensor<T>> extends FunctionBatchNo
     /**
      * See {@link #forward} for a description of parameters.
      *
-     * @param parameters Variable tensor.  (d[i], ... , d[k], M), where M is 0 or 2. Not modified.
+     * @param parameters Variable tensor.  (d[i], ... , d[k], 2). Not modified.
      */
     @Override
     void setParameters(List<T> parameters );
-
-    /**
-     * Returns the most recently computed mean.
-     *
-     * @param output Storage for mean tensor. Is reshaped. If null a new instance will be decalred
-     *
-     */
-    T getMean( T output );
-
-    /**
-     * Returns the most recently computed variance.  This will be the actual variance not something that has been
-     * adjusted by adding EPS to it.
-     *
-     * @param output Storage for variance tensor. Is reshaped. If null a new instance will be decalred
-     */
-    T getVariance( T output );
 }

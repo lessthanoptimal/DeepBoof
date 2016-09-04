@@ -18,7 +18,6 @@
 
 package deepboof.impl.backward.standard;
 
-import deepboof.backward.DFunctionBatchNorm;
 import deepboof.backward.DSpatialBatchNorm;
 import deepboof.misc.TensorOps;
 import deepboof.tensors.Tensor_F64;
@@ -26,153 +25,252 @@ import deepboof.tensors.Tensor_F64;
 import java.util.List;
 
 /**
- * Implementation of {@link DSpatialBatchNorm}.  Inside it uses {@link DFunctionBatchNorm} by reordering the input
- * such that all the elements inside a single band is converted into a mini-batch then converts it back.
+ * Implementation of {@link DSpatialBatchNorm} for {@link Tensor_F64}.
  *
  * @author Peter Abeles
  */
-public class DSpatialBatchNorm_F64 extends BaseDFunction<Tensor_F64> implements DSpatialBatchNorm<Tensor_F64> {
-    DFunctionBatchNorm_F64 innerAlg;
-
-    Tensor_F64 flattenedIn = new Tensor_F64();
-    Tensor_F64 flattenedOut = new Tensor_F64();
-
-    public DSpatialBatchNorm_F64( boolean requiresGammaBeta ) {
-        innerAlg = new DFunctionBatchNorm_F64(requiresGammaBeta);
-    }
-
-
-    @Override
-    public void _initialize() {
-        if( shapeInput.length != 3 )
-            throw new IllegalArgumentException("Expected 3 DOF in a spatial shape (C,W,H)");
-        this.shapeOutput = shapeInput.clone();
-
-        // When flattenedIn each channel is treated as a variable
-        int flatShape[] = new int[]{shapeInput[0]};
-
-        if( innerAlg.hasGammaBeta() ) {
-            int shapeParam[] = new int[]{shapeInput[0], 2};
-            this.shapeParameters.add(shapeParam);
-        }
-
-        innerAlg.initialize(flatShape);
+public class DSpatialBatchNorm_F64 extends BaseDBatchNorm_F64
+        implements DSpatialBatchNorm<Tensor_F64>
+{
+    public DSpatialBatchNorm_F64(boolean requiresGammaBeta) {
+        super(requiresGammaBeta);
     }
 
     @Override
-    public void _setParameters(List<Tensor_F64> parameters) {
-        innerAlg.setParameters(parameters);
+    protected int[] createShapeVariables(int[] shapeInput) {
+        return new int[]{shapeInput[0]}; // one variable for each channel
     }
 
+    // TODO push into base class?
     @Override
     public void _forward(Tensor_F64 input, Tensor_F64 output) {
-        int C = input.length(1); // number of input channels
-        int numMiniBatches = input.length()/C; // after reshaping this is the number of mini batches it will have
+        if( input.length(0) <= 1 )
+            throw new IllegalArgumentException("There must be more than 1 minibatch");
 
-        // flatten the input spatial tensor
-        flattenedIn.reshape(numMiniBatches, C);
-        spatialToFunction(input, flattenedIn);
+        tensorDiffX.reshape( input.shape );
+        tensorXhat.reshape( input.shape );
 
-        // process it
-        flattenedOut.reshape(numMiniBatches, C);
-        innerAlg.forward(flattenedIn,flattenedOut);
+        computeStatisticsAndNormalize(input);
 
-        // turn it back into a spatial tensor
-        functionToSpatial(flattenedOut,output);
+        if( requiresGammaBeta ) {
+            applyGammaBeta(output);
+        } else {
+            // is gamma and beta are not adjustable then the output is the normalized x_hat
+            output.setTo(tensorXhat);
+        }
     }
 
+    /**
+     * Apply gamma and beta to normalized input x_hat
+     */
+    private void applyGammaBeta(Tensor_F64 output) {
+        int numBands = output.length(1);
+        int numPixels = TensorOps.outerLength(output.shape,2);
+
+        int indexOut = output.startIndex;
+        int indexXHat = 0;
+
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for (int band = 0; band < numBands; band++) {
+                double gamma = params.d[band*2];
+                double beta = params.d[band*2+1];
+
+                for (int pixel = 0; pixel < numPixels; pixel++) {
+                    output.d[indexOut++] = gamma*tensorXhat.d[indexXHat++] + beta;
+                }
+            }
+        }
+    }
+
+    /**
+     * Computes and stores mean, standard deviation, and x_hat the normalized input vector
+     */
+    private void computeStatisticsAndNormalize(Tensor_F64 input) {
+        tensorMean.zero();
+        tensorStd.zero();
+        tensorXhat.zero();
+
+        int numBands = input.length(1);
+        int numPixels = TensorOps.outerLength(input.shape,2);
+
+        double M = miniBatchSize*numPixels;
+        double M_var = M-1; // unbiased variance division, mean is computed with miniBatchSize
+
+        // compute the mean
+        int indexIn = input.startIndex;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for (int band = 0; band < numBands; band++) {
+                double sum = 0;
+                for (int pixel = 0; pixel < numPixels; pixel++) {
+                    sum += input.d[indexIn++];
+                }
+                tensorMean.d[band] += sum;
+            }
+        }
+        for (int band = 0; band < numBands; band++) {
+            tensorMean.d[band] /= M;
+        }
+
+        // compute the unbiased standard deviation with EPS for numerical reasons
+        indexIn = input.startIndex;
+        int indexDiffX = 0;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for (int band = 0; band < numBands; band++) {
+                double sum = 0;
+                double bandMean = tensorMean.d[band];
+                for (int pixel = 0; pixel < numPixels; pixel++, indexDiffX++ ) {
+                    double d = input.d[indexIn++] - bandMean;
+                    tensorDiffX.d[indexDiffX] = d;
+                    sum += d*d;
+                }
+                tensorStd.d[band] += sum;
+            }
+        }
+        for (int band = 0; band < numBands; band++) {
+            tensorStd.d[band] = Math.sqrt( tensorStd.d[band]/M_var + EPS);
+        }
+
+        // normalize so that mean is 1 and variance is 1
+        // x_hat = (x - mu)/std
+        indexDiffX = 0;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for (int band = 0; band < numBands; band++) {
+                double bandStd = tensorStd.d[band];
+
+                for (int pixel = 0; pixel < numPixels; pixel++, indexDiffX++ ) {
+                    tensorXhat.d[indexDiffX] = tensorDiffX.d[indexDiffX] / bandStd;
+                }
+            }
+        }
+    }
+
+    // TODO Update for spatial
     @Override
     protected void _backwards(Tensor_F64 input, Tensor_F64 dout, Tensor_F64 gradientInput, List<Tensor_F64> gradientParameters) {
-        int C = input.length(1); // number of input channels
-        int numMiniBatches = input.length()/C; // after reshaping this is the number of mini batches it will have
 
-        // flatten the input spatial tensor
-        flattenedIn.reshape(numMiniBatches, C);
-        spatialToFunction(input, flattenedIn);
+        // NOTE: @l/@y = dout
+        tensorDXhat.reshape( input.shape );
 
-        // process it
-        flattenedOut.reshape(numMiniBatches, C);
-//        innerAlg.backwards(flattenedIn,flat_dout,flat_grad, gradientParameters);
+        if( requiresGammaBeta ) {
+            partialXHat(dout);
+        } else {
+            // if gamma and beta is not required then gamma effectively = 1 and Dxhat = dout
+            tensorDXhat.setTo(dout);
+        }
 
-        // turn it back into a spatial tensor
-//        functionToSpatial(flattenedOut,output);
+        partialVariance();
+        partialMean();
+        partialX(gradientInput);
+
+        if( requiresGammaBeta ) {
+            partialParameters(gradientParameters.get(0),dout);
+        }
     }
 
     /**
-     * <p>Reorders planar to format expected by function batch norm.</p>
+     * compute partial of gamma and Beta
      *
-     * Example of an input with just 1 minibatch and two 3x3 planes, into an output with two variables
-     * and 9 mini-batches
-     * <pre>
-     * [ 012 , 345 ]     [ 012678234 ]
-     * [ 678 , 901 ]  -> [ 345901567 ]
-     * [ 234 , 567 ]
-     * </pre>
-     *
-     * @param inputSpatial Spatial tensor with 4 dimensions
-     * @param outputFunc Tensor with 2 dimensions.
+     * <pre> @l/@gamma = sum( @l/y[i]  * x_hat[i] ) </pre>
+     * <pre> @l/@Beta = sum( @l/y[i] )              </pre>
      */
-    public static void spatialToFunction( Tensor_F64 inputSpatial , Tensor_F64 outputFunc ) {
-        // number of mini-batches, channels, and pixels in input tensor
-        int miniBatchSize = inputSpatial.length(0);
-        int C = inputSpatial.length(1);
-        int D = TensorOps.outerLength(inputSpatial.shape,2);
-
-        // traverse through input tensor in row-major order while writing to output tensor out of order
-        for (int batch = 0; batch < miniBatchSize; batch++) {
-            int indexIn = inputSpatial.startIndex;
-            for( int channel = 0; channel < C; channel++ ) {
-
-                for (int pixel = 0; pixel < D; pixel++) {
-                    int outBatch = batch*D+pixel; // which mini-batch in the outpt is it working on now
-                    // each mini-batch is composed of C variables
-                    int indexOut = outBatch*C + channel; // tensor is declared internally and starts at index 0
-
-                    outputFunc.d[ indexOut ] = inputSpatial.d[ indexIn ];
-                }
+    private void partialParameters(Tensor_F64 tensorDParam , Tensor_F64 dout) {
+        tensorDParam.zero();
+        int indexDOut = dout.startIndex;
+        int indexXHat = 0;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            int indexDParam = 0;
+            for (int indexMV = 0; indexMV < D; indexMV++, indexXHat++, indexDOut++) {
+                double d = dout.d[indexDOut];
+                tensorDParam.d[indexDParam++] += d*tensorXhat.d[indexXHat];
+                tensorDParam.d[indexDParam++] += d;
             }
         }
     }
 
     /**
-     * Inverse of {@link #spatialToFunction(Tensor_F64, Tensor_F64)}
+     * compute partial to x_hat
+     *
+     * <pre> @l/@x_hat[i] = @l/@y[i] * gamma  </pre>
      */
-    public static void functionToSpatial( Tensor_F64 inputFunc , Tensor_F64 outputSpatial ) {
-        int miniBatchSize = outputSpatial.length(0);
-        int C = outputSpatial.length(1);
-        int D = TensorOps.outerLength(outputSpatial.shape,2);
-
-        for (int batch = 0; batch < miniBatchSize; batch++) {
-            int indexOut = outputSpatial.startIndex;
-            for( int channel = 0; channel < C; channel++ ) {
-
-                for (int pixel = 0; pixel < D; pixel++) {
-                    int inBatch = batch*D+pixel;
-                    int indexIn = inBatch*C + channel;
-
-                    outputSpatial.d[ indexOut ] = inputFunc.d[ indexIn ];
-                }
+    private void partialXHat(Tensor_F64 dout) {
+        int indexDOut = dout.startIndex;
+        int indexXHat = 0;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for( int indexMV = 0; indexMV < D; indexMV++ ) {
+                // see encoding of params
+                tensorDXhat.d[indexXHat++] = dout.d[indexDOut++]*params.d[indexMV*2];
             }
         }
     }
 
-    @Override
-    public Class<Tensor_F64> getTensorType() {
-        return innerAlg.getTensorType();
+    /**
+     * compute partial of the input x
+     *
+     * <pre> @l/@x[i] = @l/@x_hat[i] / sqrt(sigma^2 + eps) + @l/@var * 2*(x[i]-mean)/M + @l/@mean * 1/M </pre>
+     */
+    private void partialX( Tensor_F64 tensorDX ) {
+        double M_var = miniBatchSize-1;
+        int indexXHat = 0;
+        int indexX = tensorDX.startIndex;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for (int indexMV = 0; indexMV < D; indexMV++, indexXHat++, indexX++ ) {
+                double val = tensorDXhat.d[indexXHat] / tensorStd.d[indexMV];
+                val += tensorDVar.d[indexMV]*2*tensorDiffX.d[indexXHat]/M_var + tensorDMean.d[indexMV]/miniBatchSize;
+
+                tensorDX.d[indexX] = val;
+            }
+        }
     }
 
-    @Override
-    public boolean hasGammaBeta() {
-        return innerAlg.hasGammaBeta();
+    /**
+     * compute the mean partial
+     *
+     * <pre> @l/@mean = (sum( @l/@x_hat[i] * (-1/sqrt(var + EPS)) ) - @l/@var * (2/M) * sum( x[i] - mean )</pre>
+     */
+    private void partialMean() {
+        tensorDMean.zero();
+        tensorTmp.zero();
+
+        double M_var = miniBatchSize-1;
+
+        int indexXHat = 0;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for( int indexMV = 0; indexMV < D; indexMV++, indexXHat++ ) {
+                // sum( x[i] - mean )
+                tensorTmp.d[indexMV] += tensorDiffX.d[indexXHat];
+                // @l/@x[i] * (-1)
+                tensorDMean.d[indexMV] -= tensorDXhat.d[indexXHat];
+            }
+        }
+
+        for( int indexMV = 0; indexMV < D; indexMV++ ) {
+            tensorDMean.d[indexMV] /= tensorStd.d[indexMV];
+            tensorDMean.d[indexMV] -= 2.0*tensorDVar.d[indexMV]*tensorTmp.d[indexMV]/M_var;
+        }
     }
 
-    @Override
-    public double getEPS() {
-        return innerAlg.getEPS();
-    }
+    /**
+     * compute the variance partial
+     *
+     * <pre> @l/@var = sum( @l/@x_hat[i] * (x[i] - x_mean) *(-1/2)*(var + EPS)^(3/2) </pre>
+     */
+    private void partialVariance() {
+        tensorDVar.zero();
 
-    @Override
-    public void setEPS(double EPS) {
-        this.innerAlg.setEPS(EPS);
+        int indexXHat = 0;
+        for (int stack = 0; stack < miniBatchSize; stack++) {
+            for( int indexMV = 0; indexMV < D; indexMV++, indexXHat++ ) {
+                double x_m_mean = tensorDiffX.d[indexXHat];
+                tensorDVar.d[indexMV] += tensorDXhat.d[indexXHat]*x_m_mean;
+            }
+        }
+
+        for( int indexMV = 0; indexMV < D; indexMV++, indexXHat++ ) {
+            double sigmaPow3 = tensorStd.d[indexMV];
+            sigmaPow3 = sigmaPow3*sigmaPow3*sigmaPow3;
+
+            tensorDVar.d[indexMV] /= (-2.0*sigmaPow3);
+        }
+
     }
 }

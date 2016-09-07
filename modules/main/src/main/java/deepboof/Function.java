@@ -21,7 +21,12 @@ package deepboof;
 import java.util.List;
 
 /**
- * High level interface for functions in an Artificial Neural Network.
+ * <p>High level interface for functions in an Artificial Neural Network.  This interface only defines the
+ * the operations in the forwards pass.  When learning a network the gradient is typically needed and
+ * those additional operations can be found in {@link DFunction}, which extends this interface.</p>
+ *
+ * <p>Forwards only implementations potentially have a lower memory foot print, faster specialized
+ * implementations, more simplistic implementations.</p>
  *
  * @author Peter Abeles
  */

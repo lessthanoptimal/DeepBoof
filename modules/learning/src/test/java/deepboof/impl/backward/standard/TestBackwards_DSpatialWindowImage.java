@@ -68,7 +68,7 @@ public class TestBackwards_DSpatialWindowImage extends ChecksBackwards_DSpatialW
 			for (int channel = 0; channel < C; channel++) {
 				for (int y = 0; y < HH; y++) {
 					for (int x = 0; x < WW; x++) {
-						int index = dpadding.idx( y + inY + PY0, x + inX + PX0);
+						int index = dpadding.idx( channel, y + inY + PY0, x + inX + PX0);
 						dpadding.d[index] += input.get(batch, channel, y + inY, x + inX);
 					}
 				}
@@ -80,7 +80,7 @@ public class TestBackwards_DSpatialWindowImage extends ChecksBackwards_DSpatialW
 			for (int channel = 0; channel < C; channel++) {
 				for (int y = 0; y < HH; y++) {
 					for (int x = 0; x < WW; x++) {
-						int index = dpadding.idx(y + padY, x + padX);
+						int index = dpadding.idx(channel, y + padY, x + padX);
 						dpadding.d[index] += padded.get(batch, channel, y + padY, x + padX);
 					}
 				}

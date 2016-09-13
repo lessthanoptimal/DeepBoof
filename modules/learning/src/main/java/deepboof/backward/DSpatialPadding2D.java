@@ -22,21 +22,33 @@ import deepboof.Tensor;
 import deepboof.forward.SpatialPadding2D;
 
 /**
+ * Interface for computing the gradient of a padded spatial tensor.  Spatial tensors have the shape of (N, C, H,  W)
+ * where N is the number of mini-batches, C channels, H height and W width.
+ *
  * @author Peter Abeles
  */
 public interface DSpatialPadding2D<T extends Tensor<T>> extends SpatialPadding2D<T>
 {
 	/**
-	 * Compute the gradient of the input image from the gradient of the padded image for a specific mini-batch and
-	 * channel of the input tensor.
+	 * <p>Compute the gradient of the input image from the gradient of the padded image for a specific mini-batch and
+	 * channel of the input tensor.</p>
 	 *
-	 * NOTE: gradientInput refers to the input in the forwards pass.  In the backwards pass (this function) it will
-	 * be the output.
-	 *
-	 * @param gradientPadded (Input) Padded 2D image tensor for a specific channel.
-	 * @param batch (Output) Index of the mini-batch in the input tensor
-	 * @param channel (Output) Channel index in the input tensor
-	 * @param gradientInput (Output) Output 4D spatial tensor.
+	 * @param gradientPadded (Input) Gradient of padded image at specific mini-batch and channel.  (H,  W)
+	 * @param batch (Input) mini-batch.
+	 * @param channel (Input) Channel.
+	 * @param gradientInput (Output) Output 4D spatial tensor.  Only elements used to compute the channel are modified.
+	 *                      (N, C, H,  W)
 	 */
 	void backwardsChannel(T gradientPadded, int batch, int channel, T gradientInput);
+
+	/**
+	 * <p>Compute the gradient of the input image from the gradient of the padded image for a specific mini-batch and
+	 * channel of the input tensor.</p>
+	 *
+	 * @param gradientPadded (Input) Gradient of padded image at specific mini-batch.  (C, H,  W)
+	 * @param batch (Input) mini-batch.
+	 * @param gradientInput (Output) Output 4D spatial tensor.  Only elements used to compute the image are modified.
+	 *                      (N, C, H,  W)
+	 */
+	void backwardsImage(T gradientPadded, int batch, T gradientInput);
 }

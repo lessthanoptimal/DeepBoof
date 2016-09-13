@@ -18,7 +18,10 @@
 
 package deepboof.backward;
 
-import deepboof.*;
+import deepboof.Accuracy;
+import deepboof.DeepUnitTest;
+import deepboof.Function;
+import deepboof.Tensor;
 import deepboof.factory.FactoryBackwards;
 import deepboof.misc.TensorFactory;
 import org.junit.Before;
@@ -58,7 +61,7 @@ public abstract class CheckDerivativePadding<T extends Tensor<T>,P extends DSpat
 	 * If it's not a 2D tensor it should throw an exception
 	 */
 	@Test
-	public void sanityCheckPaddedShape() {
+	public void sanityCheckPaddedShape_channel() {
 		int inputShape[] = new int[]{3,4,10,12};
 
 		int padRow = alg.getPaddingRow0()+alg.getPaddingRow1();
@@ -70,6 +73,14 @@ public abstract class CheckDerivativePadding<T extends Tensor<T>,P extends DSpat
 		T dpadded = tensorFactory.random(random, false , paddedSpatial);
 		T foundDInput = tensorFactory.random(random, false , paddedSpatial);
 
+		sanityCheckPaddedShapeChannel(dpadded,foundDInput);
+		sanityCheckPaddedShapeChannel( tensorFactory.random(random, false,
+				inputShape[2]+padRow+1, inputShape[3]+padCol) ,foundDInput);
+		sanityCheckPaddedShapeChannel( tensorFactory.random(random, false,
+				inputShape[2]+padRow, inputShape[3]+padCol+1) ,foundDInput);
+	}
+
+	private void sanityCheckPaddedShapeChannel( T dpadded, T foundDInput ) {
 		try {
 			alg.backwardsChannel(dpadded, 0, 0, foundDInput);
 			fail("Exception should have been thrown");
@@ -77,10 +88,42 @@ public abstract class CheckDerivativePadding<T extends Tensor<T>,P extends DSpat
 	}
 
 	/**
-	 * Tests the {@link DFunction#backwards}
+	 * If it's not a 3D tensor it should throw an exception
 	 */
 	@Test
-	public void checkBackwardsRandomInput() {
+	public void sanityCheckPaddedShape_image() {
+		int inputShape[] = new int[]{3,4,10,12};
+
+		int padRow = alg.getPaddingRow0()+alg.getPaddingRow1();
+		int padCol = alg.getPaddingCol0()+alg.getPaddingCol1();
+
+		int paddedSpatial[] = new int[]{ inputShape[0],inputShape[1],inputShape[2]+padRow, inputShape[3]+padCol};
+
+
+		T dpadded = tensorFactory.random(random, false , paddedSpatial);
+		T foundDInput = tensorFactory.random(random, false , paddedSpatial);
+
+		checkFailPaddedShapeImage(dpadded,foundDInput);
+		checkFailPaddedShapeImage( tensorFactory.random(random, false,
+				inputShape[1],inputShape[2]+padRow+1, inputShape[3]+padCol) ,foundDInput);
+		checkFailPaddedShapeImage( tensorFactory.random(random, false,
+				inputShape[1],inputShape[2]+padRow, inputShape[3]+padCol+1) ,foundDInput);
+		checkFailPaddedShapeImage( tensorFactory.random(random, false,
+				inputShape[1]+1,inputShape[2]+padRow, inputShape[3]+padCol) ,foundDInput);
+	}
+
+	private void checkFailPaddedShapeImage( T dpadded, T foundDInput ) {
+		try {
+			alg.backwardsImage(dpadded, 0, foundDInput);
+			fail("Exception should have been thrown");
+		} catch( RuntimeException e) {}
+	}
+
+	/**
+	 * Tests the {@link DSpatialPadding2D#backwardsChannel(Tensor, int, int, Tensor)}
+	 */
+	@Test
+	public void checkBackwardsRandomInput_channel() {
 
 		int inputShape[] = new int[]{3,4,10,12};
 
@@ -120,6 +163,55 @@ public abstract class CheckDerivativePadding<T extends Tensor<T>,P extends DSpat
 
 					alg.backwardsChannel(dpadded,batch,channel,foundDInput);
 				}
+			}
+
+			// compare results
+			DeepUnitTest.assertEquals(expectedSpatial,foundDInput, tolerance );
+		}
+	}
+
+	/**
+	 * Tests the {@link DSpatialPadding2D#backwardsImage(Tensor, int, Tensor)}}
+	 */
+	@Test
+	public void checkBackwardsRandomInput_image() {
+
+		int inputShape[] = new int[]{3,4,10,12};
+
+		int padRow = alg.getPaddingRow0()+alg.getPaddingRow1();
+		int padCol = alg.getPaddingCol0()+alg.getPaddingCol1();
+
+		int paddedImage[] = new int[]{ inputShape[1], inputShape[2]+padRow, inputShape[3]+padCol};
+		int paddedSpatial[] = new int[]{ inputShape[0],inputShape[1],inputShape[2]+padRow, inputShape[3]+padCol};
+
+		NumericalGradient<T> numeric = factoryD.createNumericalGradient();
+		numeric.setFunction(new PaddingFunction(alg,inputShape));
+
+
+		List<T> emptyList = new ArrayList<>();
+
+		for (boolean sub : new boolean[]{false, true}) {
+			T inputTensor = tensorFactory.random(random, sub, inputShape);
+
+			// storage for the found input tensor gradient
+			T foundDInput = tensorFactory.random(random, sub, inputShape);
+
+			// random gradient of padded input tensor
+			T dpaddedSpatial = tensorFactory.random(random, sub, paddedSpatial);
+
+			// numerically computed input tensor gradient
+			T expectedSpatial = tensorFactory.random(random, sub, inputShape);
+
+			// compute ground truth
+			numeric.differentiate(inputTensor,emptyList,dpaddedSpatial,expectedSpatial,emptyList);
+
+			// compute the gradient one channel at a time
+			for (int batch = 0; batch < inputShape[0]; batch++)
+			{
+				int index = dpaddedSpatial.idx(batch,0,0,0);
+				T dpadded = dpaddedSpatial.subtensor(index,paddedImage);
+
+				alg.backwardsImage(dpadded,batch,foundDInput);
 			}
 
 			// compare results

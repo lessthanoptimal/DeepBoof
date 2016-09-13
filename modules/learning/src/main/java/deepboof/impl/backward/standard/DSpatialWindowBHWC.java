@@ -16,32 +16,63 @@
  * limitations under the License.
  */
 
-package deepboof.impl.forward.standard;
+package deepboof.impl.backward.standard;
 
+import deepboof.DFunction;
 import deepboof.Tensor;
+import deepboof.backward.DSpatialPadding2D;
 import deepboof.forward.ConfigSpatial;
-import deepboof.forward.SpatialPadding2D;
+import deepboof.impl.forward.standard.SpatialWindowBHWC;
+import deepboof.misc.TensorOps;
+
+import java.util.List;
 
 /**
- * Implementation of {@link BaseSpatialWindow} which processes the spatial tensor is processed in
- * BHWC (mini-batch, height, width, channel) order
+ * Backwards functions for operations which convolve a window across the input spatial tensor and
+ * process the image in BHWC (mini-batch, height, width, channel) order
  *
  * @author Peter Abeles
  */
-public abstract class SpatialWindowBHWC
-		<T extends Tensor<T>, P extends SpatialPadding2D<T>>
-		extends BaseSpatialWindow<T, P> {
+// TODO should it compute the entire gradient in the padded tensor then have dpadding process it?
+	// should of rewriting it to process on channel at a time I don't see a way around that
+public abstract class DSpatialWindowBHWC<T extends Tensor<T>, P extends DSpatialPadding2D<T>>
+		extends SpatialWindowBHWC<T,P> implements DFunction<T> {
 
-	// reference to output tensor
-	protected T output;
+	// Toggle indicating if it's in learning mode or not
+	protected boolean learningMode = false;
 
-	public SpatialWindowBHWC(ConfigSpatial config, P padding) {
+	// storage for padded image gradient.  This is a 2D tensor
+	protected T dpadding;
+
+	public DSpatialWindowBHWC(ConfigSpatial config, P padding) {
 		super(config, padding);
 	}
 
-	protected void forwardBHWC(T input, T output) {
+	@Override
+	public void backwards(T input, T dout, T gradientInput, List<T> gradientParameters) {
+
+		if( shapeInput == null )
+			throw new IllegalArgumentException("Must initialize first!");
+
+		TensorOps.checkShape("input",-1,shapeInput,input.getShape(),true);
+
+		TensorOps.checkShape("dout", -1, shapeOutput, dout.getShape(),true);
+		TensorOps.checkShape("gradientInput",-1, shapeInput,gradientInput.getShape(),true);
+		TensorOps.checkShape("gradientParameters", shapeParameters,(List)gradientParameters,false);
+
+		_backwards(input,dout,gradientInput,gradientParameters);
+	}
+
+	protected abstract void _backwards(T input, T dout,  T gradientInput, List<T> gradientParameters);
+
+	// TODO need to rewrite
+	protected void backwardsBHWC(T input, T output) {
 		this.output = output;
 		padding.setInput(input);
+
+		// only need to do the spatial component for 1 channel
+		int[] paddingShape = padding.getShape();
+		dpadding.reshape(paddingShape[2],paddingShape[3]);
 
 		// extract constants which describe the convolution from inputs and parameters
 		N = input.length(0);
@@ -58,7 +89,7 @@ public abstract class SpatialWindowBHWC
 		if( isEntirelyBorder(outR0, outC0) ) {
 			// Handle the case where the entire output touches the border
 			for (int batchIndex = 0; batchIndex < N; batchIndex++) {
-				forwardBorder(batchIndex, 0, 0, Ho, Wo);
+				backwardsBorder(batchIndex, 0, 0, Ho, Wo);
 			}
 		} else {
 			// Handle the case where there is at least one inner region which doesn't touch the border
@@ -72,15 +103,15 @@ public abstract class SpatialWindowBHWC
 					for (int outCol = outC0; outCol < outC1; outCol++) {
 						int inputCol = outCol * config.periodX - paddingX0;
 
-						forwardAt_inner(input, batchIndex, inputRow, inputCol, outRow, outCol);
+						backwardsAt_inner(input, batchIndex, inputRow, inputCol, outRow, outCol);
 					}
 				}
 
 				// Process the borders, top, bottom, left, right
-				forwardBorder(batchIndex, 0, 0, outR0, Wo);
-				forwardBorder(batchIndex, outR1, 0, Ho, Wo);
-				forwardBorder(batchIndex, outR0, 0, outR1, outC0);
-				forwardBorder(batchIndex, outR0, outC1, outR1, Wo);
+				backwardsBorder(batchIndex, 0, 0, outR0, Wo);
+				backwardsBorder(batchIndex, outR1, 0, Ho, Wo);
+				backwardsBorder(batchIndex, outR0, 0, outR1, outC0);
+				backwardsBorder(batchIndex, outR0, outC1, outR1, Wo);
 			}
 		}
 	}
@@ -94,13 +125,13 @@ public abstract class SpatialWindowBHWC
 	 * @param row1 Upper extent along rows, exclusive
 	 * @param col1 Upper extent along columns, exclusive
 	 */
-	private void forwardBorder(int batchIndex , int row0, int col0, int row1, int col1 ) {
+	private void backwardsBorder(int batchIndex , int row0, int col0, int row1, int col1 ) {
 		for (int outRow = row0; outRow < row1; outRow++) {
 			int paddedRow = outRow*config.periodY;
 			for (int outCol = col0; outCol < col1; outCol++) {
 				int paddedCol = outCol*config.periodX;
 
-				forwardAt_border(padding, batchIndex, paddedRow, paddedCol, outRow, outCol);
+				backwardsAt_border(padding, batchIndex, paddedRow, paddedCol, outRow, outCol);
 			}
 		}
 	}
@@ -116,7 +147,7 @@ public abstract class SpatialWindowBHWC
 	 * @param outY y-axis output coordinates
 	 * @param outX x-axis output coordinates
 	 */
-	protected abstract void forwardAt_inner(T input, int batch, int inY, int inX, int outY, int outX);
+	protected abstract void backwardsAt_inner(T input, int batch, int inY, int inX, int outY, int outX);
 
 	/**
 	 * Applies the operations at the specified window and stores the results at the specified output
@@ -129,6 +160,26 @@ public abstract class SpatialWindowBHWC
 	 * @param outY y-axis output coordinates
 	 * @param outX x-axis output coordinates
 	 */
-	protected abstract void forwardAt_border(P padded, int batch, int padY, int padX, int outY, int outX);
+	protected abstract void backwardsAt_border(P padded, int batch, int padY, int padX, int outY, int outX);
 
+
+	@Override
+	public void learning() {
+		learningMode = true;
+	}
+
+	@Override
+	public void evaluating() {
+		learningMode = false;
+	}
+
+	@Override
+	public boolean isLearning() {
+		return learningMode;
+	}
+
+	@Override
+	public Class<T> getTensorType() {
+		return padding.getTensorType();
+	}
 }

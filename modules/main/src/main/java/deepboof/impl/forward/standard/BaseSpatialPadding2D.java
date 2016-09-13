@@ -121,4 +121,52 @@ public abstract class BaseSpatialPadding2D<T extends Tensor<T>>
 			throw new IllegalArgumentException("Spatial tensor with 3 or 4 dof expected");
 		}
 	}
+
+	/**
+	 * Sanity checks the input for backwards images
+	 * @param padded Input padded single channel image from forward layer
+	 * @param original Output backwards spatial tensor
+	 */
+	public <T extends Tensor<T>>
+	void checkBackwardsShapeChannel( Tensor<T> padded , Tensor<T> original ) {
+		if( padded.getDimension() != 2 )
+			throw new IllegalArgumentException("Padded image expected to be a 2D spatial image, i.e. 2 channels");
+		if( original.getDimension() != 4 )
+			throw new IllegalArgumentException("Original image expected to be a 4D spatial image, i.e. 4 channels");
+
+		if( padded.length(0) != original.length(2)+config.y0+config.y1 ) {
+			throw new IllegalArgumentException(
+					"Image heights do not match.  "+padded.length(0)+" != "+original.length(2)+config.y0+config.y1);
+		}
+		if( padded.length(1) != original.length(3)+config.x0+config.x1) {
+			throw new IllegalArgumentException(
+					"Image widths do not match.  "+padded.length(1)+" != "+original.length(3)+config.x0+config.x1);
+		}
+	}
+
+	/**
+	 * Sanity checks the input for backwards images
+	 * @param padded Input padded image from forward layer
+	 * @param original Output backwards spatial tensor
+	 */
+	public <T extends Tensor<T>>
+	void checkBackwardsShapeImage( Tensor<T> padded , Tensor<T> original ) {
+		if( padded.getDimension() != 3 )
+			throw new IllegalArgumentException("Padded image expected to be a 3D spatial image, i.e. 3 channels");
+		if( original.getDimension() != 4 )
+			throw new IllegalArgumentException("Original image expected to be a 4D spatial image, i.e. 4 channels");
+
+		if( padded.length(0) != original.length(1) ) {
+			throw new IllegalArgumentException(
+					"Image channels do not match.  "+padded.length(0)+" != "+original.length(1));
+		}
+		if( padded.length(1) != original.length(2)+config.y0+config.y1 ) {
+			throw new IllegalArgumentException(
+					"Image heights do not match.  "+padded.length(1)+" != "+original.length(2)+config.y0+config.y1);
+		}
+		if( padded.length(2) != original.length(3)+config.x0+config.x1 ) {
+			throw new IllegalArgumentException(
+					"Image widths do not match.  "+padded.length(2)+" != "+original.length(3)+config.x0+config.x1);
+		}
+	}
 }

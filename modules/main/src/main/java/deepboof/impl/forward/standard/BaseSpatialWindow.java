@@ -29,7 +29,7 @@ import deepboof.forward.SpatialPadding2D;
  * @author Peter Abeles
  */
 public abstract class BaseSpatialWindow
-		<T extends Tensor<T>,VT extends SpatialPadding2D<T>>
+		<T extends Tensor<T>, P extends SpatialPadding2D<T>>
 		extends BaseFunction<T> {
 
 	/**
@@ -45,9 +45,9 @@ public abstract class BaseSpatialWindow
 	protected int Hp,Wp;   // input + padding, height and width.
 
 	// applies padding to input tensor
-	protected VT padding;
+	protected P padding;
 
-	public BaseSpatialWindow(ConfigSpatial config, VT padding) {
+	public BaseSpatialWindow(ConfigSpatial config, P padding) {
 		this.config = config;
 		this.padding = padding;
 	}
@@ -132,7 +132,7 @@ public abstract class BaseSpatialWindow
 		return (inputLength+padding-windowLength)/period;
 	}
 
-	public VT getPadding() {
+	public P getPadding() {
 		return padding;
 	}
 

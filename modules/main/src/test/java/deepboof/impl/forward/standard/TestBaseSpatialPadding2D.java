@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author Peter Abeles
@@ -74,6 +75,53 @@ public class TestBaseSpatialPadding2D {
 
 		found = alg.shapeGivenInput(new int[]{5,2,9,10});
 		DeepUnitTest.assertEquals(new int[]{5,2,15,14},found);
+	}
+
+	@Test
+	public void checkBackwardsShapeChannel() {
+		Tensor_F64 padded = new Tensor_F64(4+6,5+4);
+		Tensor_F64 original = new Tensor_F64(2,3,4,5);
+
+		Helper alg = new Helper(config);
+
+		// positive case
+		alg.checkBackwardsShapeChannel(padded,original);
+
+		// negative cases
+		checkFailBackwardsShapeChannel(alg,new Tensor_F64(4+5,5+4),original);
+		checkFailBackwardsShapeChannel(alg,new Tensor_F64(4+6,5+3),original);
+		checkFailBackwardsShapeChannel(alg,new Tensor_F64(4+6),original);
+		checkFailBackwardsShapeChannel(alg,padded,new Tensor_F64(2,3,4));
+	}
+
+	private void checkFailBackwardsShapeChannel( Helper alg , Tensor_F64 padded , Tensor_F64 original ) {
+		try {
+			alg.checkBackwardsShapeChannel(padded,original); fail("should have thrown exception");
+		} catch( IllegalArgumentException e){}
+	}
+
+	@Test
+	public void checkBackwardsShapeImage() {
+		Tensor_F64 padded = new Tensor_F64(3,4+6,5+4);
+		Tensor_F64 original = new Tensor_F64(2,3,4,5);
+
+		Helper alg = new Helper(config);
+
+		// positive case
+		alg.checkBackwardsShapeImage(padded,original);
+
+		// negative cases
+		checkBackwardsShapeImage(alg,new Tensor_F64(4,4+6,5+4),original);
+		checkBackwardsShapeImage(alg,new Tensor_F64(3,4+5,5+4),original);
+		checkBackwardsShapeImage(alg,new Tensor_F64(3,4+6,5+3),original);
+		checkBackwardsShapeImage(alg,new Tensor_F64(3,4+6),original);
+		checkBackwardsShapeImage(alg,padded,new Tensor_F64(2,3,4));
+	}
+
+	private void checkBackwardsShapeImage( Helper alg , Tensor_F64 padded , Tensor_F64 original ) {
+		try {
+			alg.checkBackwardsShapeImage(padded,original); fail("should have thrown exception");
+		} catch( IllegalArgumentException e){}
 	}
 
 	private static class Helper extends BaseSpatialPadding2D<Tensor_F64> {

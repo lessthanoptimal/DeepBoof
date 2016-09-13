@@ -41,8 +41,7 @@ public class DConstantPadding2D_F64 extends ConstantPadding2D_F64
 	public void backwardsChannel(Tensor_F64 gradientPadded, int batch, int channel,
 								 Tensor_F64 gradientInput)
 	{
-		if( gradientPadded.shape.length != 2 )
-			throw new IllegalArgumentException("Padded gradient should only be the 2-DOF spatial component");
+		checkBackwardsShapeChannel(gradientPadded,gradientInput);
 
 		// Padded gradient is a 2D tensor
 		int indexSrc = gradientPadded.idx(ROW0,COL0);
@@ -55,5 +54,30 @@ public class DConstantPadding2D_F64 extends ConstantPadding2D_F64
 		// copy only the inner portion of the padded gradient into the input gradient,  The border is all zero
 		TensorOps_F64.insertSubChannel(gradientPadded,indexSrc,strideSrc,gradientInput,indexDst,strideDst,
 				gradientInput.length(2),gradientInput.length(3));
+	}
+
+	@Override
+	public void backwardsImage(Tensor_F64 gradientPadded, int batch, Tensor_F64 gradientInput) {
+		checkBackwardsShapeImage(gradientPadded,gradientInput);
+
+		final int numChannels = gradientPadded.length(0);
+		final int imgHeight = gradientInput.length(2);
+		final int imgWidth = gradientInput.length(3);
+
+		final int strideSrc = gradientPadded.length(2);
+		final int strideDst = gradientInput.length(3);
+
+		for (int channel = 0; channel < numChannels; channel++) {
+			// Padded gradient is a 2D tensor
+			int indexSrc = gradientPadded.idx(channel,ROW0,COL0);
+
+			// gradient input is a full 4D spatial tensor
+			int indexDst = gradientInput.idx(batch,channel,0,0);
+
+			// copy only the inner portion of the padded gradient into the input gradient,  The border is all zero
+			TensorOps_F64.insertSubChannel(gradientPadded,indexSrc,strideSrc,gradientInput,indexDst,strideDst,
+					imgHeight,imgWidth);
+		}
+
 	}
 }

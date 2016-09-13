@@ -31,7 +31,7 @@ import java.util.List;
  * @author Peter Abeles
  */
 public class SpatialMaxPooling_F32
-		extends SpatialWindowBCHW<Tensor_F32,SpatialPadding2D_F32>
+		extends SpatialWindowChannel<Tensor_F32,SpatialPadding2D_F32>
 		implements SpatialMaxPooling<Tensor_F32>
 {
 	public SpatialMaxPooling_F32(ConfigSpatial config , SpatialPadding2D_F32 padding ) {
@@ -54,11 +54,11 @@ public class SpatialMaxPooling_F32
 
 	@Override
 	public void _forward(Tensor_F32 input, Tensor_F32 output) {
-		forwardBHWC(input, output);
+		forwardChannel(input, output);
 	}
 
 	@Override
-	protected void forwardsAt_inner(Tensor_F32 input, int batch, int channel, int inY, int inX, int outY, int outX) {
+	protected void forwardAt_inner(Tensor_F32 input, int batch, int channel, int inY, int inX, int outY, int outX) {
 
 		int inputIndexRow = input.idx(batch,channel,inY,inX);
 
@@ -81,7 +81,7 @@ public class SpatialMaxPooling_F32
 	}
 
 	@Override
-	protected void forwardsAt_border(SpatialPadding2D_F32 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
+	protected void forwardAt_border(SpatialPadding2D_F32 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
 
 		float max = -Float.MAX_VALUE;
 

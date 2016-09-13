@@ -22,21 +22,20 @@ import deepboof.DFunction;
 import deepboof.Tensor;
 import deepboof.backward.DSpatialPadding2D;
 import deepboof.forward.ConfigSpatial;
-import deepboof.impl.forward.standard.SpatialWindowBHWC;
+import deepboof.impl.forward.standard.SpatialWindowImage;
+import deepboof.misc.TensorFactory;
 import deepboof.misc.TensorOps;
 
 import java.util.List;
 
 /**
- * Backwards functions for operations which convolve a window across the input spatial tensor and
- * process the image in BHWC (mini-batch, height, width, channel) order
+ * Backwards functions for operations which convolve a window across the input spatial tensor.
+ * Each image in a mini batch is processed one at a time.
  *
  * @author Peter Abeles
  */
-// TODO should it compute the entire gradient in the padded tensor then have dpadding process it?
-	// should of rewriting it to process on channel at a time I don't see a way around that
-public abstract class DSpatialWindowBHWC<T extends Tensor<T>, P extends DSpatialPadding2D<T>>
-		extends SpatialWindowBHWC<T,P> implements DFunction<T> {
+public abstract class DSpatialWindowImage<T extends Tensor<T>, P extends DSpatialPadding2D<T>>
+		extends SpatialWindowImage<T,P> implements DFunction<T> {
 
 	// Toggle indicating if it's in learning mode or not
 	protected boolean learningMode = false;
@@ -44,8 +43,10 @@ public abstract class DSpatialWindowBHWC<T extends Tensor<T>, P extends DSpatial
 	// storage for padded image gradient.  This is a 2D tensor
 	protected T dpadding;
 
-	public DSpatialWindowBHWC(ConfigSpatial config, P padding) {
+	public DSpatialWindowImage(ConfigSpatial config, P padding) {
 		super(config, padding);
+
+		dpadding = new TensorFactory<T>(padding.getTensorType()).create();
 	}
 
 	@Override
@@ -65,14 +66,12 @@ public abstract class DSpatialWindowBHWC<T extends Tensor<T>, P extends DSpatial
 
 	protected abstract void _backwards(T input, T dout,  T gradientInput, List<T> gradientParameters);
 
-	// TODO need to rewrite
-	protected void backwardsBHWC(T input, T output) {
-		this.output = output;
+	protected void backwardsImage(T input, T gradientInput) {
 		padding.setInput(input);
 
 		// only need to do the spatial component for 1 channel
 		int[] paddingShape = padding.getShape();
-		dpadding.reshape(paddingShape[2],paddingShape[3]);
+		dpadding.reshape(paddingShape[1],paddingShape[2],paddingShape[3]);
 
 		// extract constants which describe the convolution from inputs and parameters
 		N = input.length(0);
@@ -89,12 +88,15 @@ public abstract class DSpatialWindowBHWC<T extends Tensor<T>, P extends DSpatial
 		if( isEntirelyBorder(outR0, outC0) ) {
 			// Handle the case where the entire output touches the border
 			for (int batchIndex = 0; batchIndex < N; batchIndex++) {
+				dpadding.zero();
 				backwardsBorder(batchIndex, 0, 0, Ho, Wo);
+				padding.backwardsImage(dpadding, batchIndex,gradientInput);
 			}
 		} else {
 			// Handle the case where there is at least one inner region which doesn't touch the border
 
 			for (int batchIndex = 0; batchIndex < N; batchIndex++) {
+				dpadding.zero();
 
 				// do the inner region first, which can be processed efficiently
 				for (int outRow = outR0; outRow < outR1; outRow++) {
@@ -112,6 +114,8 @@ public abstract class DSpatialWindowBHWC<T extends Tensor<T>, P extends DSpatial
 				backwardsBorder(batchIndex, outR1, 0, Ho, Wo);
 				backwardsBorder(batchIndex, outR0, 0, outR1, outC0);
 				backwardsBorder(batchIndex, outR0, outC1, outR1, Wo);
+
+				padding.backwardsImage(dpadding, batchIndex,gradientInput);
 			}
 		}
 	}

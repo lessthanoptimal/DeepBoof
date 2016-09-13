@@ -22,7 +22,7 @@ import deepboof.DFunction;
 import deepboof.Tensor;
 import deepboof.backward.DSpatialPadding2D;
 import deepboof.forward.ConfigSpatial;
-import deepboof.impl.forward.standard.SpatialWindowBCHW;
+import deepboof.impl.forward.standard.SpatialWindowChannel;
 import deepboof.misc.TensorFactory;
 import deepboof.misc.TensorOps;
 
@@ -30,12 +30,12 @@ import java.util.List;
 
 /**
  * Backwards functions for operations which convolve a window across the input spatial tensor and
- * process the image in a BCHW (batch, channel, row, column) order
+ * process the image in a BCHW (batch, channel, (row, column)) order, e.g. one channel at a time.
  *
  * @author Peter Abeles
  */
-public abstract class DSpatialWindowBCHW<T extends Tensor<T>, P extends DSpatialPadding2D<T>>
-		extends SpatialWindowBCHW<T,P> implements DFunction<T>
+public abstract class DSpatialWindowChannel<T extends Tensor<T>, P extends DSpatialPadding2D<T>>
+		extends SpatialWindowChannel<T,P> implements DFunction<T>
 {
 	// Toggle indicating if it's in learning mode or not
 	protected boolean learningMode = false;
@@ -43,7 +43,7 @@ public abstract class DSpatialWindowBCHW<T extends Tensor<T>, P extends DSpatial
 	// storage for padded image gradient.  This is a 2D tensor
 	protected T dpadding;
 
-	public DSpatialWindowBCHW(ConfigSpatial config, P padding) {
+	public DSpatialWindowChannel(ConfigSpatial config, P padding) {
 		super(config, padding);
 
 		dpadding = new TensorFactory<T>(padding.getTensorType()).create();
@@ -72,7 +72,7 @@ public abstract class DSpatialWindowBCHW<T extends Tensor<T>, P extends DSpatial
 	 * @param input Input spatial tensor
 	 * @param gradientInput Storage for input's gradient
 	 */
-	public void backwardsBCHW(T input, T gradientInput ) {
+	public void backwardsChannel(T input, T gradientInput ) {
 		padding.setInput(input);
 
 		// only need to do the spatial component for 1 channel

@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * @author Peter Abeles
  */
-public class TestForward_DSpatialWindowBCHW extends ChecksSpatialWindow {
+public class TestForward_DSpatialWindowChannel extends ChecksSpatialWindow {
 
 	public BaseSpatialWindow<Tensor_F64,ConstantPadding2D_F64> create(ConfigSpatial config ) {
 		return (BaseSpatialWindow)new Helper(config,createPadding());
@@ -46,14 +46,14 @@ public class TestForward_DSpatialWindowBCHW extends ChecksSpatialWindow {
 		return new DConstantPadding2D_F64(config);
 	}
 
-	public class Helper extends DSpatialWindowBCHW<Tensor_F64,DConstantPadding2D_F64> {
+	public class Helper extends DSpatialWindowChannel<Tensor_F64,DConstantPadding2D_F64> {
 
 		public Helper(ConfigSpatial configSpatial, DConstantPadding2D_F64 padding ) {
 			super(configSpatial, padding);
 		}
 
 		@Override
-		protected void forwardsAt_inner(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
+		protected void forwardAt_inner(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
 
 			double sum = 0;
 			for (int y = 0; y < HH; y++) {
@@ -66,7 +66,7 @@ public class TestForward_DSpatialWindowBCHW extends ChecksSpatialWindow {
 		}
 
 		@Override
-		protected void forwardsAt_border(DConstantPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
+		protected void forwardAt_border(DConstantPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
 			double sum = 0;
 			for (int y = 0; y < HH; y++) {
 				for (int x = 0; x < WW; x++) {
@@ -79,7 +79,7 @@ public class TestForward_DSpatialWindowBCHW extends ChecksSpatialWindow {
 
 		@Override
 		public void _forward(Tensor_F64 input, Tensor_F64 output) {
-			forwardBHWC(input, output);
+			forwardChannel(input, output);
 		}
 
 		@Override

@@ -29,15 +29,14 @@ import java.util.List;
 /**
  * @author Peter Abeles
  */
-public class TestBackwards_DSpatialWindowBCHW extends ChecksBackwards_DSpatialWindow {
+public class TestBackwards_DSpatialWindowImage extends ChecksBackwards_DSpatialWindow {
 
 	@Override
 	public DFunction<Tensor_F64> create(ConfigSpatial config, DSpatialPadding2D_F64 padding ) {
 		return new Helper(config, padding);
 	}
 
-
-	public class Helper extends DSpatialWindowBCHW<Tensor_F64,DSpatialPadding2D_F64> {
+	public class Helper extends DSpatialWindowImage<Tensor_F64,DSpatialPadding2D_F64> {
 
 		Tensor_F64 dout;
 
@@ -46,12 +45,10 @@ public class TestBackwards_DSpatialWindowBCHW extends ChecksBackwards_DSpatialWi
 		}
 
 		@Override
-		protected void forwardsAt_inner(Tensor_F64 input, int batch, int channel,
-										int inY, int inX, int outY, int outX) {}
+		protected void forwardAt_inner(Tensor_F64 input, int batch, int inY, int inX, int outY, int outX) {}
 
 		@Override
-		protected void forwardsAt_border(DSpatialPadding2D_F64 padded, int batch,
-										 int channel, int padY, int padX, int outY, int outX) {}
+		protected void forwardAt_border(DSpatialPadding2D_F64 padded, int batch, int padY, int padX, int outY, int outX) {}
 
 		@Override
 		public void _forward(Tensor_F64 input, Tensor_F64 output) {}
@@ -59,29 +56,33 @@ public class TestBackwards_DSpatialWindowBCHW extends ChecksBackwards_DSpatialWi
 		@Override
 		protected void _backwards(Tensor_F64 input, Tensor_F64 dout, Tensor_F64 gradientInput, List<Tensor_F64> gradientParameters) {
 			this.dout = dout;
-			backwardsBCHW(input, gradientInput);
+			backwardsImage(input, gradientInput);
 		}
 
 		@Override
-		protected void backwardsAt_inner(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
+		protected void backwardsAt_inner(Tensor_F64 input, int batch, int inY, int inX, int outY, int outX) {
 
 			int PY0 = padding.getPaddingRow0();
 			int PX0 = padding.getPaddingCol0();
 
-			for (int y = 0; y < HH; y++) {
-				for (int x = 0; x < WW; x++) {
-					int index = dpadding.idx( y + inY + PY0, x + inX + PX0);
-					dpadding.d[index] += input.get(batch, channel, y + inY, x + inX);
+			for (int channel = 0; channel < C; channel++) {
+				for (int y = 0; y < HH; y++) {
+					for (int x = 0; x < WW; x++) {
+						int index = dpadding.idx( y + inY + PY0, x + inX + PX0);
+						dpadding.d[index] += input.get(batch, channel, y + inY, x + inX);
+					}
 				}
 			}
 		}
 
 		@Override
-		protected void backwardsAt_border(DSpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
-			for (int y = 0; y < HH; y++) {
-				for (int x = 0; x < WW; x++) {
-					int index = dpadding.idx( y + padY, x + padX);
-					dpadding.d[index] += padded.get(batch, channel, y + padY, x + padX);
+		protected void backwardsAt_border(DSpatialPadding2D_F64 padded, int batch, int padY, int padX, int outY, int outX) {
+			for (int channel = 0; channel < C; channel++) {
+				for (int y = 0; y < HH; y++) {
+					for (int x = 0; x < WW; x++) {
+						int index = dpadding.idx(y + padY, x + padX);
+						dpadding.d[index] += padded.get(batch, channel, y + padY, x + padX);
+					}
 				}
 			}
 		}

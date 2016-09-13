@@ -33,7 +33,7 @@ import static deepboof.misc.TensorOps.WI;
  * @author Peter Abeles
  */
 public class SpatialConvolve2D_F64
-		extends SpatialWindowBHWC<Tensor_F64,SpatialPadding2D_F64>
+		extends SpatialWindowImage<Tensor_F64,SpatialPadding2D_F64>
 		implements SpatialConvolve2D<Tensor_F64>
 {
 
@@ -78,7 +78,7 @@ public class SpatialConvolve2D_F64
 
 	@Override
 	public void _forward(Tensor_F64 input, Tensor_F64 output) {
-		super.forwardBHWC(input, output);
+		super.forwardImage(input, output);
 	}
 
 	@Override

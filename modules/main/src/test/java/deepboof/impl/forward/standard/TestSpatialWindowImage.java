@@ -27,14 +27,14 @@ import java.util.List;
 /**
  * @author Peter Abeles
  */
-public class TestSpatialWindowBHWC extends ChecksSpatialWindow {
+public class TestSpatialWindowImage extends ChecksSpatialWindow {
 
 	@Override
 	public BaseSpatialWindow<Tensor_F64, ConstantPadding2D_F64> create(ConfigSpatial config) {
 		return new Helper(config);
 	}
 
-	public class Helper extends SpatialWindowBHWC<Tensor_F64,ConstantPadding2D_F64>
+	public class Helper extends SpatialWindowImage<Tensor_F64,ConstantPadding2D_F64>
 	{
 
 		public Helper(ConfigSpatial configSpatial) {
@@ -79,7 +79,7 @@ public class TestSpatialWindowBHWC extends ChecksSpatialWindow {
 
 		@Override
 		public void _forward(Tensor_F64 input, Tensor_F64 output) {
-			forwardBHWC(input, output);
+			forwardImage(input, output);
 		}
 
 		@Override

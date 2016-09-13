@@ -26,7 +26,7 @@ import deepboof.tensors.Tensor_S32;
 import java.util.List;
 
 /**
- * Implementation of {@link DSpatialPadding2D_F64} for {@link Tensor_F64} that extends {@link DSpatialWindowBCHW}.
+ * Implementation of {@link DSpatialPadding2D_F64} for {@link Tensor_F64} that extends {@link DSpatialWindowChannel}.
  *
  * Comments:<br>
  *     dpadding is a 2D tensor of the spatial region only.  In the forwards pass the partial coordinate's index is
@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author Peter Abeles
  */
-public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpatialPadding2D_F64> {
+public class DSpatialMaxPooling_F64 extends DSpatialWindowChannel<Tensor_F64,DSpatialPadding2D_F64> {
 
 	// reference to dout and the input gradient
 	Tensor_F64 dout;
@@ -54,7 +54,7 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 	public void _forward(Tensor_F64 input, Tensor_F64 output) {
 
 		outputToPaddingIdx.reshape(output.getShape());
-		forwardBHWC(input, output);
+		forwardChannel(input, output);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 		this.dout = dout;
 		gradientInput.zero();
 
-		backwardsBCHW(input, gradientInput);
+		backwardsChannel(input, gradientInput);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 	}
 
 	@Override
-	protected void forwardsAt_inner(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
+	protected void forwardAt_inner(Tensor_F64 input, int batch, int channel, int inY, int inX, int outY, int outX) {
 
 		int inputIndexRow = input.idx(batch,channel,inY,inX);
 
@@ -115,7 +115,7 @@ public class DSpatialMaxPooling_F64 extends DSpatialWindowBCHW<Tensor_F64,DSpati
 	}
 
 	@Override
-	protected void forwardsAt_border(DSpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
+	protected void forwardAt_border(DSpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
 
 		double max = -Double.MAX_VALUE;
 

@@ -18,16 +18,25 @@
 
 package deepboof.impl.backward.standard;
 
-import org.junit.Test;
-
-import static org.junit.Assert.fail;
+import deepboof.Function;
+import deepboof.backward.DSpatialPadding2D_F64;
+import deepboof.factory.FactoryBackwards;
+import deepboof.forward.ChecksForwardSpatialConvolve2D_F64;
+import deepboof.forward.ConfigConvolve2D;
+import deepboof.forward.ConfigPadding;
+import deepboof.tensors.Tensor_F64;
 
 /**
  * @author Peter Abeles
  */
-public class TestForward_DSpatialConvolve2D_F64 {
-    @Test
-    public void stuff() {
-        fail("implement");
+public class TestForward_DSpatialConvolve2D_F64 extends ChecksForwardSpatialConvolve2D_F64 {
+
+    @Override
+    protected Function<Tensor_F64> createForwards(ConfigConvolve2D configConv, ConfigPadding configPadding) {
+        FactoryBackwards<Tensor_F64> factory = new FactoryBackwards<>(Tensor_F64.class);
+
+        DSpatialPadding2D_F64 padding = factory.spatialPadding(configPadding);
+
+        return new DSpatialConvolve2D_F64(configConv,padding);
     }
 }

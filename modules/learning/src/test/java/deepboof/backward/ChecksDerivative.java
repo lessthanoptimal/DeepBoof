@@ -66,7 +66,7 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 
 			for (boolean sub : new boolean[]{false, true}) {
 				for (Case testCase : testCases) {
-//					System.out.println("sub "+sub+"  input.length "+testCase.inputShape.length);
+					System.out.println("sub "+sub+"  input.length "+testCase.inputShape.length);
 					T inputTensor = tensorFactory.randomM(random, sub, testCase.minibatch, testCase.inputShape);
 
 					alg.initialize(testCase.inputShape);

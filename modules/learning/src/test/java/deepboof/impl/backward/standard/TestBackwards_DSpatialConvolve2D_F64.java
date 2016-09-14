@@ -72,7 +72,7 @@ public class TestBackwards_DSpatialConvolve2D_F64 extends ChecksDerivative<Tenso
         padding.x0 = 1;
         padding.y0 = 2;
         padding.x1 = 2;
-        padding.y1 = 1;
+        padding.y1 = 3;
         configurationPadding.add( padding );
     }
 

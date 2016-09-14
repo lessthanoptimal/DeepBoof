@@ -1,5 +1,4 @@
 - Backwards Functions
-  * Convolution 2D
   * Drop Out
 
 - Optimization

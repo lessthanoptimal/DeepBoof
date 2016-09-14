@@ -25,6 +25,7 @@ import deepboof.Tensor;
 import deepboof.factory.FactoryBackwards;
 import deepboof.forward.ChecksGenericFunction;
 import deepboof.misc.TensorFactory;
+import deepboof.tensors.Tensor_F64;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,6 +41,8 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 	protected FactoryBackwards<T> factoryD;
 
 	protected Accuracy tolerance = Accuracy.RELAXED_A;
+
+	public boolean verbose = false;
 
 	public abstract DFunction<T> createBackwards(int type );
 
@@ -58,6 +61,8 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 		NumericalGradient<T> numeric = factoryD.createNumericalGradient();
 
 		for (int algConfig = 0; algConfig < numberOfConfigurations ; algConfig++) {
+			if( verbose )
+				System.out.println("ALG Config "+algConfig);
 			DFunction<T> alg = createBackwards(algConfig);
 
 			numeric.setFunction(alg);
@@ -66,7 +71,8 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 
 			for (boolean sub : new boolean[]{false, true}) {
 				for (Case testCase : testCases) {
-					System.out.println("sub "+sub+"  input.length "+testCase.inputShape.length);
+					if( verbose )
+						System.out.println("sub "+sub+"  input.length "+testCase.inputShape.length);
 					T inputTensor = tensorFactory.randomM(random, sub, testCase.minibatch, testCase.inputShape);
 
 					alg.initialize(testCase.inputShape);
@@ -92,12 +98,20 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 					List<T> foundWD = createParameters(alg, inputTensor);
 					alg.backwards(inputTensor,dout,foundXD,foundWD);
 
-//					System.out.println("   sub "+sub+"  "+testCase.inputShape.length);
-//					for (int i = 0; i < expectedXD.length(); i++) {
-//						double e = ((Tensor_F64)expectedXD).d[i];
-//						double f = ((Tensor_F64)foundXD).d[i];
-//						System.out.printf("%6.2e   %6.2e\n",e,f);
-//					}
+					if( verbose ) {
+						System.out.println("Comparision of expected and found XD");
+						for (int i = 0; i < expectedXD.length(); i++) {
+							double e = ((Tensor_F64) expectedXD).d[i];
+							double f = ((Tensor_F64) foundXD).d[i];
+							System.out.printf("%6.2e   %6.2e\n", e, f);
+						}
+
+						System.out.print("     Input Shape  [ ");
+						for (int i = 0; i < inputTensor.shape.length; i++) {
+							System.out.print(" " + inputTensor.shape[i]);
+						}
+						System.out.println(" ]");
+					}
 
 					// compare results
 					DeepUnitTest.assertEquals(expectedXD,foundXD, tolerance );

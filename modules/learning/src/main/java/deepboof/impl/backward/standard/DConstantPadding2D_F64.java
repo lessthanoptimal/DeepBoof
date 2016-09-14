@@ -75,7 +75,9 @@ public class DConstantPadding2D_F64 extends ConstantPadding2D_F64
 			int indexDst = gradientInput.idx(batch,channel,0,0);
 
 			// copy only the inner portion of the padded gradient into the input gradient,  The border is all zero
-			TensorOps_F64.insertSubChannel(gradientPadded,indexSrc,strideSrc,gradientInput,indexDst,strideDst,
+			TensorOps_F64.insertSubChannel(
+					gradientPadded,indexSrc,strideSrc,
+					gradientInput,indexDst,strideDst,
 					imgHeight,imgWidth);
 		}
 

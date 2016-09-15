@@ -84,9 +84,6 @@ public class DFunctionDropOut_F64 extends BaseDFunction<Tensor_F64> implements D
 
 	@Override
 	protected void _backwards(Tensor_F64 input, Tensor_F64 dout, Tensor_F64 gradientInput, List<Tensor_F64> gradientParameters) {
-		if( !learningMode )
-			throw new IllegalArgumentException("Backwards is only supported while in learning mode");
-
 		TensorOps_F64.elementMult(dout,drops,gradientInput);
 	}
 

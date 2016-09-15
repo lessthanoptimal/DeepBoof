@@ -21,7 +21,6 @@ package deepboof.backward;
 import deepboof.DeepBoofConstants;
 import deepboof.DeepUnitTest;
 import deepboof.Tensor;
-import deepboof.forward.ChecksForward;
 import deepboof.misc.TensorOps;
 import org.junit.Test;
 
@@ -29,7 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Special checks for learning implementations of batch norm.  The behavior is very different from forwards
@@ -37,23 +37,14 @@ import static org.junit.Assert.*;
  *
  * @author Peter Abeles
  */
-public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>> extends ChecksForward<T> {
+public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>>
+        extends ChecksForward_DBatchNorm<T> {
 
-    protected boolean gammaBeta;
-
-    double tolerance;
-
-    public ChecksForward_DFunctionBatchNorm( double tolerance ) {
-        super(2);
-        this.tolerance = tolerance;
+    public ChecksForward_DFunctionBatchNorm(double tolerance) {
+        super(tolerance);
     }
 
-    public abstract DFunctionBatchNorm<T> createForwards( boolean gammaBeta );
-
-    @Test
-    public void forwards() {
-        fail("add checks for learning and evaluation modes");
-    }
+    public abstract DFunctionBatchNorm<T> createForwards(boolean gammaBeta );
 
     @Override
     public DFunctionBatchNorm<T> createForwards(int which) {
@@ -106,6 +97,8 @@ public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>> exte
     public void checkOutputStatistics() {
         for( int config = 0; config < numberOfConfigurations; config++ ) {
             DFunctionBatchNorm<T> alg = createForwards(config);
+            alg.learning();
+
             for (Case test : createTestInputs()) {
                 T input = tensorFactory.randomM(random,false,test.minibatch,test.inputShape);
                 T output = tensorFactory.randomM(random,false,test.minibatch,test.inputShape);
@@ -145,6 +138,7 @@ public abstract class ChecksForward_DFunctionBatchNorm<T extends Tensor<T>> exte
     @Test
     public void checkGammaBeta() {
         DFunctionBatchNorm<T> alg = createForwards(true);
+        alg.learning();
 
         assertTrue( alg.hasGammaBeta() );
 

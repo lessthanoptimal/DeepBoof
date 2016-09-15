@@ -52,6 +52,8 @@ public abstract class BaseDFunction<T extends Tensor<T>>
 
 		if( shapeInput == null )
 			throw new IllegalArgumentException("Must initialize first!");
+		if( !learningMode )
+			throw new IllegalArgumentException("Must be in learning mode ot invoke backwards");
 
 		TensorOps.checkShape("input",-1,shapeInput,input.getShape(),true);
 

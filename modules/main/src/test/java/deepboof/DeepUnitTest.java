@@ -35,6 +35,15 @@ public class DeepUnitTest {
 	}
 
 	public static<T extends Tensor>
+	void assertNotEquals(T expected , T found , Accuracy tol ) {
+		if( expected instanceof Tensor_F64 ) {
+			assertNotEquals((Tensor_F64)expected,(Tensor_F64)found,tol.value(double.class));
+		} else {
+			assertNotEquals((Tensor_F32)expected,(Tensor_F32)found,(float)tol.value(float.class));
+		}
+	}
+
+	public static<T extends Tensor>
 	void assertEquals(T expected , T found , Accuracy tol ) {
 		if( expected instanceof Tensor_F64 ) {
 			assertEquals((Tensor_F64)expected,(Tensor_F64)found,tol.value(double.class));
@@ -66,6 +75,32 @@ public class DeepUnitTest {
 
 		for (int i = 0; i < N; i++) {
 			org.junit.Assert.assertEquals(indexE+" "+indexF,expected.d[indexE++], found.d[indexF++], tol);
+		}
+	}
+
+	public static void assertNotEquals(Tensor_F64 expected , Tensor_F64 found , double tol ) {
+		TensorOps.checkShape("foo",-1,expected.getShape(),found.getShape(),false);
+
+		int indexE = expected.startIndex;
+		int indexF = found.startIndex;
+
+		int N = expected.length();
+
+		for (int i = 0; i < N; i++) {
+			org.junit.Assert.assertNotEquals("i = "+i+" indexes "+indexE+" "+indexF,expected.d[indexE++], found.d[indexF++], tol);
+		}
+	}
+
+	public static void assertNotEquals(Tensor_F32 expected , Tensor_F32 found , float tol ) {
+		TensorOps.checkShape("foo",-1,expected.getShape(),found.getShape(),false);
+
+		int indexE = expected.startIndex;
+		int indexF = found.startIndex;
+
+		int N = expected.length();
+
+		for (int i = 0; i < N; i++) {
+			org.junit.Assert.assertNotEquals(indexE+" "+indexF,expected.d[indexE++], found.d[indexF++], tol);
 		}
 	}
 }

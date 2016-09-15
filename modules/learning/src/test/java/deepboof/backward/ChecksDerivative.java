@@ -64,6 +64,7 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 			if( verbose )
 				System.out.println("ALG Config "+algConfig);
 			DFunction<T> alg = createBackwards(algConfig);
+			alg.learning(); // algorithms which obey this flag require it to be in learning mode
 
 			numeric.setFunction(alg);
 
@@ -91,6 +92,7 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 
 					// invoke the forwards pass first.  Some algorithms require it be called first
 					alg.setParameters(parameters);
+					// to compute the gradient
 					alg.forward(inputTensor, outputTensor);
 
 					// compute the gradient using the function being tested

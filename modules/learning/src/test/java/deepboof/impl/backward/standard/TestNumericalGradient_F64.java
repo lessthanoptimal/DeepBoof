@@ -82,6 +82,7 @@ public class TestNumericalGradient_F64 {
 			Tensor_F64 foundDW = TensorFactory_F64.random(random,sub,M);
 
 			function.setParameters(WT(weights));
+			function.learning();
 			function.backwards(input,dF,foundDX,WT(foundDW));
 
 			DeepUnitTest.assertEquals(dXW[0],foundDX, DeepBoofConstants.TEST_TOL_F64);

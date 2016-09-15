@@ -47,11 +47,10 @@ public class DFunctionBatchNorm_F64 extends BaseDBatchNorm_F64
 		if( input.length(0) <= 1 )
 			throw new IllegalArgumentException("There must be more than 1 minibatch");
 
-
 		if( learningMode ) {
 			forwardsLearning(input, output);
 		} else {
-            forwardsEvaluate(input, output);
+			forwardsEvaluate(input, output);
 		}
 	}
 
@@ -170,11 +169,10 @@ public class DFunctionBatchNorm_F64 extends BaseDBatchNorm_F64
 	}
 
 	@Override
-	protected void _backwards(Tensor_F64 input, Tensor_F64 dout, Tensor_F64 gradientInput, List<Tensor_F64> gradientParameters) {
-
-		if( !learningMode )
-			throw new IllegalArgumentException("Can't do backwards when not in learning mode");
-
+	protected void _backwards(Tensor_F64 input, Tensor_F64 dout,
+							  Tensor_F64 gradientInput,
+							  List<Tensor_F64> gradientParameters)
+	{
 		// NOTE: @l/@y = dout
 		tensorDXhat.reshape( input.shape );
 

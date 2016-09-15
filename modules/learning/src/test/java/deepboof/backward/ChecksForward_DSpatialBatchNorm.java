@@ -29,8 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Special checks for learning implementations of spatial batch norm.  The behavior is very different from forwards
@@ -50,6 +49,11 @@ public abstract class ChecksForward_DSpatialBatchNorm<T extends Tensor<T>> exten
     }
 
     public abstract DSpatialBatchNorm<T> createForwards( boolean gammaBeta );
+
+    @Test
+    public void forwards() {
+        fail("add checks for learning and evaluation modes");
+    }
 
     @Override
     public DSpatialBatchNorm<T> createForwards(int which) {

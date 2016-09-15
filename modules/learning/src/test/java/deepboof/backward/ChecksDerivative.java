@@ -52,7 +52,7 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 		factoryD = new FactoryBackwards<>(createBackwards(0).getTensorType());
 	}
 
-		/**
+	/**
 	 * Tests the {@link DFunction#backwards}
 	 */
 	@Test

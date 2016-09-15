@@ -173,6 +173,25 @@ public class TensorOps {
 	}
 
 	/**
+	 * Checks to see if the two tensors have the same shape
+	 * @param a tensor
+	 * @param b tensor
+	 */
+	public static void checkShape( Tensor_F64 a , Tensor_F64 b ) {
+		if( a.shape.length != b.shape.length ) {
+			throw new IllegalArgumentException("Dimension of tensors do not match. "+a.shape.length+" "+b.shape.length);
+		}
+		for (int i = 0; i < a.shape.length; i++) {
+			int da = a.shape[i];
+			int db = b.shape[i];
+
+			if( da != db ) {
+				throw new IllegalArgumentException("dimension "+i+"  does not match.  "+da+"  "+db);
+			}
+		}
+	}
+
+	/**
 	 * Checks to see if the two tensors have the same shape, with the option to ignore the first axis for the 'actual'
 	 * shape.   The first axis is typically the mini-batch, but the expected value might not include the mini-batch
 	 * since the size of the mini-batch is determined later on.

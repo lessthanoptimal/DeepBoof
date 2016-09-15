@@ -8,3 +8,5 @@
 
 - Train a sequential network
 - Train and Run LSTM
+
+- Does batch normalization need to obey the training flag?

@@ -184,6 +184,7 @@ public class DSpatialConvolve2D_F64
 		final double d[] = weights.d; // appears to result in a very very small speed boost
 
 		int indexW = weights.startIndex;
+		int indexD = bias.startIndex;
 		int dweightsIndex = dWeights.startIndex;
 
 		for (int kernelIndex = 0; kernelIndex < F; kernelIndex++) {
@@ -194,12 +195,12 @@ public class DSpatialConvolve2D_F64
 				double x = cachedPadded[cacheIndex];
 				double w = d[indexW++];
 				cachedDPadding[cacheIndex] += w*val_dout;
-				dWeights.d[dweightsIndex++] += x*val_dout; // todo move outside
+				dWeights.d[dweightsIndex++] += x*val_dout;
 
 				cacheIndex++;
 			}
 
-			dBias.d[bias.idx(kernelIndex)] += val_dout; // todo move outside
+			dBias.d[indexD++] += val_dout;
 		}
 	}
 

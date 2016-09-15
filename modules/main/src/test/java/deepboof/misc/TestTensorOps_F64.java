@@ -54,6 +54,25 @@ public class TestTensorOps_F64 {
 	}
 
 	@Test
+	public void elementMult_scalar_tensor() {
+		for( boolean sub : new boolean[]{false,true}) {
+			Tensor_F64 T = TensorFactory_F64.random(rand,sub, 5,3,1);
+			Tensor_F64 O = TensorFactory_F64.random(rand,sub, 5,3,1);
+
+			Tensor_F64 original = T.copy();
+
+			double s = 2.1;
+			TensorOps_F64.elementMult(T,s,O);
+
+			int N = original.length();
+			for (int i = 0; i < N; i++) {
+				assertEquals( original.getAtIndex(i) , T.getAtIndex(i) , DeepBoofConstants.TEST_TOL_F64 );
+				assertEquals( original.getAtIndex(i)*s , O.getAtIndex(i) , DeepBoofConstants.TEST_TOL_F64 );
+			}
+		}
+	}
+
+	@Test
 	public void elementMult_tensor() {
 		List<int[]> shapes = new ArrayList<>();
 		shapes.add(new int[]{5});

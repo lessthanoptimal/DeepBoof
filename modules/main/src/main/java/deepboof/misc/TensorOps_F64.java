@@ -42,6 +42,24 @@ public class TensorOps_F64 {
 	}
 
 	/**
+	 * Performs an element-wise scalar multiplication
+	 *
+	 * @param input Tensor which is multiplied (not modified)
+	 * @param value value of the multiplication (modified)
+	 * @param output Tensor where the results are stored
+	 */
+	public static void elementMult(Tensor_F64 input , double value , Tensor_F64 output ) {
+		TensorOps.checkShape(input,output);
+
+		int indexIn = input.startIndex;
+		int indexOut = output.startIndex;
+		int end = indexIn + input.length();
+		for( ; indexIn < end; indexIn++ , indexOut++ ) {
+			output.d[indexOut] = input.d[indexIn]*value;
+		}
+	}
+
+	/**
 	 * <p>Performs element-wise multiplcation between the two tensors and stores results in output.  All tensors
 	 * must have the same shape.  </p>
 	 *

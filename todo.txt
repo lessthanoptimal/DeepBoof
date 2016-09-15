@@ -1,6 +1,3 @@
-- Backwards Functions
-  * Drop Out
-
 - Optimization
   * Momentum
   * Nesterov Momentum

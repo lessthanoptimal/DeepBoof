@@ -41,7 +41,11 @@ public class DFunctionDropOut_F64 extends BaseDFunction<Tensor_F64> implements D
 	// than adding conditional statements (need to verify this)
 	Tensor_F64 drops = new Tensor_F64();
 
-
+	/**
+	 * Configures drop out
+	 * @param randomSeed random seed used to pick which neurons are dropped
+	 * @param dropRate Fraction of time a neuron is dropped
+	 */
 	public DFunctionDropOut_F64( long randomSeed , double dropRate) {
 		this.random = new Random(randomSeed);
 		this.dropRate = dropRate;
@@ -66,7 +70,7 @@ public class DFunctionDropOut_F64 extends BaseDFunction<Tensor_F64> implements D
 
 			for (int i = 0; i < N; i++) {
 				double d = drops.d[i] = random.nextDouble() < dropRate ? 0.0 : 1.0;
-				output.d[indexOut] = input.d[indexIn]*d;
+				output.d[indexOut++] = input.d[indexIn++]*d;
 			}
 		} else {
 			TensorOps_F64.elementMult(input,1.0-dropRate,output);
@@ -80,6 +84,9 @@ public class DFunctionDropOut_F64 extends BaseDFunction<Tensor_F64> implements D
 
 	@Override
 	protected void _backwards(Tensor_F64 input, Tensor_F64 dout, Tensor_F64 gradientInput, List<Tensor_F64> gradientParameters) {
+		if( !learningMode )
+			throw new IllegalArgumentException("Backwards is only supported while in learning mode");
+
 		TensorOps_F64.elementMult(dout,drops,gradientInput);
 	}
 

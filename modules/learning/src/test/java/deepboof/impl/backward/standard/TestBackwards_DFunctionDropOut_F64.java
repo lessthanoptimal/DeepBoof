@@ -18,39 +18,53 @@
 
 package deepboof.impl.backward.standard;
 
-import deepboof.DFunction;
-import deepboof.backward.ChecksDerivative;
+import deepboof.DeepBoofConstants;
+import deepboof.misc.TensorFactory;
 import deepboof.tensors.Tensor_F64;
+import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Random;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Peter Abeles
  */
-public class TestBackwards_DFunctionDropOut_F64 extends ChecksDerivative<Tensor_F64> {
+public class TestBackwards_DFunctionDropOut_F64 {
+	Random rand = new Random(234);
 
-	@Override
-	public DFunction<Tensor_F64> createBackwards(int type) {
-		return new DFunctionDropOut_F64(0xdeadbeef,0.3);
-	}
+	TensorFactory<Tensor_F64> factory = new TensorFactory<>(Tensor_F64.class);
 
-	@Override
-	public List<Tensor_F64> createParameters(DFunction<Tensor_F64> function, Tensor_F64 input) {
-		return new ArrayList<>();
-	}
+	/**
+	 * Check to see if there are zeros in the gradient at the expected location
+	 */
+	@Test
+	public void checkZeros() {
+		double drop = 0.3;
 
-	@Override
-	public List<Case> createTestInputs() {
-		Case a = new Case();
-		a.inputShape = new int[]{4,3,2};
-		a.minibatch = 3;
+		DFunctionDropOut_F64 alg = new DFunctionDropOut_F64(1234,drop);
 
-		Case b = new Case();
-		b.inputShape = new int[]{5};
-		b.minibatch = 1;
+		Tensor_F64 input = factory.random(rand,false,5.0,6.0,3,4);
+		Tensor_F64 output = input.createLike();
 
-		return Arrays.asList(a,b);
+		alg.initialize(4);
+		alg.learning();
+
+		alg.forward(input,output);
+
+		Tensor_F64 dout = factory.random(rand,false,5.0,6.0,3,4);
+		Tensor_F64 gradientInput = input.createLike();
+
+		alg.backwards(input,dout,gradientInput, new ArrayList<>());
+
+		for (int i = 0; i < 12; i++) {
+			if( output.d[i] == 0 ) {
+				assertEquals(0,gradientInput.d[i], DeepBoofConstants.TEST_TOL_F64);
+			} else {
+				assertEquals(dout.d[i],gradientInput.d[i], DeepBoofConstants.TEST_TOL_F64);
+			}
+		}
+
 	}
 }

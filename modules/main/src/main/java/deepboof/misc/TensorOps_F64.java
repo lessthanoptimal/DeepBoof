@@ -60,7 +60,7 @@ public class TensorOps_F64 {
 	}
 
 	/**
-	 * <p>Performs element-wise multiplcation between the two tensors and stores results in output.  All tensors
+	 * <p>Performs element-wise multiplication between the two tensors and stores results in output.  All tensors
 	 * must have the same shape.  </p>
 	 *
 	 * {@code output[i] = A[i]*B[i]}
@@ -88,6 +88,39 @@ public class TensorOps_F64 {
 		} else if( A == output ) {
 			while (indexA < endA) {
 				A.d[indexA++] *= B.d[indexB++];
+			}
+		}
+	}
+
+	/**
+	 * <p>Performs element-wise addition between the two tensors and stores results in output.  All tensors
+	 * must have the same shape.  </p>
+	 *
+	 * {@code output[i] = A[i] + B[i]}
+	 *
+	 * @param A Input tensor.  Can be the same as output.
+	 * @param B Input tensor.  Can be the same as output.
+	 * @param output Output tensor.
+	 */
+	public static void elementAdd(Tensor_F64 A , Tensor_F64 B , Tensor_F64 output ) {
+		int indexA = A.startIndex;
+		int endA = indexA + A.length();
+		int indexB = B.startIndex;
+
+		if( A != output && B != output ) {
+
+			int indexOut = output.startIndex;
+
+			while (indexA < endA) {
+				output.d[indexOut++] = A.d[indexA++] + B.d[indexB++];
+			}
+		} else if( B == output ) {
+			while (indexA < endA) {
+				B.d[indexB++] += A.d[indexA++];
+			}
+		} else {
+			while (indexA < endA) {
+				A.d[indexA++] += B.d[indexB++];
 			}
 		}
 	}

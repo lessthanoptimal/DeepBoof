@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author Peter Abeles
@@ -94,6 +95,11 @@ public class TestTensorOps_F64 {
 				DeepUnitTest.assertEquals(expected,found,DeepBoofConstants.TEST_TOL_F64);
 			}
 		}
+	}
+
+	@Test
+	public void elementAdd() {
+		fail("Implement");
 	}
 
 	@Test

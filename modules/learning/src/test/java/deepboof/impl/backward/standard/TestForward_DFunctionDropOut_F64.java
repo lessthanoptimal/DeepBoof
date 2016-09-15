@@ -18,16 +18,66 @@
 
 package deepboof.impl.backward.standard;
 
+import deepboof.DeepUnitTest;
+import deepboof.misc.TensorFactory;
+import deepboof.misc.TensorOps_F64;
+import deepboof.tensors.Tensor_F64;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
+import java.util.Random;
 
 /**
  * @author Peter Abeles
  */
 public class TestForward_DFunctionDropOut_F64 {
+
+	Random rand = new Random(234);
+
+	TensorFactory<Tensor_F64> factory = new TensorFactory<>(Tensor_F64.class);
+
+
+	/**
+	 * Tests to see if it converges towards the expected average
+	 */
 	@Test
-	public void stuff() {
-		fail("implement");
+	public void learning() {
+
+		double drop = 0.3;
+
+		DFunctionDropOut_F64 alg = new DFunctionDropOut_F64(1234,drop);
+
+		Tensor_F64 input = factory.random(rand,false,5.0,6.0,3,4);
+		Tensor_F64 output = input.createLike();
+		Tensor_F64 average = input.createLike();
+
+		alg.initialize(4);
+		alg.learning();
+		int N = 1000;
+		for (int i = 0; i < N; i++) {
+			alg.forward(input,output);
+
+			TensorOps_F64.elementAdd(output,average,average);
+		}
+		TensorOps_F64.elementMult(average,1.0/N);
+		TensorOps_F64.elementMult(input,1.0-drop);
+
+		DeepUnitTest.assertEquals(input,average, 0.2);
+	}
+
+	@Test
+	public void evaluating() {
+		double drop = 0.3;
+
+		DFunctionDropOut_F64 alg = new DFunctionDropOut_F64(1234,drop);
+
+		Tensor_F64 input = factory.random(rand,false,5.0,6.0,3,4);
+		Tensor_F64 output = input.createLike();
+
+		alg.initialize(4);
+		alg.evaluating();
+		alg.forward(input,output);
+
+		TensorOps_F64.elementMult(input,1.0-drop);
+		DeepUnitTest.assertEquals(input,output, 0.2);
 	}
 }

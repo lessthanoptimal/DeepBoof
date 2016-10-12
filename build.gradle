@@ -2,8 +2,8 @@ allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
 
-    group 'deepboof'
-    version '1.0-SNAPSHOT'
+    group 'org.deepboof'
+    version '0.1-SNAPSHOT'
 }
 
 
@@ -88,7 +88,7 @@ subprojects {
                         name 'DeepBoof'
                         packaging 'pom'
                         // optionally artifactId can be defined here
-                        description 'Deep learning for BoofCV'
+                        description 'Trainer Agnostic Deep Learning'
                         url 'http://boofcv.org'
 
                         scm {

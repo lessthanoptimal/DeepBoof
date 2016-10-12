@@ -42,7 +42,25 @@ public class TensorOps_F32 {
 	}
 
 	/**
-	 * <p>Performs element-wise multiplcation between the two tensors and stores results in output.  All tensors
+	 * Performs an element-wise scalar multiplication
+	 *
+	 * @param input Tensor which is multiplied (not modified)
+	 * @param value value of the multiplication (modified)
+	 * @param output Tensor where the results are stored
+	 */
+	public static void elementMult(Tensor_F32 input , float value , Tensor_F32 output ) {
+		TensorOps.checkShape(input,output);
+
+		int indexIn = input.startIndex;
+		int indexOut = output.startIndex;
+		int end = indexIn + input.length();
+		for( ; indexIn < end; indexIn++ , indexOut++ ) {
+			output.d[indexOut] = input.d[indexIn]*value;
+		}
+	}
+
+	/**
+	 * <p>Performs element-wise multiplication between the two tensors and stores results in output.  All tensors
 	 * must have the same shape.  </p>
 	 *
 	 * {@code output[i] = A[i]*B[i]}
@@ -70,6 +88,39 @@ public class TensorOps_F32 {
 		} else if( A == output ) {
 			while (indexA < endA) {
 				A.d[indexA++] *= B.d[indexB++];
+			}
+		}
+	}
+
+	/**
+	 * <p>Performs element-wise addition between the two tensors and stores results in output.  All tensors
+	 * must have the same shape.  </p>
+	 *
+	 * {@code output[i] = A[i] + B[i]}
+	 *
+	 * @param A Input tensor.  Can be the same as output.
+	 * @param B Input tensor.  Can be the same as output.
+	 * @param output Output tensor.
+	 */
+	public static void elementAdd(Tensor_F32 A , Tensor_F32 B , Tensor_F32 output ) {
+		int indexA = A.startIndex;
+		int endA = indexA + A.length();
+		int indexB = B.startIndex;
+
+		if( A != output && B != output ) {
+
+			int indexOut = output.startIndex;
+
+			while (indexA < endA) {
+				output.d[indexOut++] = A.d[indexA++] + B.d[indexB++];
+			}
+		} else if( B == output ) {
+			while (indexA < endA) {
+				B.d[indexB++] += A.d[indexA++];
+			}
+		} else {
+			while (indexA < endA) {
+				A.d[indexA++] += B.d[indexB++];
 			}
 		}
 	}

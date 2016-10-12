@@ -19,7 +19,7 @@
 package deepboof.io.torch7;
 
 import deepboof.Function;
-import deepboof.graph.ForwardSequence;
+import deepboof.graph.FunctionSequence;
 import deepboof.tensors.Tensor_F32;
 
 import java.io.File;
@@ -40,7 +40,7 @@ public class TorchUtilities {
 		SequenceAndParameters<Tensor_F32, Function<Tensor_F32>> sequence =
 				parser.parseIntoBoof(new File(directory,"model.net"));
 
-		ForwardSequence<Tensor_F32,Function<Tensor_F32>> network = sequence.createForward(3,32,32);
+		FunctionSequence<Tensor_F32,Function<Tensor_F32>> network = sequence.createForward(3,32,32);
 
 		Tensor_F32 input = parser.parseIntoBoof(new File(directory,"test_input.t7"));
 		Tensor_F32 expected = parser.parseIntoBoof(new File(directory,"test_output.t7"));

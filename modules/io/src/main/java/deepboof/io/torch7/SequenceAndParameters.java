@@ -20,7 +20,7 @@ package deepboof.io.torch7;
 
 import deepboof.Function;
 import deepboof.Tensor;
-import deepboof.graph.ForwardSequence;
+import deepboof.graph.FunctionSequence;
 import deepboof.graph.Node;
 
 import java.util.ArrayList;
@@ -44,8 +44,8 @@ public class SequenceAndParameters< T extends Tensor<T>,F extends Function<T>> {
 	public Map<String,List<T>> parameters = new HashMap<>();
 	public Class<T> type;
 
-	public ForwardSequence<T,F> createForward(int ...shape) {
-		ForwardSequence<T,F> network = new ForwardSequence<>(sequence,type);
+	public FunctionSequence<T,F> createForward(int ...shape) {
+		FunctionSequence<T,F> network = new FunctionSequence<>(sequence,type);
 		network.initialize(shape);
 		network.setParameters(parameters);
 		return network;

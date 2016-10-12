@@ -1,6 +1,6 @@
 import boofcv.gui.image.ShowImages;
 import deepboof.Function;
-import deepboof.graph.ForwardSequence;
+import deepboof.graph.FunctionSequence;
 import deepboof.io.torch7.ParseBinaryTorch7;
 import deepboof.io.torch7.SequenceAndParameters;
 import deepboof.tensors.Tensor_F32;
@@ -23,7 +23,7 @@ public class ExampleVisualizeNetwork {
 		SequenceAndParameters<Tensor_F32, Function<Tensor_F32>> sequence =
 				new ParseBinaryTorch7().parseIntoBoof(new File(modelHome,"model.net"));
 
-		ForwardSequence<Tensor_F32,Function<Tensor_F32>> network = sequence.createForward(3,32,32);
+		FunctionSequence<Tensor_F32,Function<Tensor_F32>> network = sequence.createForward(3,32,32);
 
 		SequentialNetworkDisplay gui = new SequentialNetworkDisplay((List)network.getSequence());
 

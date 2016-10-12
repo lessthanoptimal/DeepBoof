@@ -46,7 +46,7 @@ public class TestForwardSequence {
 		for (int length = 1; length <= 5; length++) {
 			List<Node> sequence = createLine(length);
 
-			ForwardSequence alg = new ForwardSequence(sequence, Tensor_F64.class);
+			FunctionSequence alg = new FunctionSequence(sequence, Tensor_F64.class);
 			alg.initialize(new int[]{1});
 
 			// actual input tensors are always (mini-batch, .... etc.) hence the extra 1 dimension
@@ -75,7 +75,7 @@ public class TestForwardSequence {
 			parameters.put(node.name, p);
 		}
 
-		ForwardSequence alg = new ForwardSequence(sequence, Tensor_F64.class);
+		FunctionSequence alg = new FunctionSequence(sequence, Tensor_F64.class);
 
 		alg.setParameters(parameters);
 
@@ -90,7 +90,7 @@ public class TestForwardSequence {
 		for (int length = 1; length <= 5; length++) {
 			List<Node> sequence = createLine(length);
 
-			ForwardSequence alg = new ForwardSequence(sequence, Tensor_F64.class);
+			FunctionSequence alg = new FunctionSequence(sequence, Tensor_F64.class);
 
 			alg.initialize(new int[]{10});
 

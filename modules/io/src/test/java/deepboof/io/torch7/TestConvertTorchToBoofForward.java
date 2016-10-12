@@ -22,7 +22,7 @@ import deepboof.Accuracy;
 import deepboof.DeepUnitTest;
 import deepboof.Function;
 import deepboof.Tensor;
-import deepboof.graph.ForwardSequence;
+import deepboof.graph.FunctionSequence;
 import deepboof.impl.forward.standard.*;
 import deepboof.io.torch7.struct.TorchObject;
 import deepboof.misc.TensorOps;
@@ -184,7 +184,7 @@ public class TestConvertTorchToBoofForward {
 			SequenceAndParameters sap = convert(readBinary(new File(d,"operation")));
 			Tensor expected = convert(readBinary(new File(d,"output")));
 
-			ForwardSequence forward = new ForwardSequence(sap.sequence,sap.type);
+			FunctionSequence forward = new FunctionSequence(sap.sequence,sap.type);
 
 			int N = input.length(0);
 

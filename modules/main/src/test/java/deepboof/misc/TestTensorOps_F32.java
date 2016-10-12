@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author Peter Abeles
@@ -54,6 +55,25 @@ public class TestTensorOps_F32 {
 	}
 
 	@Test
+	public void elementMult_scalar_tensor() {
+		for( boolean sub : new boolean[]{false,true}) {
+			Tensor_F32 T = TensorFactory_F32.random(rand,sub, 5,3,1);
+			Tensor_F32 O = TensorFactory_F32.random(rand,sub, 5,3,1);
+
+			Tensor_F32 original = T.copy();
+
+			float s = 2.1f;
+			TensorOps_F32.elementMult(T,s,O);
+
+			int N = original.length();
+			for (int i = 0; i < N; i++) {
+				assertEquals( original.getAtIndex(i) , T.getAtIndex(i) , DeepBoofConstants.TEST_TOL_F32 );
+				assertEquals( original.getAtIndex(i)*s , O.getAtIndex(i) , DeepBoofConstants.TEST_TOL_F32 );
+			}
+		}
+	}
+
+	@Test
 	public void elementMult_tensor() {
 		List<int[]> shapes = new ArrayList<>();
 		shapes.add(new int[]{5});
@@ -71,6 +91,30 @@ public class TestTensorOps_F32 {
 				}
 
 				TensorOps_F32.elementMult(A,B,found);
+
+				DeepUnitTest.assertEquals(expected,found,DeepBoofConstants.TEST_TOL_F32);
+			}
+		}
+	}
+
+	@Test
+	public void elementAdd_tensor() {
+		List<int[]> shapes = new ArrayList<>();
+		shapes.add(new int[]{5});
+		shapes.add(new int[]{2,3,4});
+
+		for( boolean subtensor : new boolean[]{false,true}) {
+			for( int[] shape : shapes ) {
+				Tensor_F32 A = TensorFactory_F32.random(rand, subtensor, shape);
+				Tensor_F32 B = TensorFactory_F32.random(rand, subtensor, shape);
+				Tensor_F32 found = TensorFactory_F32.random(rand, subtensor, shape);
+				Tensor_F32 expected = new Tensor_F32(shape);
+
+				for (int i = 0; i < A.length(); i++) {
+					expected.d[expected.startIndex+i] = A.d[A.startIndex+i] + B.d[B.startIndex+i];
+				}
+
+				TensorOps_F32.elementAdd(A,B,found);
 
 				DeepUnitTest.assertEquals(expected,found,DeepBoofConstants.TEST_TOL_F32);
 			}

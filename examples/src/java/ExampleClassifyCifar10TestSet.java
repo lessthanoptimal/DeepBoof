@@ -6,7 +6,7 @@ import boofcv.struct.convolve.Kernel1D_F32;
 import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.Planar;
 import deepboof.Function;
-import deepboof.graph.ForwardSequence;
+import deepboof.graph.FunctionSequence;
 import deepboof.io.torch7.ParseBinaryTorch7;
 import deepboof.io.torch7.SequenceAndParameters;
 import deepboof.misc.DataManipulationOps;
@@ -46,7 +46,7 @@ public class ExampleClassifyCifar10TestSet {
 		SequenceAndParameters<Tensor_F32, Function<Tensor_F32>> sequence =
 				new ParseBinaryTorch7().parseIntoBoof(new File(modelHome,"model.net"));
 
-		ForwardSequence<Tensor_F32,Function<Tensor_F32>> network = sequence.createForward(3,32,32);
+		FunctionSequence<Tensor_F32,Function<Tensor_F32>> network = sequence.createForward(3,32,32);
 
 		System.out.println("Loading test set data and converting into YUV");
 		UtilCifar10.DataSet data = UtilCifar10.loadTestYuv(true);

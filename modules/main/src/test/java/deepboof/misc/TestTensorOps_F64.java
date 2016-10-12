@@ -98,8 +98,27 @@ public class TestTensorOps_F64 {
 	}
 
 	@Test
-	public void elementAdd() {
-		fail("Implement");
+	public void elementAdd_tensor() {
+		List<int[]> shapes = new ArrayList<>();
+		shapes.add(new int[]{5});
+		shapes.add(new int[]{2,3,4});
+
+		for( boolean subtensor : new boolean[]{false,true}) {
+			for( int[] shape : shapes ) {
+				Tensor_F64 A = TensorFactory_F64.random(rand, subtensor, shape);
+				Tensor_F64 B = TensorFactory_F64.random(rand, subtensor, shape);
+				Tensor_F64 found = TensorFactory_F64.random(rand, subtensor, shape);
+				Tensor_F64 expected = new Tensor_F64(shape);
+
+				for (int i = 0; i < A.length(); i++) {
+					expected.d[expected.startIndex+i] = A.d[A.startIndex+i] + B.d[B.startIndex+i];
+				}
+
+				TensorOps_F64.elementAdd(A,B,found);
+
+				DeepUnitTest.assertEquals(expected,found,DeepBoofConstants.TEST_TOL_F64);
+			}
+		}
 	}
 
 	@Test

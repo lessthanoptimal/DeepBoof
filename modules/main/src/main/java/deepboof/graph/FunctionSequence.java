@@ -38,7 +38,7 @@ import static deepboof.misc.TensorOps.WI;
  *
  * @author Peter Abeles
  */
-public class ForwardSequence<T extends Tensor<T>, F extends Function<T>>
+public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 {
 	// Sequence of functions which have been ordered so that the pre-requisites are meet by nodes previously
 	// in the list.
@@ -60,7 +60,7 @@ public class ForwardSequence<T extends Tensor<T>, F extends Function<T>>
 	 * @param sequence Sequence of functions which has been ordered to meet pre-requisites.
 	 * @param type Type of tensor
 	 */
-	public ForwardSequence(List<Node<T,F>> sequence, Class<T> type ) {
+	public FunctionSequence(List<Node<T,F>> sequence, Class<T> type ) {
 		this.sequence = sequence;
 
 		for( Node<T,F> n : sequence ) {

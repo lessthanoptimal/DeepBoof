@@ -1,6 +1,7 @@
-DeepBoof is a Java library for running deep neural networks on image data and other sources in Java.  
-Additional tools include visualization and network training.  It has been designed to integrate with 
-[Torch](http://torch.ch/) but does not depend it for its core functionality.
+DeepBoof is a Java library for running deep neural networks trained using other projects (e.g. Torch and Caffe)
+with a focus on processing image data.  Additional tools include visualization and network training.
+Image processing is done using [BoofCV](http://boofcv.org).  While it has been designed to work with
+[Torch](http://torch.ch/) and [Caffe](caffe.berkeleyvision.org) it does not depend either library for its core functionality.
 
 ## Installation
 

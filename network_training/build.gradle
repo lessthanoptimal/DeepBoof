@@ -25,7 +25,10 @@ subprojects {
     }
 
     dependencies {
-        compile group: 'org.ddogleg', name: 'ddogleg', version: '0.10-SNAPSHOT'
+        ['ip','io','visualize','feature','recognition'].each {String a ->
+            compile group: 'org.boofcv', name: a, version: '0.25-SNAPSHOT'}
+        ['io','main','models','learning','visualization'].each {String a ->
+            compile group: 'org.deepboof', name: a, version: '0.2-SNAPSHOT'}
 
         testCompile group: 'junit', name: 'junit', version: '4.12'
     }
@@ -127,16 +130,16 @@ idea {
     }
 }
 
-// Disable the creation of jars for distribution.  If you don't do this it will crash
-[':modules'].each {String a ->
-    project(a) {
-        if( project.hasProperty('ossrhUsername') ) {
-            signArchives.enabled = false
-        }
-        sourcesJar.enabled = false
-        javadocJar.enabled = false
-        jar.enabled = false
-        uploadArchives.enabled = false
-        install.enabled = false
-    }
-}
+//// Disable the creation of jars for distribution.  If you don't do this it will crash
+//[':modules'].each {String a ->
+//    project(a) {
+//        if( project.hasProperty('ossrhUsername') ) {
+//            signArchives.enabled = false
+//        }
+//        sourcesJar.enabled = false
+//        javadocJar.enabled = false
+//        jar.enabled = false
+//        uploadArchives.enabled = false
+//        install.enabled = false
+//    }
+//}

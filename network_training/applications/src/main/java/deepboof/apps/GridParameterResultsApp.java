@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package deepboof.visualization;
+package deepboof.apps;
 
 import boofcv.gui.learning.ConfusionMatrixPanel;
 import com.beust.jcommander.JCommander;

@@ -18,7 +18,7 @@
 
 package deepboof.forward;
 
-import boofcv.struct.Configuration;
+import deepboof.misc.Configuration;
 
 /**
  * Configuration for 2D convolution.  See {@link SpatialConvolve2D} for a more detailed description of variable names.

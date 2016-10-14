@@ -2,6 +2,7 @@ dependencies {
     compile project(':modules:main')
     compile project(':modules:io')
     compile project(':modules:visualization')
+    compile project(':modules:models')
 }
 
 sourceSets {

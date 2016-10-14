@@ -18,8 +18,8 @@
 
 package deepboof.forward;
 
-import boofcv.struct.Configuration;
 import deepboof.PaddingType;
+import deepboof.misc.Configuration;
 
 /**
  * Configuration for spatial padding.

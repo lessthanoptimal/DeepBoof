@@ -1,9 +1,10 @@
-import boofcv.gui.image.ShowImages;
 import deepboof.Function;
+import deepboof.datasets.UtilCifar10;
 import deepboof.graph.FunctionSequence;
 import deepboof.io.torch7.ParseBinaryTorch7;
 import deepboof.io.torch7.SequenceAndParameters;
 import deepboof.tensors.Tensor_F32;
+import deepboof.visualization.DeepVisulization;
 import deepboof.visualization.SequentialNetworkDisplay;
 
 import javax.swing.*;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class ExampleVisualizeNetwork {
 	public static void main(String[] args) throws IOException {
-		File modelHome = UtilCifar10.downloadModel();
+		File modelHome = UtilCifar10.downloadModelVggLike();
 
 		System.out.println("Load and convert to DeepBoof");
 		SequenceAndParameters<Tensor_F32, Function<Tensor_F32>> sequence =
@@ -30,6 +31,6 @@ public class ExampleVisualizeNetwork {
 		JScrollPane scrollPane = new JScrollPane(gui);
 		scrollPane.setPreferredSize(new Dimension(400,800));
 
-		ShowImages.showWindow(scrollPane,"Network",true);
+		DeepVisulization.showWindow(scrollPane,"Network",true);
 	}
 }

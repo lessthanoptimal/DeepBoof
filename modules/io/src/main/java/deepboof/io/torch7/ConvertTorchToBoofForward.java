@@ -18,7 +18,6 @@
 
 package deepboof.io.torch7;
 
-import boofcv.struct.Tuple2;
 import deepboof.PaddingType;
 import deepboof.Tensor;
 import deepboof.factory.FactoryForwards;
@@ -30,6 +29,7 @@ import deepboof.io.torch7.struct.*;
 import deepboof.tensors.Tensor_F32;
 import deepboof.tensors.Tensor_F64;
 import deepboof.tensors.Tensor_U8;
+import org.ddogleg.struct.Tuple2;
 
 import java.util.List;
 

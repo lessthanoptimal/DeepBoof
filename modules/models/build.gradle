@@ -1,0 +1,11 @@
+dependencies {
+    compile project(':modules:main')
+    compile project(':modules:learning')
+    compile project(':modules:io')
+}
+
+idea {
+    module {
+        name = "DeepBoof Models"
+    }
+}

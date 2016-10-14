@@ -18,11 +18,11 @@
 
 package deepboof.graph;
 
-import boofcv.struct.Tuple2;
 import deepboof.Function;
 import deepboof.Tensor;
 import deepboof.misc.TensorFactory;
 import deepboof.misc.TensorOps;
+import org.ddogleg.struct.Tuple2;
 
 import java.util.ArrayList;
 import java.util.HashMap;

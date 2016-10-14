@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package deepboof.visualization;
+package deepboof.apps;
 
 import de.erichseifert.gral.graphics.Drawable;
 import de.erichseifert.gral.plots.XYPlot;

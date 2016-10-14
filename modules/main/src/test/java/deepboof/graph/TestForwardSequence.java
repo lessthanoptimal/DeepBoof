@@ -18,10 +18,10 @@
 
 package deepboof.graph;
 
-import boofcv.struct.Tuple2;
 import deepboof.DeepBoofConstants;
 import deepboof.DummyFunction;
 import deepboof.tensors.Tensor_F64;
+import org.ddogleg.struct.Tuple2;
 import org.junit.Test;
 
 import java.util.ArrayList;

@@ -18,7 +18,7 @@
 
 package deepboof.forward;
 
-import boofcv.struct.Configuration;
+import deepboof.misc.Configuration;
 
 /**
  * Common configuration for many spatial functions

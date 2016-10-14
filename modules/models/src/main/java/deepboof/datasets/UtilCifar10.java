@@ -11,17 +11,30 @@ import java.util.List;
  * @author Peter Abeles
  */
 public class UtilCifar10 {
-	public static File downloadModelVggLike() {
-		File modelHome = DeepBoofOps.pathData("torch_models/likevgg_cifar10");
 
-		if( !modelHome.exists() ) {
-			System.out.println("Obtaining network model.  size = 125 MB");
-			File modelParent = modelHome.getParentFile();
-			DatabaseOps.download("http://heanet.dl.sourceforge.net/project/deepboof/networks/v1/likevgg_cifar10.zip",modelParent);
-			DatabaseOps.decompressZip(new File(modelParent,"likevgg_cifar10.zip"),modelParent,true);
+	public static File downloadModelVggLike( File path ) {
+//		if( !path.isDirectory() )
+//			path = path.getParentFile();
+
+		File pathToModel = new File(path,"likevgg_cifar10");
+		if( !path.exists() ) {
+			if (!path.mkdirs())
+				throw new IllegalArgumentException("Failed to make path");
+		} else {
+
+			// check to see if the data already exists.  If so just return
+			if( new File(pathToModel,"YuvStatistics.txt").exists() &&
+					new File(pathToModel,"model.net").exists() )
+				return pathToModel;
+
+			// TODO check md5sum
 		}
 
-		return modelHome;
+		System.out.println("Obtaining network model.  size = 125 MB");
+		DatabaseOps.download("http://heanet.dl.sourceforge.net/project/deepboof/networks/v1/likevgg_cifar10.zip",path);
+		DatabaseOps.decompressZip(new File(path,"likevgg_cifar10.zip"),path,true);
+
+		return pathToModel;
 	}
 
 	public static File downloadData() {

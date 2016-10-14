@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class ExampleVisualizeNetwork {
 	public static void main(String[] args) throws IOException {
-		File modelHome = UtilCifar10.downloadModelVggLike();
+		File modelHome = UtilCifar10.downloadModelVggLike(new File("data/torch_models"));
 
 		System.out.println("Load and convert to DeepBoof");
 		SequenceAndParameters<Tensor_F32, Function<Tensor_F32>> sequence =

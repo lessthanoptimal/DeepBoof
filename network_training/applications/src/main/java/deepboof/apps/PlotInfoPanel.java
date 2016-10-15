@@ -18,11 +18,14 @@
 
 package deepboof.apps;
 
+import deepboof.visualization.ConfusionCounts;
+import deepboof.visualization.JTextPaneAA;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.util.Map;
 import java.util.Set;
+
 
 /**
  * @author Peter Abeles

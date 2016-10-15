@@ -1,3 +1,15 @@
 rootProject.name = 'DeepBoof Training'
 
 include 'applications','misc'
+
+include 'modules:main',
+        'modules:learning',
+        'modules:io',
+        'modules:visualization',
+        'modules:models'
+
+project(':modules:main').projectDir = new File('../modules/main')
+project(':modules:learning').projectDir = new File('../modules/learning')
+project(':modules:io').projectDir = new File('../modules/io')
+project(':modules:visualization').projectDir = new File('../modules/visualization')
+project(':modules:models').projectDir = new File('../modules/models')

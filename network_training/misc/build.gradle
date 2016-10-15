@@ -1,0 +1,10 @@
+dependencies {
+    compile project(':applications')
+
+}
+
+idea {
+    module {
+        name = "DeepBoof Misc"
+    }
+}

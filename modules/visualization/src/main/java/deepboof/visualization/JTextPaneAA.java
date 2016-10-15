@@ -24,7 +24,7 @@ import java.awt.*;
 /**
  * @author Peter Abeles
  */
-class JTextPaneAA extends JTextPane {
+public class JTextPaneAA extends JTextPane {
 	public void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);

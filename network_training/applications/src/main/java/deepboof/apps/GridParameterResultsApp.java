@@ -36,6 +36,9 @@ import de.erichseifert.gral.plots.points.PointRenderer;
 import de.erichseifert.gral.plots.points.SizeablePointRenderer;
 import de.erichseifert.gral.ui.InteractivePanel;
 import de.erichseifert.gral.util.GraphicsUtils;
+import deepboof.visualization.ConfusionCounts;
+import deepboof.visualization.ConfusionFraction;
+import deepboof.visualization.PlotControlPanel;
 import org.ddogleg.struct.GrowQueue_F64;
 
 import javax.swing.*;

@@ -1,15 +1,19 @@
+package deepboof;
+
 import boofcv.alg.filter.stat.ImageLocalNormalization;
 import boofcv.core.image.border.BorderType;
+import boofcv.deepboof.DataManipulationOps;
 import boofcv.gui.image.ShowImages;
 import boofcv.gui.learning.ConfusionMatrixPanel;
 import boofcv.struct.convolve.Kernel1D_F32;
 import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.Planar;
-import deepboof.Function;
+import deepboof.datasets.UtilCifar10;
 import deepboof.graph.FunctionSequence;
 import deepboof.io.torch7.ParseBinaryTorch7;
 import deepboof.io.torch7.SequenceAndParameters;
-import deepboof.misc.DataManipulationOps;
+import deepboof.models.DeepModelIO;
+import deepboof.models.YuvStatistics;
 import deepboof.tensors.Tensor_F32;
 import deepboof.visualization.ConfusionCounts;
 import deepboof.visualization.ConfusionFraction;
@@ -39,8 +43,8 @@ public class ExampleClassifyCifar10TestSet {
 	public static void main(String[] args) throws IOException {
 
 		// Specify where all the prebuilt models and data sets are stored
-		File modelHome = UtilCifar10.downloadModel();
-		YuvStatistics stats = UtilCifar10.load(new File(modelHome,"YuvStatistics.txt"));
+		File modelHome = UtilCifar10.downloadModelVggLike(new File("downloaded/vgglike"));
+		YuvStatistics stats = DeepModelIO.load(new File(modelHome,"YuvStatistics.txt"));
 
 		System.out.println("Load and convert model to BoofCV");
 		SequenceAndParameters<Tensor_F32, Function<Tensor_F32>> sequence =
@@ -49,7 +53,7 @@ public class ExampleClassifyCifar10TestSet {
 		FunctionSequence<Tensor_F32,Function<Tensor_F32>> network = sequence.createForward(3,32,32);
 
 		System.out.println("Loading test set data and converting into YUV");
-		UtilCifar10.DataSet data = UtilCifar10.loadTestYuv(true);
+		DataSetsCifar10.DataSet data = DataSetsCifar10.loadTestYuv(true);
 
 		// Number of images in the test set
 		int numTest = data.images.size();
@@ -62,7 +66,7 @@ public class ExampleClassifyCifar10TestSet {
 		// Locally normalize using a gaussian kernel with zero padding
 		BorderType type = BorderType.valueOf(stats.border);
 		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, type);
-		Kernel1D_F32 kernel = stats.create1D_F32();
+		Kernel1D_F32 kernel = DataManipulationOps.create1D_F32(stats.kernel);
 
 		// Total number of correct guesses and number of guesses made
 		int totalCorrect = 0;

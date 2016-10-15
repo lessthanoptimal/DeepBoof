@@ -1,4 +1,6 @@
-import deepboof.visualization.GridParameterResultsApp;
+package deepboof;
+
+import deepboof.apps.GridParameterResultsApp;
 
 /**
  * Example of how to visualize logged data generated during a grid search of optimization parameter

@@ -1,6 +1,9 @@
+package deepboof;
+
 import boofcv.alg.filter.stat.ImageLocalNormalization;
 import boofcv.alg.misc.GImageMiscOps;
 import boofcv.core.image.border.BorderType;
+import boofcv.deepboof.DataManipulationOps;
 import boofcv.struct.convolve.Kernel1D_F32;
 import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.Planar;
@@ -8,7 +11,8 @@ import deepboof.io.torch7.ConvertBoofToTorch;
 import deepboof.io.torch7.SerializeBinaryTorch7;
 import deepboof.io.torch7.struct.TorchGeneric;
 import deepboof.io.torch7.struct.TorchTensor;
-import deepboof.misc.DataManipulationOps;
+import deepboof.models.DeepModelIO;
+import deepboof.models.YuvStatistics;
 import deepboof.tensors.Tensor_F32;
 import deepboof.tensors.Tensor_U8;
 
@@ -39,7 +43,7 @@ public class ExampleApplyNormalizeCifar10 {
 	 * @param outputName
 	 * @throws IOException
 	 */
-	private static void applyNormalization(UtilCifar10.DataSet data, YuvStatistics stats,
+	private static void applyNormalization(DataSetsCifar10.DataSet data, YuvStatistics stats,
 										   boolean distort ,
 										   String outputName )
 			throws IOException
@@ -50,7 +54,7 @@ public class ExampleApplyNormalizeCifar10 {
 		// NORMALIZED border = 70.95 at 147
 		BorderType type = BorderType.valueOf(stats.border);
 		ImageLocalNormalization<GrayF32> localNorm = new ImageLocalNormalization<>(GrayF32.class, type);
-		Kernel1D_F32 kernel = stats.create1D_F32();
+		Kernel1D_F32 kernel = DataManipulationOps.create1D_F32(stats.kernel);
 
 		GrayF32 workspace = new GrayF32(32,32);
 
@@ -93,14 +97,14 @@ public class ExampleApplyNormalizeCifar10 {
 	public static void main(String[] args) throws IOException {
 
 		// Load training data and convert into YUV image
-		YuvStatistics stats = UtilCifar10.load(new File("YuvStatistics.txt"));
+		YuvStatistics stats = DeepModelIO.load(new File("YuvStatistics.txt"));
 
 		System.out.println("Loading training data");
-		UtilCifar10.DataSet data = UtilCifar10.loadTrainingYuv(false);
+		DataSetsCifar10.DataSet data = DataSetsCifar10.loadTrainingYuv(false);
 		applyNormalization(data, stats,true, "train_normalized_cifar10.t7");
 
 		System.out.println("Loading test data");
-		data = UtilCifar10.loadTestYuv(false);
+		data = DataSetsCifar10.loadTestYuv(false);
 		applyNormalization(data, stats,false, "test_normalized_cifar10.t7");
 
 		System.out.println("   finished");

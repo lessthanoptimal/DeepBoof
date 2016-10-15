@@ -1,10 +1,16 @@
+package deepboof;
+
 import boofcv.alg.misc.ImageStatistics;
 import boofcv.alg.misc.PixelMath;
 import boofcv.core.image.border.BorderType;
 import boofcv.factory.filter.kernel.FactoryKernel;
+import boofcv.factory.filter.kernel.FactoryKernelGaussian;
 import boofcv.struct.convolve.Kernel1D_F64;
 import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.Planar;
+import deepboof.datasets.UtilCifar10;
+import deepboof.models.DeepModelIO;
+import deepboof.models.YuvStatistics;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +33,7 @@ public class ExampleLearnNormalizationCifar10 {
 	public static void main(String[] args) throws IOException {
 
 		// Load training data and convert into YUV image
-		List<Planar<GrayF32>> listYuv = UtilCifar10.loadTrainingYuv(false).images;
+		List<Planar<GrayF32>> listYuv = DataSetsCifar10.loadTrainingYuv(false).images;
 
 		// Compute mean and standard deviation for U and V bands
 		System.out.println("Computing mean");
@@ -59,8 +65,8 @@ public class ExampleLearnNormalizationCifar10 {
 		stdevV = Math.sqrt( stdevV/totalPixels - meanV*meanV );
 
 		// smoothing kernel used in spatial normalization in Y channel
-//		Kernel1D_F64 kernel = FactoryKernelGaussian.gaussian(Kernel1D_F64.class,-1,4);
-		Kernel1D_F64 kernel = FactoryKernel.table1D_F64(4,true);
+		Kernel1D_F64 kernel = FactoryKernelGaussian.gaussian(Kernel1D_F64.class,-1,4);
+//		Kernel1D_F64 kernel = FactoryKernel.table1D_F64(4,true);
 
 		// Save these statistics
 		System.out.println("Saving");
@@ -72,7 +78,7 @@ public class ExampleLearnNormalizationCifar10 {
 		params.kernel = kernel.data;
 		params.border = BorderType.NORMALIZED.name();
 
-		UtilCifar10.save(params,new File("YuvStatistics.txt"));
+		DeepModelIO.save(params,new File("YuvStatistics.txt"));
 	}
 }
 

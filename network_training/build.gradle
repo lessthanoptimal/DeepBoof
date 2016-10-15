@@ -24,7 +24,9 @@ subprojects {
 
     dependencies {
         ['ip','io','visualize','feature','recognition'].each {String a ->
-            compile group: 'org.boofcv', name: a, version: '0.25-SNAPSHOT'}
+            compile('org.boofcv:'+a+':0.25-SNAPSHOT'){
+                exclude group: 'org.deepboof' }}
+
 
         testCompile group: 'junit', name: 'junit', version: '4.12'
     }

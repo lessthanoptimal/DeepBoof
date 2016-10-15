@@ -16,6 +16,7 @@ public class DeepModelIO {
 		out.printf("stdevU %f\n",params.stdevU);
 		out.printf("stdevV %f\n",params.stdevV);
 		out.printf("border %s\n",params.border);
+		out.printf("kernelOffset %d\n",params.kernelOffset);
 		out.print("kernel");
 		for (int i = 0; i < params.kernel.length; i++) {
 			out.printf(" %.10f",params.kernel[i]);
@@ -33,6 +34,7 @@ public class DeepModelIO {
 		out.stdevU = readDouble(reader.readLine());
 		out.stdevV = readDouble(reader.readLine());
 		out.border = readString(reader.readLine());
+		out.kernelOffset = readInt(reader.readLine());
 		out.kernel = readArray(reader.readLine());
 
 		return out;
@@ -40,6 +42,10 @@ public class DeepModelIO {
 
 	private static String readString( String line ) {
 		return line.split(" ")[1];
+	}
+
+	private static int readInt( String line ) {
+		return Integer.parseInt(line.split(" ")[1]);
 	}
 
 	private static double readDouble( String line ) {

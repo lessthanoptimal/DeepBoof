@@ -32,6 +32,7 @@ public class DataSetsCifar10 {
 
 	public static DataSet loadTrainingYuv(boolean show) throws IOException {
 		File trainingDir = DataSetsCifar10.downloadData();
+		System.out.println("Training data set "+trainingDir.getPath());
 		ParseAsciiTorch7 ascii = new ParseAsciiTorch7();
 
 		List<Planar<GrayF32>> listYuv = new ArrayList<>();

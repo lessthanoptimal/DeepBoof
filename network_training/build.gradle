@@ -9,9 +9,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'osgi'
     apply plugin: 'maven'
-    apply plugin: 'signing'
 
     sourceCompatibility = 1.8
 
@@ -63,58 +61,6 @@ subprojects {
     artifacts {
         archives javadocJar, sourcesJar
     }
-
-    // if Maven central isn't setup in gradle.properties skip all of this
-    if( project.hasProperty('ossrhUsername') ) {
-        signing {
-            sign configurations.archives
-        }
-
-        uploadArchives {
-            repositories {
-                mavenDeployer {
-                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                        authentication(userName: ossrhUsername, password: ossrhPassword)
-                    }
-
-                    snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                        authentication(userName: ossrhUsername, password: ossrhPassword)
-                    }
-
-                    pom.project {
-                        name 'DeepBoof'
-                        packaging 'pom'
-                        // optionally artifactId can be defined here
-                        description 'Trainer Agnostic Deep Learning'
-                        url 'http://boofcv.org'
-
-                        scm {
-                            connection 'scm:git:git://github.com/lessthanoptimal/DeepBoof.git'
-                            developerConnection 'scm:git:git://github.com/lessthanoptimal/DeepBoof.git'
-                            url 'https://github.com/lessthanoptimal/BoofCV'
-                        }
-
-                        licenses {
-                            license {
-                                name 'The Apache Software License, Version 2.0'
-                                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                            }
-                        }
-
-                        developers {
-                            developer {
-                                id 'pabeles'
-                                name 'Peter Abeles'
-                                email 'peter.abeles@gmail.com'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 idea {
@@ -128,16 +74,16 @@ idea {
     }
 }
 
-//// Disable the creation of jars for distribution.  If you don't do this it will crash
-//[':modules'].each {String a ->
-//    project(a) {
+// Disable the creation of jars for distribution.  If you don't do this it will crash
+[':modules'].each {String a ->
+    project(a) {
 //        if( project.hasProperty('ossrhUsername') ) {
 //            signArchives.enabled = false
 //        }
-//        sourcesJar.enabled = false
-//        javadocJar.enabled = false
-//        jar.enabled = false
-//        uploadArchives.enabled = false
-//        install.enabled = false
-//    }
-//}
+        sourcesJar.enabled = false
+        javadocJar.enabled = false
+        jar.enabled = false
+        uploadArchives.enabled = false
+        install.enabled = false
+    }
+}

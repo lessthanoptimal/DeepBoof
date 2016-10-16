@@ -21,11 +21,11 @@ package deepboof.forward;
 import deepboof.Tensor;
 
 /**
- * Max spatial pooling find the maximum value inside the pooling region.  See {@link SpatialPooling}
+ * Max spatial pooling find the average value inside the pooling region.  See {@link SpatialPooling}
  * for more details.
  *
  * @author Peter Abeles
  */
-public interface SpatialMaxPooling<T extends Tensor> extends SpatialPooling<T> {
+public interface SpatialAveragePooling<T extends Tensor> extends SpatialPooling<T> {
 
 }

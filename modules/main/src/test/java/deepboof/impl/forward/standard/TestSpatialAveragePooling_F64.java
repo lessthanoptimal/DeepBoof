@@ -16,37 +16,28 @@
  * limitations under the License.
  */
 
-package deepboof.forward;
+package deepboof.impl.forward.standard;
 
+import deepboof.Function;
+import deepboof.factory.FactoryForwards;
+import deepboof.forward.ChecksForwardSpatialAveragePooling_F64;
+import deepboof.forward.ConfigPadding;
+import deepboof.forward.ConfigSpatial;
+import deepboof.forward.SpatialPadding2D_F64;
 import deepboof.tensors.Tensor_F64;
-
-import java.util.List;
 
 /**
  * @author Peter Abeles
  */
-public abstract class ChecksForwardSpatialMaxPooling_F64 extends ChecksForwardSpatialPooling_F64 {
+public class TestSpatialAveragePooling_F64 extends ChecksForwardSpatialAveragePooling_F64 {
 
 	@Override
-	protected double[] computeExpected(Tensor_F64 input, List<Tensor_F64> parameters, int batch , int y, int x) {
+	protected Function<Tensor_F64> createForwards(ConfigSpatial configSpatial,
+												  ConfigPadding configPadding) {
 
-		int C = input.length(1);
+		SpatialPadding2D_F64 padding = (SpatialPadding2D_F64)
+				FactoryForwards.spatialPadding(configPadding,Tensor_F64.class);
 
-		double output[] = new double[C];
-		for (int channel = 0; channel < C; channel++) {
-			double max = -Double.MAX_VALUE;
-
-			for (int i = 0; i < config.HH; i++) {
-				for (int j = 0; j < config.WW; j++) {
-					double v = input.get(batch,channel,y+i,x+j);
-					if( v > max )
-						max = v;
-				}
-			}
-
-			output[channel] = max;
-		}
-
-		return output;
+		return new SpatialAveragePooling_F64(configSpatial,padding);
 	}
 }

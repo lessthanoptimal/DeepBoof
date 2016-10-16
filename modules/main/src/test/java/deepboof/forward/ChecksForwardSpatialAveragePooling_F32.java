@@ -18,14 +18,33 @@
 
 package deepboof.forward;
 
-import deepboof.Tensor;
+import deepboof.tensors.Tensor_F32;
+
+import java.util.List;
 
 /**
- * Max spatial pooling find the maximum value inside the pooling region.  See {@link SpatialPooling}
- * for more details.
- *
  * @author Peter Abeles
  */
-public interface SpatialMaxPooling<T extends Tensor> extends SpatialPooling<T> {
+public abstract class ChecksForwardSpatialAveragePooling_F32 extends ChecksForwardSpatialPooling_F32 {
 
+	@Override
+	protected float[] computeExpected(Tensor_F32 input, List<Tensor_F32> parameters, int batch , int y, int x) {
+
+		int C = input.length(1);
+
+		float output[] = new float[C];
+		for (int channel = 0; channel < C; channel++) {
+			float sum = 0;
+
+			for (int i = 0; i < config.HH; i++) {
+				for (int j = 0; j < config.WW; j++) {
+					sum += input.get(batch,channel,y+i,x+j);
+				}
+			}
+
+			output[channel] = sum/(config.HH*config.WW);
+		}
+
+		return output;
+	}
 }

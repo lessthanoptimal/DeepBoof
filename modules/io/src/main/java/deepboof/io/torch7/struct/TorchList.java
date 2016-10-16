@@ -25,7 +25,7 @@ import java.util.List;
  * @author Peter Abeles
  */
 public class TorchList extends TorchReferenceable {
-	public List<TorchReferenceable> list = new ArrayList<>();
+	public List<TorchObject> list = new ArrayList<>();
 
 	public <T>T get( int index ) {
 		return (T)list.get(index);

@@ -51,6 +51,9 @@ public class ConvertTorchToBoofForward {
 	{
 		if( input instanceof TorchGeneric ) {
 			TorchGeneric t = (TorchGeneric)input;
+			if( t.torchName == null )
+				throw new IllegalArgumentException("Input object has no torchName.  " +
+						"Maybe the object you wish to convert is contained inside of it?");
 
 			FunctionAndParameters ret = new FunctionAndParameters();
 
@@ -106,7 +109,10 @@ public class ConvertTorchToBoofForward {
 					return (T)convertSpatialConvolution(t,_type);
 
 				case "nn.SpatialMaxPooling":
-					return (T)convertSpatialMaxPooling(t,_type);
+					return (T) convertSpatialPooling(t,PoolingType.MAX,_type);
+
+				case "nn.SpatialAveragePooling":
+					return (T) convertSpatialPooling(t,PoolingType.AVE,_type);
 
 				case "nn.SpatialBatchNormalization":
 					return (T)convertSpatialBatchNormalization(t,_type);
@@ -153,7 +159,7 @@ public class ConvertTorchToBoofForward {
 					_type = ((TorchTensor) o).torchName;
 					break;
 				} else if( o instanceof TorchList ) {
-					List<TorchReferenceable> list = ((TorchList)o).list;
+					List<TorchObject> list = ((TorchList)o).list;
 					for (int i = 0; i < list.size(); i++) {
 						if( list.get(i) instanceof TorchGeneric ) {
 							_type = findTorchType((TorchGeneric)list.get(i));
@@ -214,7 +220,7 @@ public class ConvertTorchToBoofForward {
 		}
 
 		for( int i =0; i < listTorch.list.size(); i++ ) {
-			TorchReferenceable object = listTorch.list.get(i);
+			TorchObject object = listTorch.list.get(i);
 
 			Object o = convert(object);
 			if( o == null ) // if a object does nothing then null is returned
@@ -224,7 +230,7 @@ public class ConvertTorchToBoofForward {
 
 				Node n = new Node();
 				n.function = f.function;
-				n.name = "idx="+object.index;
+				n.name = "idx="+((TorchReferenceable)object).index;
 				ret.parameters.put(n.name,f.parameters);
 
 				if( ret.sequence.size() > 0 ) {
@@ -429,7 +435,8 @@ public class ConvertTorchToBoofForward {
 		return ret;
 	}
 
-	private static FunctionAndParameters convertSpatialMaxPooling(TorchGeneric t,String _type) {
+	private static FunctionAndParameters convertSpatialPooling(
+			TorchGeneric t, PoolingType poolingType ,String _type) {
 		FunctionAndParameters ret = new FunctionAndParameters();
 
 		int padH = toInt(t,"padH");
@@ -457,12 +464,28 @@ public class ConvertTorchToBoofForward {
 		switch (_type) {
 			case "torch.DoubleTensor": {
 				SpatialPadding2D<Tensor_F64> padding = FactoryForwards.spatialPadding(configPadding, Tensor_F64.class);
-				ret.function = new SpatialMaxPooling_F64(configConv, (SpatialPadding2D_F64) padding);
+				switch( poolingType ) {
+					case MAX:
+						ret.function = new SpatialMaxPooling_F64(configConv, (SpatialPadding2D_F64) padding);
+						break;
+					case AVE:
+						ret.function = new SpatialAveragePooling_F64(configConv, (SpatialPadding2D_F64) padding);
+						break;
+					default: throw new RuntimeException("Unknown");
+				}
 			}break;
 
 			case "torch.FloatTensor": {
 				SpatialPadding2D<Tensor_F32> padding = FactoryForwards.spatialPadding(configPadding, Tensor_F32.class);
-				ret.function = new SpatialMaxPooling_F32(configConv, (SpatialPadding2D_F32) padding);
+				switch( poolingType ) {
+					case MAX:
+						ret.function = new SpatialMaxPooling_F32(configConv, (SpatialPadding2D_F32) padding);
+						break;
+					case AVE:
+						ret.function = new SpatialAveragePooling_F32(configConv, (SpatialPadding2D_F32) padding);
+						break;
+					default: throw new RuntimeException("Unknown");
+				}
 			}break;
 
 			default:
@@ -528,5 +551,9 @@ public class ConvertTorchToBoofForward {
 		}
 
 		return boof;
+	}
+
+	enum PoolingType {
+		MAX,AVE
 	}
 }

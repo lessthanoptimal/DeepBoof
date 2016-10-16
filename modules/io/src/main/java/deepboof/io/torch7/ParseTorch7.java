@@ -24,7 +24,10 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Parser for binary Torch 7 serialized objects.
+ * <p>Parser for binary Torch 7 serialized objects.</p>
+ *
+ * Torch source code:<br>
+ * <ul><li>torch7/File.lua</li></ul>
  *
  * @author Peter Abeles
  */
@@ -79,7 +82,19 @@ public abstract class ParseTorch7 {
 
 		T found = null;
 		switch( type ) {
-			case TORCH: found = (T)parseTorchObject(useCached); break;
+			case TORCH: {
+				int index = readS32();
+				found = (T)lookupObject( index , useCached);
+				if( found == null )
+					found = (T)parseTorchObject(index);
+			}break;
+
+			case RECUR_FUNCTION: {
+				int index = readS32();
+				found = (T)lookupObject( index , useCached);
+				if( found == null )
+					found = (T)parseRecurFunction(index);
+			}break;
 
 			case TABLE: found =  (T)parseTable(); break;
 
@@ -110,16 +125,16 @@ public abstract class ParseTorch7 {
 		return found;
 	}
 
-	private TorchObject parseTorchObject(boolean useCached) throws IOException {
-		int index = readS32();
-
-		if( useCached && masterTable.containsKey(index) ) {
-			if( verbose )
-				System.out.println("reference index = "+index);
-			TorchReference ret = new TorchReference();
-			ret.id = index;
-			return ret;
+	private TorchObject parseRecurFunction( int index ) throws IOException {
+		String moo = readString();
+		if( verbose ) {
+			System.out.println("   not sure what to do with recur functions.  Here's their string:");
+			System.out.println("   "+moo);
 		}
+		return parseNext(true);
+	}
+
+	private TorchObject parseTorchObject( int index ) throws IOException {
 
 		int version = stringToVersionNumber(readString());
 		String className = readString();
@@ -159,6 +174,23 @@ public abstract class ParseTorch7 {
 		ret.torchName = className;
 
 		return ret;
+	}
+
+	/**
+	 * Looks up object in the master table and returns it if it already there.
+	 * @param index Index in the table
+	 * @param useCached If it has been configured to use cacheed objects
+	 * @return The object or null if it was not found
+	 */
+	private TorchObject lookupObject( int index , boolean useCached ) {
+		if( useCached && masterTable.containsKey(index) ) {
+			if( verbose )
+				System.out.println("reference index = "+index);
+			TorchReference ret = new TorchReference();
+			ret.id = index;
+			return ret;
+		}
+		return null;
 	}
 
 	private String cudaToFloat(String className) {
@@ -279,7 +311,8 @@ public abstract class ParseTorch7 {
 				s.message = cudaToFloat( s.message );
 			}
 
-			map.put(key,value);
+			if( map.put(key,value) != null )
+				throw new RuntimeException("Probably a bug in the parser.  Same key assigned twice");
 		}
 
 		if( size > 0 && isList(map) ) {
@@ -294,7 +327,7 @@ public abstract class ParseTorch7 {
 				int value = number.intValue();
 				if( value != i+1 )
 					throw new RuntimeException("Not actually a complete sequential list");
-				t.list.add((TorchReferenceable) map.get(number));
+				t.list.add( map.get(number));
 			}
 			return t;
 		} else {

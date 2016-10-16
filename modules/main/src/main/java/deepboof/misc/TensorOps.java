@@ -350,4 +350,11 @@ public class TensorOps {
 			throw new IllegalArgumentException("Support not added yet for this tensor type");
 		}
 	}
+
+	public static void boundSpatial( int bounds[] , int rows , int cols ) {
+		if( bounds[0] < 0 ) bounds[0] = 0;
+		if( bounds[1] < 0 ) bounds[1] = 0;
+		if( bounds[2] > rows ) bounds[2] = rows;
+		if( bounds[3] > cols ) bounds[3] = cols;
+	}
 }

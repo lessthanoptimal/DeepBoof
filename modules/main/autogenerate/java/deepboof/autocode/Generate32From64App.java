@@ -77,7 +77,10 @@ public class Generate32From64App {
 	}
 
 	public static void main( String args[] ) {
-		String directories[] = new String[]{"modules/main/src/main/java","modules/main/src/test/java"};
+		String directories[] = new String[]{
+				"modules/main/src/main/java",
+				"modules/main/src/test/java",
+				"modules/io/src/main/java",};
 
 		for( String dir : directories ) {
 			new Generate32From64App( dir ).process();

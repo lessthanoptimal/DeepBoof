@@ -16,32 +16,17 @@
  * limitations under the License.
  */
 
-package deepboof;
+package deepboof.forward;
+
+import deepboof.Tensor;
 
 /**
- * Specifies the type of padding applied to a spacial function.
+ * Interface for padding in which the region being sampled has been clipped so that it will be
+ * entirely contained inside the original image.
  *
  * @author Peter Abeles
  */
-public enum PaddingType {
-	/**
-	 * Input is padded with zero valued elements
-	 */
-	ZERO,
-	/**
-	 * Input is padded with the most negative possible number
-	 */
-	MAX_NEGATIVE,
-	/**
-	 * Input is padded with the most positive possible number
-	 */
-	MAX_POSITIVE,
-	/**
-	 * Input is padded with values which extend the nearest element
-	 */
-	EXTEND,
-	/**
-	 * The kernel is cropped and reweighted such that it does not extend outside the image.
-	 */
-	KERNEL_CLIPPED
+public interface ClippedPadding2D<T extends Tensor<T>>
+		extends SpatialPadding2D<T>
+{
 }

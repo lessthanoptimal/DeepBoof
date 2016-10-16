@@ -55,6 +55,21 @@ public class ConstantPadding2D_F32 extends SpatialPadding2D_F32
 	}
 
 	@Override
+	public int getClippingOffsetRow(int paddedRow) {
+		return 0;
+	}
+
+	@Override
+	public int getClippingOffsetCol(int paddedCol) {
+		return 0;
+	}
+
+	@Override
+	public boolean isClipped() {
+		return false;
+	}
+
+	@Override
 	public Class<Tensor_F32> getTensorType() {
 		return Tensor_F32.class;
 	}

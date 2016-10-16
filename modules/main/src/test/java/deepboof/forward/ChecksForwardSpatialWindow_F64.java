@@ -121,7 +121,11 @@ public abstract class ChecksForwardSpatialWindow_F64<C extends ConfigSpatial>
 					alg.forward(input, output);
 
 					padding.setInput(input);
-					checkOutputValues(padding,input,parameters,output);
+
+					if( padding.isClipped() )
+						checkOutputValuesClipped(input,parameters,output);
+					else
+						checkOutputValues(padding,input,parameters,output);
 				}
 			}
 		}
@@ -142,10 +146,10 @@ public abstract class ChecksForwardSpatialWindow_F64<C extends ConfigSpatial>
 		for (int batch = 0; batch < N; batch++) {
 
 				int outY = 0;
-				for (int y = 0; y <= Hp - config.HH; y += config.periodY, outY++) {
+				for (int padY = 0; padY <= Hp - config.HH; padY += config.periodY, outY++) {
 					int outX = 0;
-					for (int x = 0; x <= Wp - config.WW; x += config.periodX, outX++) {
-						double expected[] = computeExpected(padded, parameters, batch, y, x);
+					for (int padX = 0; padX <= Wp - config.WW; padX += config.periodX, outX++) {
+						double expected[] = computeExpected(padded, parameters, batch, padY, padX);
 
 						assertEquals(numberOfOutputChannels,expected.length);
 						for (int channel = 0; channel < numberOfOutputChannels; channel++) {
@@ -180,6 +184,40 @@ public abstract class ChecksForwardSpatialWindow_F64<C extends ConfigSpatial>
 		return output;
 	}
 
+	private void checkOutputValuesClipped(Tensor_F64 input, List<Tensor_F64> parameters, Tensor_F64 output) {
+		int N = input.length(0);
+		int C = input.length(1);
+		int Hp = input.length(2) + configPadding.y0 + configPadding.y1;
+		int Wp = input.length(3) + configPadding.x0 + configPadding.x1;
+
+		int numberOfOutputChannels = inputToOutputChannelCount(C);
+
+		for (int batch = 0; batch < N; batch++) {
+
+				int outY = 0;
+				for (int padY = 0; padY <= Hp - config.HH; padY += config.periodY, outY++) {
+					int inY = padY - configPadding.y0;
+					int outX = 0;
+					for (int padX = 0; padX <= Wp - config.WW; padX += config.periodX, outX++) {
+						int inX = padX - configPadding.x0;
+						double expected[] = computeExpected(input, parameters, batch, inY, inX);
+
+						assertEquals(numberOfOutputChannels,expected.length);
+						for (int channel = 0; channel < numberOfOutputChannels; channel++) {
+							double found = output.get(batch, channel, outY, outX);
+							assertEquals(expected[channel], found, DeepBoofConstants.TEST_TOL_F64);
+						}
+					}
+					assertEquals(outX, output.length(3));
+				}
+				assertEquals(outY, output.length(2));
+		}
+	}
+
+	/**
+	 * Compute the expected value from inside the tensor.  The region may or may not be contained
+	 * entirely inside the tensor
+	 */
 	protected abstract double[] computeExpected(Tensor_F64 input, List<Tensor_F64> parameters,
-												int batch, int y, int x);
+												int batch, int row0, int col0 );
 }

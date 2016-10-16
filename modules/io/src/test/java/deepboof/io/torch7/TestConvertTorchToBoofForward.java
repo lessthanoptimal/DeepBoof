@@ -24,6 +24,8 @@ import deepboof.Function;
 import deepboof.Tensor;
 import deepboof.graph.FunctionSequence;
 import deepboof.impl.forward.standard.*;
+import deepboof.impl.forward.torch.TorchSpatialAveragePooling_F32;
+import deepboof.impl.forward.torch.TorchSpatialAveragePooling_F64;
 import deepboof.io.torch7.struct.TorchObject;
 import deepboof.misc.TensorOps;
 import org.junit.Test;
@@ -89,6 +91,12 @@ public class TestConvertTorchToBoofForward {
 	public void spatialMaxPooling() {
 		checkFunction("spatial_max_pooling/F64", SpatialMaxPooling_F64.class);
 		checkFunction("spatial_max_pooling/F32", SpatialMaxPooling_F32.class);
+	}
+
+	@Test
+	public void spatialAveragePooling() {
+		checkFunction("spatial_average_pooling/F64", TorchSpatialAveragePooling_F64.class);
+		checkFunction("spatial_average_pooling/F32", TorchSpatialAveragePooling_F32.class);
 	}
 
 	@Test

@@ -18,6 +18,7 @@
 
 package deepboof.forward;
 
+import deepboof.misc.TensorOps;
 import deepboof.tensors.Tensor_F32;
 
 import java.util.List;
@@ -29,6 +30,13 @@ public abstract class ChecksForwardSpatialMaxPooling_F32 extends ChecksForwardSp
 
 	@Override
 	protected float[] computeExpected(Tensor_F32 input, List<Tensor_F32> parameters, int batch , int y, int x) {
+		int[] bounds = new int[]{y,x,y+config.HH,x+config.WW};
+		TensorOps.boundSpatial(bounds,input.length(2),input.length(3));
+
+		int y0 = bounds[0];
+		int y1 = bounds[2];
+		int x0 = bounds[1];
+		int x1 = bounds[3];
 
 		int C = input.length(1);
 
@@ -36,9 +44,9 @@ public abstract class ChecksForwardSpatialMaxPooling_F32 extends ChecksForwardSp
 		for (int channel = 0; channel < C; channel++) {
 			float max = -Float.MAX_VALUE;
 
-			for (int i = 0; i < config.HH; i++) {
-				for (int j = 0; j < config.WW; j++) {
-					float v = input.get(batch,channel,y+i,x+j);
+			for (int i = y0; i < y1; i++) {
+				for (int j = x0; j < x1; j++) {
+					float v = input.get(batch,channel,i,j);
 					if( v > max )
 						max = v;
 				}

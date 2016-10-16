@@ -69,6 +69,21 @@ public class TestSpatialPadding2D_F64 {
 		}
 
 		@Override
+		public int getClippingOffsetRow(int paddedRow) {
+			return 0;
+		}
+
+		@Override
+		public int getClippingOffsetCol(int paddedCol) {
+			return 0;
+		}
+
+		@Override
+		public boolean isClipped() {
+			return false;
+		}
+
+		@Override
 		public Class<Tensor_F64> getTensorType() {
 			return Tensor_F64.class;
 		}

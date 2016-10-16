@@ -19,6 +19,7 @@
 package deepboof.forward;
 
 import deepboof.Function;
+import deepboof.PaddingType;
 import deepboof.factory.FactoryForwards;
 import deepboof.tensors.Tensor_F32;
 
@@ -34,26 +35,31 @@ import static org.junit.Assert.assertEquals;
 public abstract class ChecksForwardSpatialPooling_F32 extends ChecksForwardSpatialWindow_F32<ConfigSpatial> {
 
 	public ChecksForwardSpatialPooling_F32() {
-		numberOfConfigurations = 3;
+		numberOfConfigurations = 6;
 	}
 
 	@Override
 	public Function<Tensor_F32> createForwards(int which) {
+		int which0 = which%3;
+		int which1 = which/3;
+
 		config = new ConfigSpatial();
 		configPadding = new ConfigPadding();
+		if( which1 == 1)
+			configPadding.type = PaddingType.KERNEL_CLIPPED;
 
 		config.WW = 3;
 		config.HH = 4;
 
-		if( which == 1 ) {
+		if( which0 == 1 ) {
 			config.WW = 1;
 			config.HH = 1;
-		} else if( which == 2 ) {
+		} else if( which0 == 2 ) {
 			configPadding.x0 = 1;
 			configPadding.x1 = 2;
 			configPadding.y0 = 3;
 			configPadding.y1 = 4;
-		} else if( which != 0  ){
+		} else if( which0 != 0  ){
 			throw new RuntimeException("Unexpected");
 		}
 

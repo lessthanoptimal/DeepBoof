@@ -18,63 +18,57 @@
 
 package deepboof.impl.forward.standard;
 
+import deepboof.PaddingType;
+import deepboof.forward.ClippedPadding2D;
 import deepboof.forward.ConfigPadding;
-import deepboof.forward.ConstantPadding2D;
-import deepboof.forward.SpatialPadding2D_F64;
-import deepboof.tensors.Tensor_F64;
+import deepboof.forward.SpatialPadding2D_F32;
+import deepboof.tensors.Tensor_F32;
 
 /**
- * Pads pixels outside the input image with a user specified constant value.
+ * Implementation of {@link ConstantPadding2D_F32}.
  *
  * @author Peter Abeles
  */
-public class ConstantPadding2D_F64 extends SpatialPadding2D_F64
-		implements ConstantPadding2D<Tensor_F64>
+public class ClippedPadding2D_F32 extends SpatialPadding2D_F32
+		implements ClippedPadding2D<Tensor_F32>
 {
-	// the value which the image is padded with
-	double value;
-
-	public ConstantPadding2D_F64(ConfigPadding config ) {
+	public ClippedPadding2D_F32(ConfigPadding config ) {
 		super(config);
-		switch( config.type ) {
-			case ZERO: value = 0; break;
-			case MAX_NEGATIVE: value = -Double.MAX_VALUE; break;
-			case MAX_POSITIVE: value =  Double.MAX_VALUE; break;
-			default: throw new IllegalArgumentException("Type doesn't specify a value");
+		if( config.type != PaddingType.KERNEL_CLIPPED) {
+			throw new IllegalArgumentException("configuraiton isn't for clipped padding");
 		}
 	}
 
-	public ConstantPadding2D_F64(ConfigPadding config, double value ) {
-		super(config);
-		this.value = value;
-	}
-
 	@Override
-	public double borderGet(int minibatch, int channel, int row, int col) {
-		return value;
+	public float borderGet(int minibatch, int channel, int row, int col) {
+		throw new RuntimeException("The border is clipped and this function should never be called");
 	}
 
 	@Override
 	public int getClippingOffsetRow(int paddedRow) {
+		if( paddedRow < ROW0)
+			return ROW0 - paddedRow;
+		else if( paddedRow > ROW1 )
+			return ROW1 - paddedRow;
 		return 0;
 	}
 
 	@Override
 	public int getClippingOffsetCol(int paddedCol) {
+		if( paddedCol < COL0)
+			return COL0 - paddedCol;
+		else if( paddedCol > COL1 )
+			return COL1 - paddedCol;
 		return 0;
 	}
 
 	@Override
 	public boolean isClipped() {
-		return false;
+		return true;
 	}
 
 	@Override
-	public Class<Tensor_F64> getTensorType() {
-		return Tensor_F64.class;
-	}
-
-	public /**/double getPaddingValue() {
-		return value;
+	public Class<Tensor_F32> getTensorType() {
+		return Tensor_F32.class;
 	}
 }

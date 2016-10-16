@@ -83,12 +83,21 @@ public class SpatialMaxPooling_F32
 	@Override
 	protected void forwardAt_border(SpatialPadding2D_F32 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
 
+		int row0 = padY;
+		int row1 = padY + HH;
+		row0 += padded.getClippingOffsetRow(row0);
+		row1 += padded.getClippingOffsetRow(row1);
+
+		int col0 = padX;
+		int col1 = padX + WW;
+		col0 += padded.getClippingOffsetCol(col0);
+		col1 += padded.getClippingOffsetCol(col1);
 		float max = -Float.MAX_VALUE;
 
-		for (int j = 0; j < HH; j++) {
+		for (int j = row0; j < row1; j++) {
 
-			for (int i = 0; i < WW; i++ ) {
-				float value = padded.get(batch,channel, padY +j, padX +i);
+			for (int i = col0; i < col1; i++ ) {
+				float value = padded.get(batch,channel, j, i);
 				if( value > max )
 					max = value;
 			}

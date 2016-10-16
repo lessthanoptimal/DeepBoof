@@ -22,10 +22,13 @@ import deepboof.Tensor;
 import deepboof.VTensor;
 
 /**
- * Interface for all virtual 2D spatial padding implementation.  Virtual padding contains a reference
+ * <p>Interface for all virtual 2D spatial padding implementation.  Virtual padding contains a reference
  * to the original input tensor which is going to be padded and on the fly will generate the values for
  * elements which are not explicitly contained in the input tensor.  This can reduce memory consumption and is
- * more simplistic to implement for more complex padding methods.
+ * more simplistic to implement for more complex padding methods.</p>
+ *
+ * Clipped padding is a special case.  In this situation only pixels contained inside the original image should
+ * be processed.
  *
  * @author Peter Abeles
  */
@@ -35,6 +38,24 @@ public interface SpatialPadding2D<T extends Tensor<T>> extends VTensor {
 	 * @param input The input tensor
 	 */
 	void setInput(T input);
+
+	/**
+	 * Returns how far away the row is from the clipping border.  0 if it is inside the image. Positive is below
+	 * the lower extent and negative if above upper extent.
+	 *
+	 * @param paddedRow Row in padded coordinates
+	 * @return offset
+	 */
+	int getClippingOffsetRow( int paddedRow );
+
+	/**
+	 * Returns how far away the column is from the clipping border.  0 if it is inside the image. Positive is below
+	 * the lower extent and negative if above upper extent.
+	 *
+	 * @param paddedCol Column in padded coordinates
+	 * @return offset
+	 */
+	int getClippingOffsetCol( int paddedCol );
 
 	/**
 	 * Returns the lower-extent padding along the tensor's rows.
@@ -67,6 +88,12 @@ public interface SpatialPadding2D<T extends Tensor<T>> extends VTensor {
 	 * @return Tensor's shape
 	 */
 	int[] shapeGivenInput( int ...inputShape );
+
+	/**
+	 * Returns true if this is a clipped border or false of it is not.
+	 * @return if clipped or not
+	 */
+	boolean isClipped();
 
 	/**
 	 * Returns the type of input tensor it can process

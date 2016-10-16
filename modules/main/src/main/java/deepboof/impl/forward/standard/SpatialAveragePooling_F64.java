@@ -35,7 +35,7 @@ public class SpatialAveragePooling_F64
 		implements SpatialAveragePooling<Tensor_F64>
 {
 	// number of elements inside the pooling region
-	double poolingSize;
+	protected double poolingSize;
 
 	public SpatialAveragePooling_F64(ConfigSpatial config , SpatialPadding2D_F64 padding ) {
 		super(config, padding);
@@ -86,18 +86,26 @@ public class SpatialAveragePooling_F64
 	@Override
 	protected void forwardAt_border(SpatialPadding2D_F64 padded, int batch, int channel, int padY, int padX, int outY, int outX) {
 
+		int row0 = padY;
+		int row1 = padY + HH;
+		row0 += padded.getClippingOffsetRow(row0);
+		row1 += padded.getClippingOffsetRow(row1);
+
+		int col0 = padX;
+		int col1 = padX + WW;
+		col0 += padded.getClippingOffsetCol(col0);
+		col1 += padded.getClippingOffsetCol(col1);
+
 		double sum = 0;
 
-		for (int j = 0; j < HH; j++) {
-
-			for (int i = 0; i < WW; i++ ) {
-				sum += padded.get(batch,channel, padY +j, padX +i);
+		for (int j = row0; j < row1; j++) {
+			for (int i = col0; i < col1; i++ ) {
+				sum += padded.get(batch,channel, j, i);
 			}
-
 		}
 
 		// save the results
-		output.d[ output.idx(batch,channel,outY,outX) ] = sum/poolingSize;
+		output.d[ output.idx(batch,channel,outY,outX) ] = sum/((row1-row0)*(col1-col0));
 	}
 
 	@Override

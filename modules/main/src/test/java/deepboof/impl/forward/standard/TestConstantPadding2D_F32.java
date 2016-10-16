@@ -28,12 +28,20 @@ import org.junit.Test;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author Peter Abeles
  */
 public class TestConstantPadding2D_F32 {
 	Random rand = new Random(234);
+
+		@Test
+	public void isClipped() {
+		ConstantPadding2D_F32 alg = new ConstantPadding2D_F32(new ConfigPadding());
+
+		assertFalse(alg.isClipped());
+	}
 
 	/**
 	 * Determine the value from the padding type

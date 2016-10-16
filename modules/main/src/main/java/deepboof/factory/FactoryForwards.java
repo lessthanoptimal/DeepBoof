@@ -20,9 +20,7 @@ package deepboof.factory;
 
 import deepboof.Tensor;
 import deepboof.forward.ConfigPadding;
-import deepboof.impl.forward.standard.BaseSpatialPadding2D;
-import deepboof.impl.forward.standard.ConstantPadding2D_F32;
-import deepboof.impl.forward.standard.ConstantPadding2D_F64;
+import deepboof.impl.forward.standard.*;
 import deepboof.tensors.Tensor_F32;
 import deepboof.tensors.Tensor_F64;
 
@@ -38,12 +36,16 @@ public class FactoryForwards {
 				case ZERO:
 				case MAX_NEGATIVE:
 					return (BaseSpatialPadding2D<T>)new ConstantPadding2D_F64(config);
+				case KERNEL_CLIPPED:
+					return (BaseSpatialPadding2D<T>)new ClippedPadding2D_F64(config);
 			}
 		} else if( type == Tensor_F32.class ) {
 			switch( config.type ) {
 				case ZERO:
 				case MAX_NEGATIVE:
 					return (BaseSpatialPadding2D<T>)new ConstantPadding2D_F32(config);
+				case KERNEL_CLIPPED:
+					return (BaseSpatialPadding2D<T>)new ClippedPadding2D_F32(config);
 			}
 		}
 		throw new IllegalArgumentException("Unsupported");

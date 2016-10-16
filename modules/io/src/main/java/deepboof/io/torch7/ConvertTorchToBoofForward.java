@@ -25,6 +25,8 @@ import deepboof.forward.*;
 import deepboof.graph.InputAddress;
 import deepboof.graph.Node;
 import deepboof.impl.forward.standard.*;
+import deepboof.impl.forward.torch.TorchSpatialAveragePooling_F32;
+import deepboof.impl.forward.torch.TorchSpatialAveragePooling_F64;
 import deepboof.io.torch7.struct.*;
 import deepboof.tensors.Tensor_F32;
 import deepboof.tensors.Tensor_F64;
@@ -450,10 +452,7 @@ public class ConvertTorchToBoofForward {
 		configPadding.y0 = configPadding.y1 = padH;
 		configPadding.x0 = configPadding.x1 = padW;
 
-		// Torch doesn't actually pad the image when max pooling.  Instead it clips it's search region
-		// This will replicate the clipping behavior by settings the outside to be the lowest possible value,
-		// this padded values will never be selected
-		configPadding.type = PaddingType.MAX_NEGATIVE;
+		configPadding.type = PaddingType.KERNEL_CLIPPED;
 
 		ConfigSpatial configConv = new ConfigSpatial();
 		configConv.HH = kH;
@@ -469,7 +468,7 @@ public class ConvertTorchToBoofForward {
 						ret.function = new SpatialMaxPooling_F64(configConv, (SpatialPadding2D_F64) padding);
 						break;
 					case AVE:
-						ret.function = new SpatialAveragePooling_F64(configConv, (SpatialPadding2D_F64) padding);
+						ret.function = new TorchSpatialAveragePooling_F64(configConv, (SpatialPadding2D_F64) padding);
 						break;
 					default: throw new RuntimeException("Unknown");
 				}
@@ -482,7 +481,7 @@ public class ConvertTorchToBoofForward {
 						ret.function = new SpatialMaxPooling_F32(configConv, (SpatialPadding2D_F32) padding);
 						break;
 					case AVE:
-						ret.function = new SpatialAveragePooling_F32(configConv, (SpatialPadding2D_F32) padding);
+						ret.function = new TorchSpatialAveragePooling_F32(configConv, (SpatialPadding2D_F32) padding);
 						break;
 					default: throw new RuntimeException("Unknown");
 				}

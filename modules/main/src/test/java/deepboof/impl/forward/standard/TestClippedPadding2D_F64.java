@@ -94,7 +94,7 @@ public class TestClippedPadding2D_F64 {
 		config.x1=2;
 		config.y0=3;
 		config.y1=4;
-		config.type = PaddingType.KERNEL_CLIPPED;
+		config.type = PaddingType.CLIPPED;
 
 		return new ClippedPadding2D_F64(config);
 	}

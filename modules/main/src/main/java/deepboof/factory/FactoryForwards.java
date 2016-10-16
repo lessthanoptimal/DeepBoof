@@ -36,7 +36,7 @@ public class FactoryForwards {
 				case ZERO:
 				case MAX_NEGATIVE:
 					return (BaseSpatialPadding2D<T>)new ConstantPadding2D_F64(config);
-				case KERNEL_CLIPPED:
+				case CLIPPED:
 					return (BaseSpatialPadding2D<T>)new ClippedPadding2D_F64(config);
 			}
 		} else if( type == Tensor_F32.class ) {
@@ -44,7 +44,7 @@ public class FactoryForwards {
 				case ZERO:
 				case MAX_NEGATIVE:
 					return (BaseSpatialPadding2D<T>)new ConstantPadding2D_F32(config);
-				case KERNEL_CLIPPED:
+				case CLIPPED:
 					return (BaseSpatialPadding2D<T>)new ClippedPadding2D_F32(config);
 			}
 		}

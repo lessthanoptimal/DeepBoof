@@ -34,7 +34,7 @@ public class ClippedPadding2D_F32 extends SpatialPadding2D_F32
 {
 	public ClippedPadding2D_F32(ConfigPadding config ) {
 		super(config);
-		if( config.type != PaddingType.KERNEL_CLIPPED) {
+		if( config.type != PaddingType.CLIPPED) {
 			throw new IllegalArgumentException("configuraiton isn't for clipped padding");
 		}
 	}

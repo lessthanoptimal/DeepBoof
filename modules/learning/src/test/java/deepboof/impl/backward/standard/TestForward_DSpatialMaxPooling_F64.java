@@ -19,6 +19,8 @@
 package deepboof.impl.backward.standard;
 
 import deepboof.Function;
+import deepboof.backward.DSpatialPadding2D_F64;
+import deepboof.factory.FactoryBackwards;
 import deepboof.forward.ChecksForwardSpatialMaxPooling_F64;
 import deepboof.forward.ConfigPadding;
 import deepboof.forward.ConfigSpatial;
@@ -32,7 +34,8 @@ public class TestForward_DSpatialMaxPooling_F64 extends ChecksForwardSpatialMaxP
 	@Override
 	protected Function<Tensor_F64> createForwards(ConfigSpatial configSpatial,
 												  ConfigPadding configPadding) {
-		DConstantPadding2D_F64 padding = new DConstantPadding2D_F64(configPadding);
+		DSpatialPadding2D_F64 padding = (DSpatialPadding2D_F64)
+				new FactoryBackwards(Tensor_F64.class).spatialPadding(configPadding);
 
 		return new DSpatialMaxPooling_F64(configSpatial,padding);
 	}

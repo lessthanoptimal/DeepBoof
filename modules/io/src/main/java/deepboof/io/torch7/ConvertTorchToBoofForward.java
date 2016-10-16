@@ -452,7 +452,7 @@ public class ConvertTorchToBoofForward {
 		configPadding.y0 = configPadding.y1 = padH;
 		configPadding.x0 = configPadding.x1 = padW;
 
-		configPadding.type = PaddingType.KERNEL_CLIPPED;
+		configPadding.type = PaddingType.CLIPPED;
 
 		ConfigSpatial configConv = new ConfigSpatial();
 		configConv.HH = kH;

@@ -46,7 +46,7 @@ public abstract class ChecksForwardSpatialPooling_F64 extends ChecksForwardSpati
 		config = new ConfigSpatial();
 		configPadding = new ConfigPadding();
 		if( which1 == 1)
-			configPadding.type = PaddingType.KERNEL_CLIPPED;
+			configPadding.type = PaddingType.CLIPPED;
 
 		config.WW = 3;
 		config.HH = 4;

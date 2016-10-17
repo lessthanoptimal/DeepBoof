@@ -25,8 +25,6 @@ import deepboof.forward.*;
 import deepboof.graph.InputAddress;
 import deepboof.graph.Node;
 import deepboof.impl.forward.standard.*;
-import deepboof.impl.forward.torch.TorchSpatialAveragePooling_F32;
-import deepboof.impl.forward.torch.TorchSpatialAveragePooling_F64;
 import deepboof.io.torch7.struct.*;
 import deepboof.tensors.Tensor_F32;
 import deepboof.tensors.Tensor_F64;
@@ -452,8 +450,11 @@ public class ConvertTorchToBoofForward {
 		configPadding.y0 = configPadding.y1 = padH;
 		configPadding.x0 = configPadding.x1 = padW;
 
-		configPadding.type = PaddingType.CLIPPED;
-
+		switch( poolingType ) {
+			case MAX: configPadding.type = PaddingType.CLIPPED; break;
+			case AVE: configPadding.type = PaddingType.ZERO; break;
+			default: throw new IllegalArgumentException("Unknown");
+		}
 		ConfigSpatial configConv = new ConfigSpatial();
 		configConv.HH = kH;
 		configConv.WW = kW;
@@ -468,7 +469,7 @@ public class ConvertTorchToBoofForward {
 						ret.function = new SpatialMaxPooling_F64(configConv, (SpatialPadding2D_F64) padding);
 						break;
 					case AVE:
-						ret.function = new TorchSpatialAveragePooling_F64(configConv, (SpatialPadding2D_F64) padding);
+						ret.function = new SpatialAveragePooling_F64(configConv, (SpatialPadding2D_F64) padding);
 						break;
 					default: throw new RuntimeException("Unknown");
 				}
@@ -481,7 +482,7 @@ public class ConvertTorchToBoofForward {
 						ret.function = new SpatialMaxPooling_F32(configConv, (SpatialPadding2D_F32) padding);
 						break;
 					case AVE:
-						ret.function = new TorchSpatialAveragePooling_F32(configConv, (SpatialPadding2D_F32) padding);
+						ret.function = new SpatialAveragePooling_F32(configConv, (SpatialPadding2D_F32) padding);
 						break;
 					default: throw new RuntimeException("Unknown");
 				}

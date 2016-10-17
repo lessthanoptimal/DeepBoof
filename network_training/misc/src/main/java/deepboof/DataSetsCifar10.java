@@ -8,7 +8,7 @@ import boofcv.io.image.ConvertBufferedImage;
 import boofcv.struct.image.GrayF32;
 import boofcv.struct.image.GrayU8;
 import boofcv.struct.image.Planar;
-import deepboof.io.DatabaseOps;
+import deepboof.io.DeepBoofDataBaseOps;
 import deepboof.io.torch7.ParseAsciiTorch7;
 import deepboof.io.torch7.struct.TorchGeneric;
 import deepboof.io.torch7.struct.TorchObject;
@@ -76,9 +76,9 @@ public class DataSetsCifar10 {
 		// If needed, download required data sets and network model
 		if( !trainingDir.exists() ) {
 			System.out.println("Obtaining training and testing data. size = 175 MB");
-			DatabaseOps.download("http://torch7.s3-website-us-east-1.amazonaws.com/data/cifar-10-torch.tar.gz",trainingDir);
-			DatabaseOps.decompressTGZ(new File(trainingDir,"cifar-10-torch.tar.gz"),trainingDir);
-			DatabaseOps.moveInsideAndDeleteDir(new File(trainingDir,"cifar-10-batches-t7"),trainingDir);
+			DeepBoofDataBaseOps.download("http://torch7.s3-website-us-east-1.amazonaws.com/data/cifar-10-torch.tar.gz",trainingDir);
+			DeepBoofDataBaseOps.decompressTGZ(new File(trainingDir,"cifar-10-torch.tar.gz"),trainingDir);
+			DeepBoofDataBaseOps.moveInsideAndDeleteDir(new File(trainingDir,"cifar-10-batches-t7"),trainingDir);
 		}
 
 		return trainingDir;

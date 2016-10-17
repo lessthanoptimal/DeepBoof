@@ -31,17 +31,55 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 /**
+ * Functions for obtaining and processing network models
+ *
  * @author Peter Abeles
  */
-public class DatabaseOps {
+public class DeepBoofDataBaseOps {
+
+	/**
+	 * Attempts to download a model from the list of addresses.  If one fails it will try
+	 * the next in the list.  After downloading the model it will then unzip it and return
+	 * the path to the unzipped directory.  It is assumed the unzipped directory's name is
+	 * the same as the file it's compressed in.
+	 *
+	 * @param addresses List of address that it can be downloaded from
+	 * @param destination Directory that the file should be downloaded to and decompressed in
+	 * @return The directory containing the decompressed
+	 */
+	public static File downloadModel(List<String> addresses , File destination ) {
+		File pathDirectory = null;
+		if( !destination.exists() )
+			destination.mkdirs();
+
+		for( String address : addresses ) {
+			try {
+				String fileName = new File(address).getName();
+				pathDirectory = new File(destination, fileName.substring(0, fileName.length()-4));
+				if( pathDirectory.exists() )
+					break;
+				DeepBoofDataBaseOps.download(address, destination);
+				DeepBoofDataBaseOps.decompressZip(new File(destination, fileName), destination, true);
+				break;
+			} catch( RuntimeException e){
+				pathDirectory = null;
+			}
+		}
+		if( pathDirectory == null )
+			throw new RuntimeException("Failed to download model");
+
+		return pathDirectory;
+	}
+
 	/**
 	 * Downloads a file from the specified address and saves it at the specified location
 	 * @param src URL pointing to file
 	 * @param dstDir destination of file
 	 */
-	public static void download( String src, File dstDir ) {
+	public static File download( String src, File dstDir ) {
 		try {
 			File dst = new File(dstDir,new File(new URL(src).getFile()).getName());
 
@@ -53,9 +91,11 @@ public class DatabaseOps {
 			info.extract();
 			WGet w = new WGet(info, dst);
 			w.download();
+			return WGet.calcName(new URL(src),dst);
 		} catch (MalformedURLException | RuntimeException e) {
 			e.printStackTrace();
 			System.exit(1);
+			return null;
 		}
 	}
 

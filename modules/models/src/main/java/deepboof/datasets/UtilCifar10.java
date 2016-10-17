@@ -1,6 +1,6 @@
 package deepboof.datasets;
 
-import deepboof.io.DatabaseOps;
+import deepboof.io.DeepBoofDataBaseOps;
 import deepboof.misc.DeepBoofOps;
 
 import java.io.File;
@@ -31,8 +31,8 @@ public class UtilCifar10 {
 		}
 
 		System.out.println("Obtaining network model.  size = 125 MB");
-		DatabaseOps.download("http://heanet.dl.sourceforge.net/project/deepboof/networks/v1/likevgg_cifar10.zip",path);
-		DatabaseOps.decompressZip(new File(path,"likevgg_cifar10.zip"),path,true);
+		DeepBoofDataBaseOps.download("http://heanet.dl.sourceforge.net/project/deepboof/networks/v1/likevgg_cifar10.zip",path);
+		DeepBoofDataBaseOps.decompressZip(new File(path,"likevgg_cifar10.zip"),path,true);
 
 		return pathToModel;
 	}
@@ -43,9 +43,9 @@ public class UtilCifar10 {
 		// If needed, download required data sets and network model
 		if( !trainingDir.exists() ) {
 			System.out.println("Obtaining training and testing data. size = 175 MB");
-			DatabaseOps.download("http://torch7.s3-website-us-east-1.amazonaws.com/data/cifar-10-torch.tar.gz",trainingDir);
-			DatabaseOps.decompressTGZ(new File(trainingDir,"cifar-10-torch.tar.gz"),trainingDir);
-			DatabaseOps.moveInsideAndDeleteDir(new File(trainingDir,"cifar-10-batches-t7"),trainingDir);
+			DeepBoofDataBaseOps.download("http://torch7.s3-website-us-east-1.amazonaws.com/data/cifar-10-torch.tar.gz",trainingDir);
+			DeepBoofDataBaseOps.decompressTGZ(new File(trainingDir,"cifar-10-torch.tar.gz"),trainingDir);
+			DeepBoofDataBaseOps.moveInsideAndDeleteDir(new File(trainingDir,"cifar-10-batches-t7"),trainingDir);
 		}
 
 		return trainingDir;

@@ -56,7 +56,7 @@ public class TestBackwards_DFunctionDropOut_F64 {
 		Tensor_F64 dout = factory.random(rand,false,5.0,6.0,3,4);
 		Tensor_F64 gradientInput = input.createLike();
 
-		alg.backwards(input,dout,gradientInput, new ArrayList<>());
+		alg.backwards(input,dout,gradientInput, new ArrayList<Tensor_F64>());
 
 		for (int i = 0; i < 12; i++) {
 			if( output.d[i] == 0 ) {

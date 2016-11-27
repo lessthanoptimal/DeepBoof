@@ -13,7 +13,8 @@ subprojects {
     apply plugin: 'maven'
     apply plugin: 'signing'
 
-    sourceCompatibility = 1.8
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
 
     repositories {
         mavenCentral()

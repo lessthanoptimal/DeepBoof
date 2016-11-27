@@ -68,53 +68,55 @@ public class PlotControlPanel extends JPanel
 	public void setParameters( final List<String> parameters ) {
 		if( parameters.size() < 1 )
 			throw new IllegalArgumentException("There needs to be at least one parameter");
-		SwingUtilities.invokeLater(() -> {
-			DefaultComboBoxModel<String> modelX = (DefaultComboBoxModel<String>)cSelectX.getModel();
-			modelX.removeAllElements();
-			for( String p : parameters ) {
-				modelX.addElement(p);
-			}
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				DefaultComboBoxModel<String> modelX = (DefaultComboBoxModel<String>)cSelectX.getModel();
+				modelX.removeAllElements();
+				for( String p : parameters ) {
+					modelX.addElement(p);
+				}
 
-			modelX = (DefaultComboBoxModel<String>)cSelectY.getModel();
-			modelX.removeAllElements();
-			for( String p : parameters ) {
-				modelX.addElement(p);
-			}
+				modelX = (DefaultComboBoxModel<String>)cSelectY.getModel();
+				modelX.removeAllElements();
+				for( String p : parameters ) {
+					modelX.addElement(p);
+				}
 
-			scatterX = 0;
-			scatterY = Math.min(parameters.size(),1);
+				scatterX = 0;
+				scatterY = Math.min(parameters.size(),1);
 
-			cSelectX.invalidate();
-			cSelectY.invalidate();
+				cSelectX.invalidate();
+				cSelectY.invalidate();
 
-			cSelectX.setPreferredSize(cSelectX.getMinimumSize());
-			cSelectX.setMaximumSize(cSelectX.getMinimumSize());
-			cSelectY.setPreferredSize(cSelectY.getMinimumSize());
-			cSelectY.setMaximumSize(cSelectY.getMinimumSize());
+				cSelectX.setPreferredSize(cSelectX.getMinimumSize());
+				cSelectX.setMaximumSize(cSelectX.getMinimumSize());
+				cSelectY.setPreferredSize(cSelectY.getMinimumSize());
+				cSelectY.setMaximumSize(cSelectY.getMinimumSize());
 
-			// prevent it from sending out an event for a change in selected index
-			cSelectX.removeActionListener(PlotControlPanel.this);
-			cSelectY.removeActionListener(PlotControlPanel.this);
+				// prevent it from sending out an event for a change in selected index
+				cSelectX.removeActionListener(PlotControlPanel.this);
+				cSelectY.removeActionListener(PlotControlPanel.this);
 
-			cSelectX.setSelectedIndex(scatterX);
-			cSelectY.setSelectedIndex(scatterY);
+				cSelectX.setSelectedIndex(scatterX);
+				cSelectY.setSelectedIndex(scatterY);
 
-			cSelectX.addActionListener(PlotControlPanel.this);
-			cSelectY.addActionListener(PlotControlPanel.this);
-		});
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		if( e.getSource() == cScatterLog ) {
-			scatterLog = cScatterLog.isSelected();
-			listener.uiScatterLog(scatterLog);
+				cSelectX.addActionListener(PlotControlPanel.this);
+				cSelectY.addActionListener(PlotControlPanel.this);
+			}});
 		}
-	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if( e.getSource() == cSelectX ) {
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if( e.getSource() == cScatterLog ) {
+				scatterLog = cScatterLog.isSelected();
+				listener.uiScatterLog(scatterLog);
+			}
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if( e.getSource() == cSelectX ) {
 			scatterX = cSelectX.getSelectedIndex();
 			listener.uiScatterSelected(scatterX,scatterY);
 		} else if( e.getSource() == cSelectY ) {

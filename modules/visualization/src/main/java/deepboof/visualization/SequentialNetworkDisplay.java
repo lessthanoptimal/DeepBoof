@@ -166,8 +166,11 @@ public class SequentialNetworkDisplay extends JPanel {
 
 					final String finfo = info;
 
-					SwingUtilities.invokeLater(()->{
-						textConfig.setText(finfo);
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							textConfig.setText(finfo);
+						}
 					});
 				}
 		}

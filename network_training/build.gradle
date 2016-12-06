@@ -24,7 +24,7 @@ subprojects {
 
     dependencies {
         ['ip','io','visualize','feature','recognition'].each {String a ->
-            compile('org.boofcv:'+a+':0.25-SNAPSHOT'){
+            compile('org.boofcv:'+a+':0.25'){
                 exclude group: 'org.deepboof' }}
 
 

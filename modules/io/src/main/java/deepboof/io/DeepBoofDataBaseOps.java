@@ -31,6 +31,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,7 +49,7 @@ public class DeepBoofDataBaseOps {
 	 *
 	 * @param addresses List of address that it can be downloaded from
 	 * @param destination Directory that the file should be downloaded to and decompressed in
-	 * @return The directory containing the decompressed
+	 * @return The directory containing the decompressed model
 	 */
 	public static File downloadModel(List<String> addresses , File destination ) {
 		if( addresses.size() == 0 )
@@ -59,15 +60,34 @@ public class DeepBoofDataBaseOps {
 				throw new RuntimeException("Can't create destination directories");
 			}
 
+		// see if the decompressed directory already exists.  If it does skip downloading
 		String fileName = new File(addresses.get(0)).getName();
+		File pathDirectory = new File(destination, fileName.substring(0, fileName.length()-4));
+		if( pathDirectory.exists() ) {
+			return pathDirectory;
+		}
+
+		// download the file
 		int which = download(addresses, new File(destination,fileName) );
 		if( which >= 0 ) {
-			File pathDirectory = new File(destination, fileName.substring(0, fileName.length()-4));
 			DeepBoofDataBaseOps.decompressZip(new File(destination, fileName), destination, true);
 			return pathDirectory;
 		} else {
 			throw new RuntimeException("Failed to download model");
 		}
+	}
+
+	/**
+	 * @see #downloadModel(List, File)
+	 *
+	 * @param address Address to downloaded from
+	 * @param destination Directory that the file should be downloaded to and decompressed in
+	 * @return The directory containing the decompressed model
+	 */
+	public static File downloadModel(String address , File destination ) {
+		List<String> addresses = new ArrayList<>();
+		addresses.add( address );
+		return downloadModel(addresses, destination);
 	}
 
 	/**
@@ -81,7 +101,7 @@ public class DeepBoofDataBaseOps {
 		for (int i = 0; i < urls.size(); i++) {
 			String location = urls.get(i);
 			try {
-				download( new URL(location), output);
+				download( location, output);
 				return i;
 			} catch( IOException o ) {
 				System.err.println("Failed because of "+o.getClass().getSimpleName());
@@ -96,12 +116,13 @@ public class DeepBoofDataBaseOps {
 	 * Downloads the specified URL.  Throws an IOException if it fails for any reason.  Prints out
 	 * information and status to console
 	 *
-	 * @param url Location of file
+	 * @param location Location of file
 	 * @param output Where it will save the downloaded file to
 	 * @throws IOException Thrown if anything goes wrong
 	 */
-	public static void download( URL url , File output ) throws IOException {
+	public static void download( String location , File output ) throws IOException {
 
+		URL url = new URL(location);
 		URLConnection connection = url.openConnection();
 
 		connection.setConnectTimeout(1000);
@@ -139,9 +160,11 @@ public class DeepBoofDataBaseOps {
 				System.out.print("-");
 			}
 			System.out.println("|");
+		} else {
+			System.out.println("   unknown remote file size");
 		}
 		try {
-			escape:while (true) {
+			escape:while( downloadedBytes < remoteFileSize ) {
 				while (is.available() > 0) {
 					int amount = Math.min(buffer.length, is.available());
 					int ret = is.read(buffer, 0, amount);
@@ -151,7 +174,7 @@ public class DeepBoofDataBaseOps {
 					downloadedBytes += ret;
 					fos.write(buffer, 0, ret);
 
-					if( remoteFileSize > 0 ) {
+					if (remoteFileSize > 0) {
 						int updatedTicks = (int) (maxTicks * downloadedBytes / remoteFileSize);
 						for (int i = ticks; i < updatedTicks; i++) {
 							System.out.print("*");
@@ -165,8 +188,13 @@ public class DeepBoofDataBaseOps {
 			fos.flush();
 			fos.close();
 		}
-		if( remoteFileSize > 0 )
+		if( remoteFileSize > 0 ) {
+			int updatedTicks = (int) (maxTicks * downloadedBytes / remoteFileSize);
+			for (int i = ticks; i < updatedTicks; i++) {
+				System.out.print("*");
+			}
 			System.out.println();
+		}
 
 		if( remoteFileSize > 0 && downloadedBytes != remoteFileSize )
 			throw new IOException("Didn't download the entire file.  fraction = "+(downloadedBytes/(double)remoteFileSize));

@@ -4,6 +4,7 @@ import deepboof.io.DeepBoofDataBaseOps;
 import deepboof.misc.DeepBoofOps;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,28 +14,7 @@ import java.util.List;
 public class UtilCifar10 {
 
 	public static File downloadModelVggLike( File path ) {
-//		if( !path.isDirectory() )
-//			path = path.getParentFile();
-
-		File pathToModel = new File(path,"likevgg_cifar10");
-		if( !path.exists() ) {
-			if (!path.mkdirs())
-				throw new IllegalArgumentException("Failed to make path");
-		} else {
-
-			// check to see if the data already exists.  If so just return
-			if( new File(pathToModel,"YuvStatistics.txt").exists() &&
-					new File(pathToModel,"model.net").exists() )
-				return pathToModel;
-
-			// TODO check md5sum
-		}
-
-		System.out.println("Obtaining network model.  size = 125 MB");
-		DeepBoofDataBaseOps.download("http://heanet.dl.sourceforge.net/project/deepboof/networks/v1/likevgg_cifar10.zip",path);
-		DeepBoofDataBaseOps.decompressZip(new File(path,"likevgg_cifar10.zip"),path,true);
-
-		return pathToModel;
+		return DeepBoofDataBaseOps.downloadModel("http://heanet.dl.sourceforge.net/project/deepboof/networks/v1/likevgg_cifar10.zip", path);
 	}
 
 	public static File downloadData() {
@@ -42,8 +22,11 @@ public class UtilCifar10 {
 
 		// If needed, download required data sets and network model
 		if( !trainingDir.exists() ) {
-			System.out.println("Obtaining training and testing data. size = 175 MB");
-			DeepBoofDataBaseOps.download("http://torch7.s3-website-us-east-1.amazonaws.com/data/cifar-10-torch.tar.gz",trainingDir);
+			try {
+				DeepBoofDataBaseOps.download("http://torch7.s3-website-us-east-1.amazonaws.com/data/cifar-10-torch.tar.gz",trainingDir);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 			DeepBoofDataBaseOps.decompressTGZ(new File(trainingDir,"cifar-10-torch.tar.gz"),trainingDir);
 			DeepBoofDataBaseOps.moveInsideAndDeleteDir(new File(trainingDir,"cifar-10-batches-t7"),trainingDir);
 		}

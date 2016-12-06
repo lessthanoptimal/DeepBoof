@@ -2,6 +2,9 @@ Change Log
 
 Date Format: year/month/day
 
+- Removed dependency on wget.  It would hang when connection was refused from remote
+- Added own custom code which doesn't hang and is much more informative!
+
 ---------------------------------------------
 Date    : 2016-11-30
 Version : 0.2

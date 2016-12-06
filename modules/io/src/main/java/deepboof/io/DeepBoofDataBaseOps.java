@@ -18,17 +18,17 @@
 
 package deepboof.io;
 
-import com.github.axet.wget.WGet;
-import com.github.axet.wget.info.DownloadInfo;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -51,53 +51,127 @@ public class DeepBoofDataBaseOps {
 	 * @return The directory containing the decompressed
 	 */
 	public static File downloadModel(List<String> addresses , File destination ) {
-		File pathDirectory = null;
+		if( addresses.size() == 0 )
+			return null;
+
 		if( !destination.exists() )
-			destination.mkdirs();
-
-		for( String address : addresses ) {
-			try {
-				String fileName = new File(address).getName();
-				pathDirectory = new File(destination, fileName.substring(0, fileName.length()-4));
-				if( pathDirectory.exists() )
-					break;
-				DeepBoofDataBaseOps.download(address, destination);
-				DeepBoofDataBaseOps.decompressZip(new File(destination, fileName), destination, true);
-				break;
-			} catch( RuntimeException e){
-				pathDirectory = null;
+			if( !destination.mkdirs() ) {
+				throw new RuntimeException("Can't create destination directories");
 			}
-		}
-		if( pathDirectory == null )
-			throw new RuntimeException("Failed to download model");
 
-		return pathDirectory;
+		String fileName = new File(addresses.get(0)).getName();
+		int which = download(addresses, new File(destination,fileName) );
+		if( which >= 0 ) {
+			File pathDirectory = new File(destination, fileName.substring(0, fileName.length()-4));
+			DeepBoofDataBaseOps.decompressZip(new File(destination, fileName), destination, true);
+			return pathDirectory;
+		} else {
+			throw new RuntimeException("Failed to download model");
+		}
 	}
 
 	/**
-	 * Downloads a file from the specified address and saves it at the specified location
-	 * @param src URL pointing to file
-	 * @param dstDir destination of file
+	 * Will attempt to download the file from the list of URLs.  If one failes it will go to the next in the
+	 * list after printing why it failed
+	 * @param urls Sources for the file
+	 * @param output Where to save the file to
+	 * @return Index of url it downloaded or -1 if it failed
 	 */
-	public static File download( String src, File dstDir ) {
-		try {
-			File dst = new File(dstDir,new File(new URL(src).getFile()).getName());
-
-			System.out.println("Downloading "+src+"  to "+dst);
-			// make sure a file path exists
-			if( !dstDir.exists() && !dstDir.mkdirs() )
-				throw new RuntimeException("Can't create directories");
-			DownloadInfo info = new DownloadInfo(new URL(src));
-			info.extract();
-			WGet w = new WGet(info, dst);
-			w.download();
-			return WGet.calcName(new URL(src),dst);
-		} catch (MalformedURLException | RuntimeException e) {
-			e.printStackTrace();
-			System.exit(1);
-			return null;
+	public static int download( List<String> urls , File output ) {
+		for (int i = 0; i < urls.size(); i++) {
+			String location = urls.get(i);
+			try {
+				download( new URL(location), output);
+				return i;
+			} catch( IOException o ) {
+				System.err.println("Failed because of "+o.getClass().getSimpleName());
+				System.err.println(o.getMessage());
+				System.err.println();
+			}
 		}
+		return -1;
 	}
+
+	/**
+	 * Downloads the specified URL.  Throws an IOException if it fails for any reason.  Prints out
+	 * information and status to console
+	 *
+	 * @param url Location of file
+	 * @param output Where it will save the downloaded file to
+	 * @throws IOException Thrown if anything goes wrong
+	 */
+	public static void download( URL url , File output ) throws IOException {
+
+		URLConnection connection = url.openConnection();
+
+		connection.setConnectTimeout(1000);
+		connection.connect();
+
+		long remoteFileSize = connection.getContentLengthLong();
+
+		System.out.println("Content length = "+remoteFileSize/1024/1024+" MB");
+
+		if( output.exists() ) {
+			if( remoteFileSize > 0 && output.length() != remoteFileSize ) {
+				System.out.println("File exists, but is not the expected size.  found "+
+						output.length()+" expected "+remoteFileSize);
+				if( !output.delete() )
+					throw new IOException("Failed to delete corrupted file");
+			} else {
+				System.out.println("file already downloaded");
+				return;
+			}
+		}
+
+		InputStream is = connection.getInputStream();
+		FileOutputStream fos = new FileOutputStream(output);
+
+		byte buffer[] = new byte[1024*100];
+		long downloadedBytes = 0;
+
+		int ticks = 0;
+		int maxTicks = 60;
+
+		System.out.println("Downloading: "+url);
+		if( remoteFileSize > 0 ) {
+			System.out.print("|");
+			for (int i = 1; i < maxTicks; i++) {
+				System.out.print("-");
+			}
+			System.out.println("|");
+		}
+		try {
+			escape:while (true) {
+				while (is.available() > 0) {
+					int amount = Math.min(buffer.length, is.available());
+					int ret = is.read(buffer, 0, amount);
+					if (ret <= 0) {
+						break escape;
+					}
+					downloadedBytes += ret;
+					fos.write(buffer, 0, ret);
+
+					if( remoteFileSize > 0 ) {
+						int updatedTicks = (int) (maxTicks * downloadedBytes / remoteFileSize);
+						for (int i = ticks; i < updatedTicks; i++) {
+							System.out.print("*");
+						}
+						ticks = updatedTicks;
+					}
+				}
+			}
+		} finally {
+			is.close();
+			fos.flush();
+			fos.close();
+		}
+		if( remoteFileSize > 0 )
+			System.out.println();
+
+		if( remoteFileSize > 0 && downloadedBytes != remoteFileSize )
+			throw new IOException("Didn't download the entire file.  fraction = "+(downloadedBytes/(double)remoteFileSize));
+	}
+
 
 	public static void decompressTGZ( File src , File dst ) {
 		Archiver archiver = ArchiverFactory.createArchiver("tar", "gz");

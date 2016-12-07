@@ -10,15 +10,19 @@ boof = {}
 
 boof.output_base_directory = "torch_layers"
 
-boof.float_types = {}
-boof.float_types[1] = "F32"
-boof.float_types[2] = "F64"
+boof.float_types = {"F32","F64"}
+
+boof.all_types = {"U8","S64","F32","F64"}
 
 function boof.boof_to_tensor_name( boof_type )
     if boof_type == "F32" then
         return "torch.FloatTensor"
     elseif boof_type == "F64" then
         return "torch.DoubleTensor"
+    elseif boof_type == "S64" then
+        return "torch.LongTensor"
+    elseif boof_type == "U8" then
+        return "torch.ByteTensor"
     elseif boof_type == "cuda" then
         return "torch.CudaTensor"
     else

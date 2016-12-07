@@ -28,6 +28,7 @@ import deepboof.impl.forward.standard.*;
 import deepboof.io.torch7.struct.*;
 import deepboof.tensors.Tensor_F32;
 import deepboof.tensors.Tensor_F64;
+import deepboof.tensors.Tensor_S64;
 import deepboof.tensors.Tensor_U8;
 import org.ddogleg.struct.Tuple2;
 
@@ -138,6 +139,7 @@ public class ConvertTorchToBoofForward {
 				case "torch.FloatTensor": return (T)convert_F32(t);
 				case "torch.DoubleTensor": return (T)convert_F64(t);
 				case "torch.ByteTensor": return (T)convert_U8(t);
+				case "torch.LongTensor": return (T)convert_S64(t);
 				default: throw new RuntimeException("Unsupported data "+t.torchName);
 			}
 		} else if( input instanceof TorchNumber ) {
@@ -548,6 +550,23 @@ public class ConvertTorchToBoofForward {
 			System.arraycopy(torch.storage.getDataObject(),torch.startIndex,boof.d,0,boof.d.length);
 		} else {
 			boof.d = (byte[])torch.storage.getDataObject();
+		}
+
+		return boof;
+	}
+
+	private static Tensor_S64 convert_S64(TorchTensor torch ) {
+		if( torch.shape == null || torch.shape.length == 0 )
+			return new Tensor_S64();
+		Tensor_S64 boof = new Tensor_S64();
+		boof.shape = torch.shape;
+		boof.computeStrides();
+
+		if( torch.startIndex != 0 && torch.length() != torch.storage.size() ) {
+			boof.d = new long[ torch.length() ];
+			System.arraycopy(torch.storage.getDataObject(),torch.startIndex,boof.d,0,boof.d.length);
+		} else {
+			boof.d = (long[])torch.storage.getDataObject();
 		}
 
 		return boof;

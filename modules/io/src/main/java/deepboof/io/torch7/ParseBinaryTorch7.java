@@ -177,6 +177,30 @@ public class ParseBinaryTorch7 extends ParseTorch7 {
 	}
 
 	@Override
+	public void readArrayLong(int size, long[] storage) throws IOException {
+		// read it in one big batch to make it faster
+		byte[] tmp = new byte[size*8];
+		input.readFully(tmp);
+		if( littleEndian ) {
+			int idx = 0;
+			for (int i = 0; i < size; i++, idx += 8) {
+				long a =  (tmp[idx]&0xFF) | (tmp[idx+1]&0xFF)<<8 | (tmp[idx+2]&0xFF)<<16 | (long)(tmp[idx+3]&0xFF) << 24L;
+				long b = (tmp[idx+4]&0xFF) | (tmp[idx+5]&0xFF)<<8 | (tmp[idx+6]&0xFF)<<16 | (long)(tmp[idx+7]&0xFF) << 24;
+
+				storage[i] = b << 32 | a;
+			}
+		} else {
+			int idx = 0;
+			for (int i = 0; i < size; i++, idx += 8) {
+				long a = (tmp[idx+3]&0xFF) | (tmp[idx+2]&0xFF)<<8 | (tmp[idx+1]&0xFF)<<16 | (long)(tmp[idx]&0xFF) << 24;
+				long b = (tmp[idx+7]&0xFF) | (tmp[idx+6]&0xFF)<<8 | (tmp[idx+5]&0xFF)<<16 | (long)(tmp[idx+4]&0xFF) << 24;
+
+				storage[i] = a << 32 | b;
+			}
+		}
+	}
+
+	@Override
 	public void readArrayByte(int size, byte[] storage) throws IOException {
 		input.readFully(storage,0,size);
 	}

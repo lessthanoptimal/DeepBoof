@@ -103,10 +103,6 @@ public class ParseAsciiTorch7 extends ParseTorch7 {
 
 	@Override
 	public void readArrayFloat(int size, float[] storage) throws IOException {
-//		for (int i = 0; i < size; i++) {
-//			storage[i] = readFloat();
-//		}
-//		input.readByte();
 		String line = readInnerString();
 		String words[] = line.split(" ");
 		if( words.length != size )
@@ -131,6 +127,17 @@ public class ParseAsciiTorch7 extends ParseTorch7 {
 	public void readArrayByte(int size, byte[] storage) throws IOException {
 		input.readFully(storage,0,size);
 		input.readByte();
+	}
+
+	@Override
+	public void readArrayLong(int size, long[] storage) throws IOException {
+		String line = readInnerString();
+		String words[] = line.split(" ");
+		if( words.length != size )
+			throw new IOException("Unexpected number of words "+size+" found "+words.length);
+		for (int i = 0; i < size; i++) {
+			storage[i] = Long.parseLong(words[i]);
+		}
 	}
 
 	private String readInnerString() throws IOException {

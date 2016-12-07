@@ -235,9 +235,7 @@ public abstract class ParseTorch7 {
 		switch( name ) {
 			case "torch.LongStorage":{
 				TorchLongStorage t = new TorchLongStorage(size);
-				for (int i = 0; i < size; i++) {
-					t.data[i] = readS64();
-				}
+				readArrayLong(size,t.data);
 				out = t;
 			}break;
 			case "torch.FloatStorage":{
@@ -408,6 +406,8 @@ public abstract class ParseTorch7 {
 	public abstract void readArrayChar( int size , char[] storage ) throws IOException;
 
 	public abstract void readArrayByte( int size , byte[] storage ) throws IOException;
+
+	public abstract void readArrayLong( int size , long[] storage ) throws IOException;
 
 	public boolean isVerbose() {
 		return verbose;

@@ -2,8 +2,16 @@ Change Log
 
 Date Format: year/month/day
 
+---------------------------------------------
+Date    : 2016-
+Version : 0.3
+
 - Removed dependency on wget.  It would hang when connection was refused from remote
 - Added own custom code which doesn't hang and is much more informative!
+- Added Tensor_S64
+- Torch parsing
+  * Fixed reading of LongStorage
+  * Added unit test explicitly for different tensor types
 
 ---------------------------------------------
 Date    : 2016-11-30

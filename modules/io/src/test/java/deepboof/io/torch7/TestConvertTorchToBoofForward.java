@@ -121,6 +121,39 @@ public class TestConvertTorchToBoofForward {
 		checkFunction("spatial_dropout/F32", null);
 	}
 
+	@Test
+	public void tensorStorage() {
+		File pathToTensors = new File(pathToData,"tensor_storage");
+		if( !pathToTensors.exists() )
+			fail("Missing tensor_storage");
+
+		int count = 0;
+		for( File d : pathToTensors.listFiles() ) {
+			if (!d.isDirectory())
+				continue;
+
+			d = new File(d,"001");
+
+			Tensor tensor;
+
+			tensor = convert(readBinary(new File(d,"tensor")));
+			performTensorStorageChecks(tensor);
+			tensor = convert(readAscii(new File(d,"tensor_ascii")));
+			performTensorStorageChecks(tensor);
+		}
+	}
+
+	private void performTensorStorageChecks(Tensor tensor) {
+		assertEquals(3,tensor.length(0));
+		assertEquals(20,tensor.length(1));
+
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 20; j++) {
+				assertEquals( i*20+j+1, tensor.getDouble(i,j), 1e-8);
+			}
+		}
+	}
+
 	private void checkFunction(String directory , Class functionClass ) {
 		File pathToOp = new File(pathToData,directory);
 		if( !pathToOp.exists() ) {

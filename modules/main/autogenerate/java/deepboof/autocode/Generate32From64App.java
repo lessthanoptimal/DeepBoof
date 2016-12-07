@@ -18,9 +18,10 @@
 
 package deepboof.autocode;
 
+import com.peterabeles.auto64fto32f.ConvertFile32From64;
+import com.peterabeles.auto64fto32f.RecursiveConvert;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 
 /**
@@ -28,62 +29,41 @@ import java.io.IOException;
  *
  * @author Peter Abeles
  */
-public class Generate32From64App {
+public class Generate32From64App extends RecursiveConvert {
 
-	// source code root directory
-	File rootDirectory;
 
-	public Generate32From64App( String sourceCodeRoot ) {
-		rootDirectory = new File( sourceCodeRoot );
-
-		if( !rootDirectory.isDirectory() ) {
-			throw new IllegalArgumentException( "Must specify a directory" );
-		}
+	public Generate32From64App(ConvertFile32From64 converter) {
+		super(converter);
 	}
 
-
-	public void process() {
-		processDirectory( rootDirectory );
-	}
-
-	private void processDirectory( File directory ) {
-		System.out.println( "---- Directory " + directory );
-
-		// examine all the files in the directory first
-		File[] files = directory.listFiles();
-
-		for( File f : files ) {
-			if( f.getName().endsWith( "_F64.java" ) ) {
-				processFile( f );
-			}
-		}
-
-		for( File f : files ) {
-			if( f.isDirectory() && !f.isHidden() ) {
-				processDirectory( f );
-			}
-		}
-	}
-
-	private void processFile( File f ) {
-		try {
-			System.out.println( "Examining " + f.getName() );
-			new ConvertFile32From64( f ).process();
-		} catch( FileNotFoundException e ) {
-			throw new RuntimeException( e );
-		} catch( IOException e ) {
-			throw new RuntimeException( e );
-		}
-	}
-
-	public static void main( String args[] ) {
+	public static void main(String args[] ) {
 		String directories[] = new String[]{
 				"modules/main/src/main/java",
 				"modules/main/src/test/java",
 				"modules/io/src/main/java",};
 
+		ConvertFile32From64 converter = new ConvertFile32From64(false);
+
+		converter.replacePattern( "/\\*\\*/getDouble", "__GET_DOUBLE" );
+		converter.replacePattern("/\\*\\*/double", "FIXED_DOUBLE");
+		converter.replacePattern( "DOUBLE_TEST_TOL", "FLOAT_TEST_TOL");
+		converter.replacePattern( "TEST_TOL_F64", "TEST_TOL_F32" );
+		converter.replacePattern( "TEST_TOL_A_F64", "TEST_TOL_A_F32" );
+		converter.replacePattern( "TEST_TOL_B_F64", "TEST_TOL_B_F32" );
+		converter.replacePattern("double", "float");
+		converter.replacePattern("Double", "Float");
+		converter.replacePattern("_F64", "_F32");
+
+		converter.replaceStartsWith("Math.", "(float)Math.");
+		converter.replaceStartsWith("-Math.", "(float)-Math.");
+		converter.replaceStartsWith( "rand.nextGaussian", "(float)rand.nextGaussian" );
+
+		converter.replacePatternAfter("FIXED_DOUBLE", "/\\*\\*/double");
+		converter.replacePatternAfter( "__GET_DOUBLE","/\\*\\*/getDouble" );
+
+		Generate32From64App app = new Generate32From64App(converter);
 		for( String dir : directories ) {
-			new Generate32From64App( dir ).process();
+			app.process(new File(dir) );
 		}
 	}
 }

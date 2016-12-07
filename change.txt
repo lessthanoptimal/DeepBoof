@@ -3,7 +3,7 @@ Change Log
 Date Format: year/month/day
 
 ---------------------------------------------
-Date    : 2016-
+Date    : 2016-12-7
 Version : 0.3
 
 - Removed dependency on wget.  It would hang when connection was refused from remote

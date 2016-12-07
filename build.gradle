@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'eclipse'
 
     group 'org.deepboof'
-    version '0.3-SNAPSHOT'
+    version '0.3'
 }
 
 
@@ -119,8 +119,8 @@ subprojects {
 
 idea {
     project {
-        jdkName = '1.8 (64bit)'
-        languageLevel = '1.8'
+        jdkName = '1.7 (64bit)'
+        languageLevel = '1.7'
     }
 
     module {

@@ -168,6 +168,7 @@ public class TestConvertTorchToBoofForward {
 		for( File d : pathToOp.listFiles() ) {
 			if( !d.isDirectory() )
 				continue;
+			System.out.println("Inside of directory "+d);
 
 			Tensor input;FunctionAndParameters fap;Tensor expected;
 

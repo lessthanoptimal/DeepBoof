@@ -12,6 +12,9 @@ Version : 0.3
 - Torch parsing
   * Fixed reading of LongStorage
   * Added unit test explicitly for different tensor types
+- Torch Dropout
+  * Checks to see if stochastic_inference is true and throws an error message
+  * modified Torch unit test to not accidentially turn it on for SpatialDropout
 
 ---------------------------------------------
 Date    : 2016-11-30

@@ -193,6 +193,13 @@ public class ConvertTorchToBoofForward {
 		if( t.map.containsKey("v2"))
 			typeOne = !((TorchBoolean)t.map.get("v2")).value;
 
+		if( t.map.containsKey("stochastic_inference")) {
+			boolean stochatic = ((TorchBoolean)t.map.get("stochastic_inference")).value;
+			if( stochatic )
+				throw new IllegalArgumentException("stochastic_inference is not yet supported. " +
+						" This means that it should always behave as if it's in training mode");
+		}
+
 		if( typeOne ) {
 			FunctionAndParameters ret = new FunctionAndParameters();
 			double scalar = 1.0 - ((TorchNumber)t.map.get("p")).value;

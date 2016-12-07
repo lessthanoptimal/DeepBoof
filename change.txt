@@ -20,7 +20,7 @@ Version : 0.3
 Date    : 2016-11-30
 Version : 0.2
 
-- Reversed to Java 1.7 so that it can support Android
+- Reverted to Java 1.7 so that it can support Android
 - Better support for loading and running Torch networks
 
 ---------------------------------------------

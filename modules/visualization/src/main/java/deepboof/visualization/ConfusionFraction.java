@@ -18,7 +18,7 @@
 
 package deepboof.visualization;
 
-import org.ejml.data.RowMatrix_F64;
+import org.ejml.data.DMatrixRMaj;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class ConfusionFraction {
 	 * N by N matrix of counts.  Each element represents the fraction of times category 'row' was labeled
 	 * 'col'.  Thus, the diagonals are the fraction of the time that each category has been correctly labeled.
 	 */
-	public RowMatrix_F64 M;
+	public DMatrixRMaj M;
 
 	// precompute the sums along rows and columns
 	public double sumCols[];
@@ -54,7 +54,7 @@ public class ConfusionFraction {
 
 	public ConfusionFraction(int N) {
 		this.N = N;
-		M = new RowMatrix_F64(N,N);
+		M = new DMatrixRMaj(N,N);
 		sumCols = new double[N];
 	}
 

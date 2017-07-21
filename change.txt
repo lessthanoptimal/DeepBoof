@@ -3,6 +3,12 @@ Change Log
 Date Format: year/month/day
 
 ---------------------------------------------
+Date    : 2016
+Version : 0.4
+
+- DeepBoofDataBaseOps provides more useful error messages.
+
+---------------------------------------------
 Date    : 2016-12-7
 Version : 0.3
 
@@ -15,7 +21,6 @@ Version : 0.3
 - Torch Dropout
   * Checks to see if stochastic_inference is true and throws an error message
   * modified Torch unit test to not accidentially turn it on for SpatialDropout
-- DeepBoofDataBaseOps provides more useful error messages.
 
 ---------------------------------------------
 Date    : 2016-11-30

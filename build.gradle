@@ -26,7 +26,7 @@ subprojects {
     }
 
     dependencies {
-        compile group: 'org.ddogleg', name: 'ddogleg', version: '0.11'
+        compile group: 'org.ddogleg', name: 'ddogleg', version: '0.12-SNAPSHOT'
 
         testCompile group: 'junit', name: 'junit', version: '4.12'
     }
@@ -143,5 +143,5 @@ idea {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.14.1'
+    gradleVersion = '4.0.1'
 }

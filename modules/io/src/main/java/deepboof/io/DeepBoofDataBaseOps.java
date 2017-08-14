@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, Peter Abeles. All Rights Reserved.
+ * Copyright (c) 2016-2017, Peter Abeles. All Rights Reserved.
  *
  * This file is part of DeepBoof
  *
@@ -122,6 +122,9 @@ public class DeepBoofDataBaseOps {
 	 */
 	public static void download( String location , File output ) throws IOException {
 
+		if( output.isDirectory() )
+			throw new IllegalArgumentException("output should be a file not a directory");
+
 		URL url = new URL(location);
 		URLConnection connection = url.openConnection();
 
@@ -134,8 +137,9 @@ public class DeepBoofDataBaseOps {
 
 		if( output.exists() ) {
 			if( remoteFileSize > 0 && output.length() != remoteFileSize ) {
-				System.out.println("File exists, but is not the expected size.  found "+
+				System.out.println("File [1] exists, but is not the expected size.  found "+
 						output.length()+" expected "+remoteFileSize);
+				System.out.println("   [1] = "+output.getAbsolutePath());
 				if( !output.delete() )
 					throw new IOException("Failed to delete corrupted file");
 			} else {

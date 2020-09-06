@@ -22,15 +22,15 @@ import deepboof.DeepBoofConstants;
 import deepboof.DummyFunction;
 import deepboof.tensors.Tensor_F64;
 import org.ddogleg.struct.Tuple2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Peter Abeles
@@ -101,7 +101,7 @@ public class TestForwardSequence {
 				Tuple2 functions = (Tuple2) alg.outputStorage.get("" + i);
 
 				// should predeclare an empty tensor
-				assertTrue(functions.data0 != null);
+				assertTrue(functions.d0 != null);
 			}
 		}
 	}

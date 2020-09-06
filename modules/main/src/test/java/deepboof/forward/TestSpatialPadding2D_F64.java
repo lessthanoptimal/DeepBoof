@@ -21,11 +21,11 @@ package deepboof.forward;
 import deepboof.DeepBoofConstants;
 import deepboof.misc.TensorFactory_F64;
 import deepboof.tensors.Tensor_F64;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Peter Abeles

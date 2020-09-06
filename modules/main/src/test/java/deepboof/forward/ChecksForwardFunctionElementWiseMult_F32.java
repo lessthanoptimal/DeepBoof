@@ -21,13 +21,12 @@ package deepboof.forward;
 import deepboof.DeepBoofConstants;
 import deepboof.Function;
 import deepboof.tensors.Tensor_F32;
-import org.junit.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Peter Abeles
@@ -54,7 +53,7 @@ public abstract class ChecksForwardFunctionElementWiseMult_F32 extends ChecksFor
 		for (int i = 0; i < N; i++) {
 			float value = input.getAtIndex(i);
 			float expected = scalar*value;
-			Assert.assertEquals(expected,output.getAtIndex(i), DeepBoofConstants.TEST_TOL_F32);
+			assertEquals(expected,output.getAtIndex(i), DeepBoofConstants.TEST_TOL_F32);
 		}
 	}
 

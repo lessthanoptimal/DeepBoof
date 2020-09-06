@@ -23,8 +23,8 @@ import deepboof.misc.TensorOps;
 import deepboof.tensors.Tensor_F64;
 
 import static deepboof.misc.TensorOps.WI;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Special checks for learning implementations of batch norm.  The behavior is very different from forwards

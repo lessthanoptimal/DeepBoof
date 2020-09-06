@@ -28,9 +28,9 @@ import deepboof.tensors.Tensor_F64;
  */
 public class DeepUnitTest {
 	public static void assertEquals(int[] expected, int[] found) {
-		org.junit.Assert.assertEquals(found.length,expected.length);
+		org.junit.jupiter.api.Assertions.assertEquals(found.length,expected.length);
 		for (int i = 0; i < expected.length; i++) {
-			org.junit.Assert.assertEquals(expected[i],found[i]);
+			org.junit.jupiter.api.Assertions.assertEquals(expected[i],found[i]);
 		}
 	}
 
@@ -61,7 +61,7 @@ public class DeepUnitTest {
 		int N = expected.length();
 
 		for (int i = 0; i < N; i++) {
-			org.junit.Assert.assertEquals("i = "+i+" indexes "+indexE+" "+indexF,expected.d[indexE++], found.d[indexF++], tol);
+			org.junit.jupiter.api.Assertions.assertEquals(expected.d[indexE++], found.d[indexF++], tol, "i = "+i+" indexes "+indexE+" "+indexF);
 		}
 	}
 
@@ -74,7 +74,7 @@ public class DeepUnitTest {
 		int N = expected.length();
 
 		for (int i = 0; i < N; i++) {
-			org.junit.Assert.assertEquals(indexE+" "+indexF,expected.d[indexE++], found.d[indexF++], tol);
+			org.junit.jupiter.api.Assertions.assertEquals(expected.d[indexE++], found.d[indexF++], tol,indexE+" "+indexF);
 		}
 	}
 
@@ -87,7 +87,7 @@ public class DeepUnitTest {
 		int N = expected.length();
 
 		for (int i = 0; i < N; i++) {
-			org.junit.Assert.assertNotEquals("i = "+i+" indexes "+indexE+" "+indexF,expected.d[indexE++], found.d[indexF++], tol);
+			org.junit.jupiter.api.Assertions.assertNotEquals(expected.d[indexE++], found.d[indexF++], tol, "i = "+i+" indexes "+indexE+" "+indexF);
 		}
 	}
 
@@ -100,7 +100,7 @@ public class DeepUnitTest {
 		int N = expected.length();
 
 		for (int i = 0; i < N; i++) {
-			org.junit.Assert.assertNotEquals(indexE+" "+indexF,expected.d[indexE++], found.d[indexF++], tol);
+			org.junit.jupiter.api.Assertions.assertNotEquals(expected.d[indexE++], found.d[indexF++], tol,indexE+" "+indexF);
 		}
 	}
 }

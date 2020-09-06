@@ -26,7 +26,7 @@ import deepboof.tensors.Tensor_F32;
 import java.util.List;
 
 import static deepboof.misc.TensorOps.WI;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Peter Abeles

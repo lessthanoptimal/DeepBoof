@@ -21,13 +21,12 @@ package deepboof.forward;
 import deepboof.DeepBoofConstants;
 import deepboof.Function;
 import deepboof.tensors.Tensor_F64;
-import org.junit.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Peter Abeles
@@ -52,7 +51,7 @@ public abstract class ChecksForwardActivationSigmoid_F64 extends ChecksForwardEl
 		for (int i = 0; i < N; i++) {
 			double value = input.getAtIndex(i);
 			double expected = 1.0 / (1.0 + Math.exp(-value));
-			Assert.assertEquals(expected,output.getAtIndex(i), DeepBoofConstants.TEST_TOL_F64);
+			assertEquals(expected,output.getAtIndex(i), DeepBoofConstants.TEST_TOL_F64);
 		}
 	}
 

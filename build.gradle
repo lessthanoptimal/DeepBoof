@@ -8,34 +8,51 @@ allprojects {
 
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'osgi'
+    apply plugin: 'java-library'
     apply plugin: 'maven'
     apply plugin: 'signing'
 
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    // Creates Java 8 byte code
+    compileJava {
+        options.compilerArgs = [ "--release", "8" ]
+    }
 
     repositories {
         mavenCentral()
         mavenLocal()
 
-        maven {
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+        maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url = 'https://jitpack.io' } // Allows annotations past Java 8 to be used
     }
 
     dependencies {
-        compile group: 'org.ddogleg', name: 'ddogleg', version: '0.13-SNAPSHOT'
+        compile group: 'org.ddogleg', name: 'ddogleg', version: '0.19-SNAPSHOT'
 
-        testCompile group: 'junit', name: 'junit', version: '4.12'
+        compileOnly 'org.jetbrains:annotations:20.0.0' // @Nullable
+        compileOnly 'javax.annotation:jsr250-api:1.0'  // @Generated
+        compileOnly 'org.projectlombok:lombok:1.18.10'
+        testCompile project.sourceSets.main.compileClasspath
+
+        testImplementation( 'org.junit.jupiter:junit-jupiter-api:5.4.0')
+        testRuntimeOnly( 'org.junit.jupiter:junit-jupiter-engine:5.4.0')
+
+        // needed to use Java 11+ syntax with Java 1.8 byte code
+        annotationProcessor('com.github.bsideup.jabel:jabel-javac-plugin:0.2.0'){
+            exclude group: 'net.bytebuddy', module: 'byte-buddy'
+            exclude group: 'net.bytebuddy', module: 'byte-buddy-agent'
+        }
+        annotationProcessor("net.bytebuddy:byte-buddy:1.10.10")
+        annotationProcessor("net.bytebuddy:byte-buddy-agent:1.10.10")
     }
 
     sourceSets {
-        test {
-            java {
-                srcDir 'autogenerate/java'
-            }
+        autogenerate {
+            java { srcDir 'autogenerate/java' }
         }
     }
 
@@ -117,17 +134,6 @@ subprojects {
     }
 }
 
-idea {
-    project {
-        jdkName = '1.7 (64bit)'
-        languageLevel = '1.7'
-    }
-
-    module {
-        excludeDirs += file('.idea')
-    }
-}
-
 // Disable the creation of jars for distribution.  If you don't do this it will crash
 [':modules'].each {String a ->
     project(a) {
@@ -142,6 +148,7 @@ idea {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.10.2'
+wrapper {
+    distributionType = Wrapper.DistributionType.BIN
+    gradleVersion = '6.4.1'
 }

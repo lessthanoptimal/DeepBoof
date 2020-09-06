@@ -159,14 +159,14 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 			Tuple2<T,T> storage = outputStorage.get(node.name);
 			if( i==0 || node.sources.size() == 1 ) {
 				if( i != sequence.size()-1 )
-					storage.data0.reshape(WI(numBatch,node.function.getOutputShape()));
-				storage.data1 = null;
+					storage.d0.reshape(WI(numBatch,node.function.getOutputShape()));
+				storage.d1 = null;
 			} else {
 				// don't declare memory for output for the last node since it will be provided
 				if( i != sequence.size()-1 )
-					storage.data0.reshape(WI(node.function.getOutputShape()));
+					storage.d0.reshape(WI(node.function.getOutputShape()));
 				// however, the last node could still need storage for combining inputs
-				storage.data1.reshape(WI(node.combine.getOutputShape()));
+				storage.d1.reshape(WI(node.combine.getOutputShape()));
 			}
 		}
 	}
@@ -205,7 +205,7 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 		{
 			Node<T,F> node = sequence.get(0);
 			Tuple2<T,T> storage = outputStorage.get(node.name);
-			node.function.forward(input, storage.data0 );
+			node.function.forward(input, storage.d0 );
 		}
 
 		// Handle all the inner nodes in the sequence.
@@ -218,15 +218,15 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 			inputs.clear();
 			for (int j = 0; j < node.sources.size(); j++) {
 				InputAddress addr = node.sources.get(j);
-				inputs.add( outputStorage.get(addr.nodeName).data0 );
+				inputs.add( outputStorage.get(addr.nodeName).d0 );
 			}
 
 			// Process the inputs now and store in output
 			if( node.sources.size() == 1 ) {
-				node.function.forward(inputs.get(0),nodeOutput.data0);
+				node.function.forward(inputs.get(0),nodeOutput.d0);
 			} else {
-				node.combine.combine(inputs,nodeOutput.data1);
-				node.function.forward(nodeOutput.data1,nodeOutput.data0);
+				node.combine.combine(inputs,nodeOutput.d1);
+				node.function.forward(nodeOutput.d1,nodeOutput.d0);
 			}
 		}
 
@@ -236,15 +236,15 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 			inputs.clear();
 			for (int j = 0; j < node.sources.size(); j++) {
 				InputAddress addr = node.sources.get(j);
-				inputs.add(outputStorage.get(addr.nodeName).data0);
+				inputs.add(outputStorage.get(addr.nodeName).d0);
 			}
 
 			if( node.sources.size() == 1 ) {
 				node.function.forward(inputs.get(0),output);
 			} else {
 				Tuple2<T,T> nodeOutput = outputStorage.get(node.name);
-				node.combine.combine(inputs,nodeOutput.data1);
-				node.function.forward(nodeOutput.data1,output);
+				node.combine.combine(inputs,nodeOutput.d1);
+				node.function.forward(nodeOutput.d1,output);
 			}
 		}
 	}
@@ -254,7 +254,7 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 	}
 
 	public T getNodeOutput(int index ) {
-		return outputStorage.get( sequence.get(index).name ).data0;
+		return outputStorage.get( sequence.get(index).name ).d0;
 	}
 
 	public int[] getOutputShape() {

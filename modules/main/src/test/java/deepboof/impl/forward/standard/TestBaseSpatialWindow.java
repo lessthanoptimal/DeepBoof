@@ -23,12 +23,12 @@ import deepboof.forward.ConfigPadding;
 import deepboof.forward.ConfigSpatial;
 import deepboof.forward.SpatialPadding2D_F64;
 import deepboof.tensors.Tensor_F64;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static deepboof.misc.TensorOps.WI;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Abeles

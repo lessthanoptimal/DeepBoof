@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'eclipse'
 
     group 'org.deepboof'
-    version '0.5-SNAPSHOT'
+    version '0.5'
 }
 
 
@@ -31,7 +31,7 @@ subprojects {
     }
 
     dependencies {
-        compile group: 'org.ddogleg', name: 'ddogleg', version: '0.19-SNAPSHOT'
+        compile group: 'org.ddogleg', name: 'ddogleg', version: '0.19'
 
         compileOnly 'org.jetbrains:annotations:20.0.0' // @Nullable
         compileOnly 'javax.annotation:jsr250-api:1.0'  // @Generated

@@ -18,7 +18,7 @@
 
 package deepboof.visualization;
 
-import org.ddogleg.struct.GrowQueue_F64;
+import org.ddogleg.struct.DogArray_F64;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,7 +38,7 @@ public class GridParameterLogParser {
 	 * @param storage Where the results are to be stored
 	 * @throws IOException thrown if an error occurs
 	 */
-	public static void parsePerformanceEpoc( File file , GrowQueue_F64 storage ) throws IOException
+	public static void parsePerformanceEpoc( File file , DogArray_F64 storage ) throws IOException
 	{
 		if( !file.exists() ) throw new IOException(file.getName()+" doesn't exist");
 

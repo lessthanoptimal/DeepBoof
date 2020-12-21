@@ -14,7 +14,7 @@ import deepboof.io.torch7.struct.TorchGeneric;
 import deepboof.io.torch7.struct.TorchObject;
 import deepboof.misc.DeepBoofOps;
 import deepboof.tensors.Tensor_U8;
-import org.ddogleg.struct.GrowQueue_I8;
+import org.ddogleg.struct.DogArray_I8;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -36,7 +36,7 @@ public class DataSetsCifar10 {
 		ParseAsciiTorch7 ascii = new ParseAsciiTorch7();
 
 		List<Planar<GrayF32>> listYuv = new ArrayList<>();
-		GrowQueue_I8 labels = new GrowQueue_I8();
+		DogArray_I8 labels = new DogArray_I8();
 		for( File f : trainingDir.listFiles() ) {
 			if( !f.getName().startsWith("data_"))
 				continue;

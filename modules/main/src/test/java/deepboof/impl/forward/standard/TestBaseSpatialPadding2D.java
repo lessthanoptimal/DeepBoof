@@ -21,11 +21,11 @@ package deepboof.impl.forward.standard;
 import deepboof.DeepUnitTest;
 import deepboof.forward.ConfigPadding;
 import deepboof.tensors.Tensor_F64;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Peter Abeles
@@ -34,7 +34,7 @@ public class TestBaseSpatialPadding2D {
 
 	ConfigPadding config;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		config = new ConfigPadding();
 		config.y0 = 2;

@@ -24,15 +24,15 @@ import deepboof.impl.forward.standard.FunctionLinear_F32;
 import deepboof.misc.TensorFactory_F32;
 import deepboof.misc.TensorOps;
 import deepboof.tensors.Tensor_F32;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static deepboof.misc.TensorOps.WI;
 import static deepboof.misc.TensorOps.WT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Peter Abeles

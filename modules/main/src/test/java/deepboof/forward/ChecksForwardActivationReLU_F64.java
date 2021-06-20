@@ -21,13 +21,12 @@ package deepboof.forward;
 import deepboof.DeepBoofConstants;
 import deepboof.Function;
 import deepboof.tensors.Tensor_F64;
-import org.junit.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Peter Abeles
@@ -57,7 +56,7 @@ public abstract class ChecksForwardActivationReLU_F64 extends ChecksForwardEleme
 		for (int i = 0; i < N; i++) {
 			double value = input.getAtIndex(i);
 			if( value < 0 )
-				Assert.assertEquals(0,output.getAtIndex(i), DeepBoofConstants.TEST_TOL_F64);
+				assertEquals(0,output.getAtIndex(i), DeepBoofConstants.TEST_TOL_F64);
 			else
 				assertEquals(value,output.getAtIndex(i), DeepBoofConstants.TEST_TOL_F64);
 		}

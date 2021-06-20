@@ -18,7 +18,7 @@
 
 package deepboof.io.torch7;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Converts a DeepBoof object into a torch object then saves it to disk

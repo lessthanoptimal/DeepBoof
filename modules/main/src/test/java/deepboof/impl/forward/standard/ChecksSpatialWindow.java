@@ -22,12 +22,12 @@ import deepboof.DeepBoofConstants;
 import deepboof.forward.ConfigSpatial;
 import deepboof.misc.TensorFactory_F64;
 import deepboof.tensors.Tensor_F64;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
 import static deepboof.misc.TensorOps.WI;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Peter Abeles
@@ -130,7 +130,7 @@ public abstract class ChecksSpatialWindow {
 					for (int x = 0; x <= W-WW; x += periodX, outX++) {
 						double expected = sumWindow(input,batch,channel, y, x, HH, WW);
 						double foundValue = found.get(batch,channel,outY,outX);
-						assertEquals(y+" "+x,expected,foundValue, DeepBoofConstants.TEST_TOL_F64);
+						assertEquals(expected,foundValue, DeepBoofConstants.TEST_TOL_F64,y+" "+x);
 					}
 				}
 			}

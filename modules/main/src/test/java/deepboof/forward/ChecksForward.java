@@ -21,14 +21,14 @@ package deepboof.forward;
 import deepboof.Function;
 import deepboof.Tensor;
 import deepboof.misc.TensorFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * provides skeleton for performing very basic tests of the contract for Function
@@ -57,7 +57,7 @@ public abstract class ChecksForward<T extends Tensor<T>> extends ChecksGenericFu
 		return false;
 	}
 
-	@Before
+	@BeforeEach
 	public void before() {
 		tensorFactory = new TensorFactory<>(createForwards(0).getTensorType());
 	}

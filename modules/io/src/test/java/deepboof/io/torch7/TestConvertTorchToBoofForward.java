@@ -26,7 +26,7 @@ import deepboof.graph.FunctionSequence;
 import deepboof.impl.forward.standard.*;
 import deepboof.io.torch7.struct.TorchObject;
 import deepboof.misc.TensorOps;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,7 @@ import java.util.List;
 import static deepboof.io.torch7.ConvertTorchToBoofForward.convert;
 import static deepboof.misc.TensorOps.TH;
 import static deepboof.misc.TensorOps.WI;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Peter Abeles
@@ -195,8 +195,7 @@ public class TestConvertTorchToBoofForward {
 		if( fap != null ) {
 			Function function = fap.getFunction();
 			if (functionClass != null)
-				assertTrue("Unexpected class type. " + function.getClass().getSimpleName(),
-						function.getClass() == functionClass);
+				assertSame(function.getClass(), functionClass, "Unexpected class type. " + function.getClass().getSimpleName());
 
 			int N = input.length(0);
 

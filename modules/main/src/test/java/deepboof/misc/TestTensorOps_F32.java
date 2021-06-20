@@ -21,14 +21,14 @@ package deepboof.misc;
 import deepboof.DeepBoofConstants;
 import deepboof.DeepUnitTest;
 import deepboof.tensors.Tensor_F32;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Peter Abeles
@@ -282,7 +282,7 @@ public class TestTensorOps_F32 {
 				for (int x = 0; x < W; x++) {
 					coor[3] = x;
 					if( y < borderY0 || y >= H-borderY1|| x < borderX0 || x >= W-borderX1 )
-						assertEquals(x+" "+y,value,T.get(coor),DeepBoofConstants.TEST_TOL_F32);
+						assertEquals(value,T.get(coor),DeepBoofConstants.TEST_TOL_F32,x+" "+y);
 				}
 			}
 		}

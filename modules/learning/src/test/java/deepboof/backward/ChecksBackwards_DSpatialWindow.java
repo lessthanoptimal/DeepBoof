@@ -28,14 +28,14 @@ import deepboof.misc.TensorFactory_F64;
 import deepboof.misc.TensorOps;
 import deepboof.misc.TensorOps_F64;
 import deepboof.tensors.Tensor_F64;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import static deepboof.misc.TensorOps.WI;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *

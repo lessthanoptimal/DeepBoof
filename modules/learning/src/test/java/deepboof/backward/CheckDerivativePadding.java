@@ -24,14 +24,14 @@ import deepboof.Function;
 import deepboof.Tensor;
 import deepboof.factory.FactoryBackwards;
 import deepboof.misc.TensorFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Peter Abeles
@@ -49,7 +49,7 @@ public abstract class CheckDerivativePadding<T extends Tensor<T>,P extends DSpat
 
 	public abstract P createBackwards();
 
-	@Before
+	@BeforeEach
 	public void before() {
 		tensorFactory = new TensorFactory<>(createBackwards().getTensorType());
 		factoryD = new FactoryBackwards<>(createBackwards().getTensorType());

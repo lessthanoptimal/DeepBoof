@@ -23,12 +23,12 @@ import deepboof.PaddingType;
 import deepboof.forward.ConfigPadding;
 import deepboof.misc.TensorFactory_F64;
 import deepboof.tensors.Tensor_F64;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * @author Peter Abeles

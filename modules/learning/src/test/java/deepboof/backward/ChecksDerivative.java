@@ -26,8 +26,8 @@ import deepboof.factory.FactoryBackwards;
 import deepboof.forward.ChecksGenericFunction;
 import deepboof.misc.TensorFactory;
 import deepboof.tensors.Tensor_F64;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 
 	public abstract DFunction<T> createBackwards(int type );
 
-	@Before
+	@BeforeEach
 	public void before() {
 		tensorFactory = new TensorFactory<>(createBackwards(0).getTensorType());
 		factoryD = new FactoryBackwards<>(createBackwards(0).getTensorType());

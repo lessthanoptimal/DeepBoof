@@ -22,7 +22,7 @@ import deepboof.Accuracy;
 import deepboof.DeepUnitTest;
 import deepboof.Tensor;
 import deepboof.forward.ChecksForward;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 

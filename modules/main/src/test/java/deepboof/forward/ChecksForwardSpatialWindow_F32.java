@@ -23,19 +23,19 @@ import deepboof.Function;
 import deepboof.misc.TensorFactory_F32;
 import deepboof.tensors.Tensor_F32;
 import deepboof.tensors.VTensor_F32;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static deepboof.misc.TensorOps.WI;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Common checks for classes which sample spatial tensors using a moving window
  *
  * @author Peter Abeles
  */
-public abstract class ChecksForwardSpatialWindow_F32<C extends ConfigSpatial>
+public abstract class ChecksForwardSpatialWindow_F32 <C extends ConfigSpatial>
 		extends ChecksForwardSpatial_F32
 {
 

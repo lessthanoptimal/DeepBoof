@@ -278,21 +278,21 @@ public class ConvertTorchToBoofForward {
 			case "torch.DoubleTensor": {
 				Tuple2<Tensor_F64,Double> tuple = parseBatchNormParameters_F64(t);
 
-				boolean gammaBeta = tuple.data0.length(1) == 4;
+				boolean gammaBeta = tuple.d0.length(1) == 4;
 				FunctionBatchNorm_F64 function = new FunctionBatchNorm_F64(gammaBeta);
-				function.setEPS(tuple.data1);
+				function.setEPS(tuple.d1);
 				ret.function = function;
-				ret.parameters.add(tuple.data0);
+				ret.parameters.add(tuple.d0);
 			}break;
 
 			case "torch.FloatTensor": {
 				Tuple2<Tensor_F32,Float> tuple = parseBatchNormParameters_F32(t);
 
-				boolean gammaBeta = tuple.data0.length(1) == 4;
+				boolean gammaBeta = tuple.d0.length(1) == 4;
 				FunctionBatchNorm_F32 function = new FunctionBatchNorm_F32(gammaBeta);
-				function.setEPS(tuple.data1);
+				function.setEPS(tuple.d1);
 				ret.function = function;
-				ret.parameters.add(tuple.data0);
+				ret.parameters.add(tuple.d0);
 			}break;
 
 			default:
@@ -308,21 +308,21 @@ public class ConvertTorchToBoofForward {
 			case "torch.DoubleTensor": {
 				Tuple2<Tensor_F64,Double> tuple = parseBatchNormParameters_F64(t);
 
-				boolean gammaBeta = tuple.data0.length(1) == 4;
+				boolean gammaBeta = tuple.d0.length(1) == 4;
 				SpatialBatchNorm_F64 function = new SpatialBatchNorm_F64(gammaBeta);
-				function.setEPS(tuple.data1);
+				function.setEPS(tuple.d1);
 				ret.function = function;
-				ret.parameters.add(tuple.data0);
+				ret.parameters.add(tuple.d0);
 			}break;
 
 			case "torch.FloatTensor": {
 				Tuple2<Tensor_F32,Float> tuple = parseBatchNormParameters_F32(t);
 
-				boolean gammaBeta = tuple.data0.length(1) == 4;
+				boolean gammaBeta = tuple.d0.length(1) == 4;
 				SpatialBatchNorm_F32 function = new SpatialBatchNorm_F32(gammaBeta);
-				function.setEPS(tuple.data1);
+				function.setEPS(tuple.d1);
 				ret.function = function;
-				ret.parameters.add(tuple.data0);
+				ret.parameters.add(tuple.d0);
 			}break;
 
 			default:

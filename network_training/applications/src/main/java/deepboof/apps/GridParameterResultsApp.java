@@ -39,7 +39,7 @@ import de.erichseifert.gral.util.GraphicsUtils;
 import deepboof.visualization.ConfusionCounts;
 import deepboof.visualization.ConfusionFraction;
 import deepboof.visualization.PlotControlPanel;
-import org.ddogleg.struct.GrowQueue_F64;
+import org.ddogleg.struct.DogArray_F64;
 
 import javax.swing.*;
 import java.awt.*;
@@ -554,8 +554,8 @@ public class GridParameterResultsApp implements PlotControlPanel.Listener {
 
 	public static class GridResult {
 		String name = "UNSPECIFIED";
-		GrowQueue_F64 train = new GrowQueue_F64();
-		GrowQueue_F64 test = new GrowQueue_F64();
+		DogArray_F64 train = new DogArray_F64();
+		DogArray_F64 test = new DogArray_F64();
 
 		ConfusionCounts trainConfusion;
 		ConfusionCounts testConfusion;

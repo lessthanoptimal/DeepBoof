@@ -23,13 +23,13 @@ import deepboof.DeepUnitTest;
 import deepboof.Function;
 import deepboof.forward.ChecksForwardSpatial_F32;
 import deepboof.tensors.Tensor_F32;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static deepboof.misc.TensorFactory_F32.randomMM;
 import static deepboof.misc.TensorOps.WI;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Peter Abeles

@@ -1,115 +1,126 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
 
     group 'org.deepboof'
-    version '0.4'
+    version '0.5.1'
 }
 
-
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'osgi'
-    apply plugin: 'maven'
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
     apply plugin: 'signing'
 
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    java {
+        withJavadocJar()
+        withSourcesJar()
+        toolchain { languageVersion = JavaLanguageVersion.of(15) }
+    }
+
+    // Prevents tons of errors if someone is using ASCII
+    tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
+    // Creates Java 8 byte code
+    tasks.withType(JavaCompile).configureEach { options.release = 8 }
 
     repositories {
         mavenCentral()
         mavenLocal()
 
-        maven {
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+        maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url = 'https://jitpack.io' } // Allows annotations past Java 8 to be used
     }
 
     dependencies {
-        compile group: 'org.ddogleg', name: 'ddogleg', version: '0.11'
+        compile group: 'org.ddogleg', name: 'ddogleg', version: '0.19'
 
-        testCompile group: 'junit', name: 'junit', version: '4.12'
+        compileOnly 'org.jetbrains:annotations:20.0.0' // @Nullable
+        compileOnly 'javax.annotation:jsr250-api:1.0'  // @Generated
+        compileOnly 'org.projectlombok:lombok:1.18.10'
+        testCompile project.sourceSets.main.compileClasspath
+
+        testImplementation( 'org.junit.jupiter:junit-jupiter-api:5.4.0')
+        testRuntimeOnly( 'org.junit.jupiter:junit-jupiter-engine:5.4.0')
+
+        // needed to use Java 11+ syntax with Java 1.8 byte code
+        annotationProcessor('com.github.bsideup.jabel:jabel-javac-plugin:0.2.0'){
+            exclude group: 'net.bytebuddy', module: 'byte-buddy'
+            exclude group: 'net.bytebuddy', module: 'byte-buddy-agent'
+        }
+        annotationProcessor("net.bytebuddy:byte-buddy:1.10.10")
+        annotationProcessor("net.bytebuddy:byte-buddy-agent:1.10.10")
     }
 
     sourceSets {
-        test {
-            java {
-                srcDir 'autogenerate/java'
-            }
-        }
+        autogenerate {  java { srcDir 'autogenerate/java' } }
     }
 
     test {
-        ignoreFailures true
+        useJUnitPlatform()
         reports.html.enabled = false
+        // Make the error logging verbose to make debugging on CI easier
+        testLogging.showStandardStreams = true
+        testLogging.exceptionFormat TestExceptionFormat.FULL
+        testLogging.showCauses true
+        testLogging.showExceptions true
+        testLogging.showStackTraces true
     }
 
     javadoc {
         configure(options) {
             failOnError = false
         }
+
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
+        }
     }
 
-    task javadocJar(type: Jar) {
-        classifier = 'javadoc'
-        from javadoc
-    }
-
-    task sourcesJar(type: Jar) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    artifacts {
-        archives javadocJar, sourcesJar
-    }
-
-    // if Maven central isn't setup in gradle.properties skip all of this
-    if( project.hasProperty('ossrhUsername') ) {
-        signing {
-            sign configurations.archives
+    if (project.tasks.publish.enabled) {
+        // if Maven central isn't setup in ~/.gradle/gradle.properties fill in these variables to make it happy
+        if( !project.hasProperty('ossrhUsername') ) {
+            ext.ossrhUsername = "dummy"
+            ext.ossrhPassword = "dummy"
         }
 
-        uploadArchives {
-            repositories {
-                mavenDeployer {
-                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                        authentication(userName: ossrhUsername, password: ossrhPassword)
-                    }
-
-                    snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                        authentication(userName: ossrhUsername, password: ossrhPassword)
-                    }
-
-                    pom.project {
-                        name 'DeepBoof'
-                        packaging 'pom'
-                        // optionally artifactId can be defined here
-                        description 'Trainer Agnostic Deep Learning'
-                        url 'http://boofcv.org'
-
-                        scm {
-                            connection 'scm:git:git://github.com/lessthanoptimal/DeepBoof.git'
-                            developerConnection 'scm:git:git://github.com/lessthanoptimal/DeepBoof.git'
-                            url 'https://github.com/lessthanoptimal/BoofCV'
-                        }
-
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+                    pom {
+                        name = 'DeepBoof'
+                        description = 'Trainer Agnostic Deep Learning'
+                        url = 'https://boofcv.org'
                         licenses {
                             license {
-                                name 'The Apache Software License, Version 2.0'
-                                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                                name = 'The Apache License, Version 2.0'
+                                url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                             }
                         }
-
                         developers {
                             developer {
-                                id 'pabeles'
-                                name 'Peter Abeles'
-                                email 'peter.abeles@gmail.com'
+                                id = 'pabeles'
+                                name = 'Peter Abeles'
+                                email = 'peter.abeles@gmail.com'
                             }
                         }
+                        scm {
+                            connection = 'scm:git:git://github.com/lessthanoptimal/DeepBoof.git'
+                            developerConnection = 'scm:git:git://github.com/lessthanoptimal/DeepBoof.git'
+                            url = 'https://github.com/lessthanoptimal/DeepBoof'
+                        }
+                    }
+                }
+            }
+            repositories {
+                maven {
+                    def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                    def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+                    url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                    credentials {
+                        username ossrhUsername
+                        password ossrhPassword
                     }
                 }
             }
@@ -117,31 +128,16 @@ subprojects {
     }
 }
 
-idea {
-    project {
-        jdkName = '1.7 (64bit)'
-        languageLevel = '1.7'
-    }
-
-    module {
-        excludeDirs += file('.idea')
-    }
-}
-
 // Disable the creation of jars for distribution.  If you don't do this it will crash
 [':modules'].each {String a ->
     project(a) {
-        if( project.hasProperty('ossrhUsername') ) {
-            signArchives.enabled = false
-        }
-        sourcesJar.enabled = false
-        javadocJar.enabled = false
         jar.enabled = false
         uploadArchives.enabled = false
-        install.enabled = false
+        tasks.publish.enabled = false
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.0.1'
+wrapper {
+    distributionType = Wrapper.DistributionType.BIN
+    gradleVersion = '6.8.3'
 }

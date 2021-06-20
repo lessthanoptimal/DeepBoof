@@ -20,13 +20,13 @@ package deepboof.forward;
 
 import deepboof.Function;
 import deepboof.Tensor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static deepboof.misc.TensorOps.WI;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Peter Abeles

@@ -20,7 +20,7 @@ package deepboof.forward;
 
 import deepboof.tensors.Tensor_F64;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Peter Abeles

@@ -22,7 +22,7 @@ import deepboof.DeepUnitTest;
 import deepboof.misc.TensorFactory;
 import deepboof.misc.TensorOps_F64;
 import deepboof.tensors.Tensor_F64;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 

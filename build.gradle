@@ -5,7 +5,7 @@ allprojects {
     apply plugin: 'eclipse'
 
     group 'org.deepboof'
-    version '0.5.1'
+    version '0.5.1-SNAPSHOT'
 }
 
 subprojects {
@@ -33,7 +33,7 @@ subprojects {
     }
 
     dependencies {
-        compile group: 'org.ddogleg', name: 'ddogleg', version: '0.19'
+        implementation group: 'org.ddogleg', name: 'ddogleg', version: '0.20-SNAPSHOT'
 
         compileOnly 'org.jetbrains:annotations:20.0.0' // @Nullable
         compileOnly 'javax.annotation:jsr250-api:1.0'  // @Generated
@@ -51,7 +51,7 @@ subprojects {
     }
 
     sourceSets {
-        autogenerate {  java { srcDir 'autogenerate/java' } }
+        autogenerate { java { srcDir 'autogenerate/java' } }
     }
 
     test {
@@ -75,63 +75,66 @@ subprojects {
         }
     }
 
-    if (project.tasks.publish.enabled) {
-        // if Maven central isn't setup in ~/.gradle/gradle.properties fill in these variables to make it happy
-        if( !project.hasProperty('ossrhUsername') ) {
-            ext.ossrhUsername = "dummy"
-            ext.ossrhPassword = "dummy"
-        }
+    // Disable the creation of jars for distribution.  If you don't do this it will crash
+//    if (['modules','examples'].contains(name)) {
+//        project.jar.enabled = false
+//        project.uploadArchives.enabled = false
+//        project.tasks.publish.enabled = false
+//    }
 
-        publishing {
-            publications {
-                mavenJava(MavenPublication) {
-                    from components.java
-                    pom {
-                        name = 'DeepBoof'
-                        description = 'Trainer Agnostic Deep Learning'
-                        url = 'https://boofcv.org'
-                        licenses {
-                            license {
-                                name = 'The Apache License, Version 2.0'
-                                url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                            }
+    if (!project.tasks.publish.enabled)
+        return
+
+    // if Maven central isn't setup in ~/.gradle/gradle.properties fill in these variables to make it happy
+    if( !project.hasProperty('ossrhUsername') ) {
+        ext.ossrhUsername = "dummy"
+        ext.ossrhPassword = "dummy"
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                pom {
+                    name = 'DeepBoof'
+                    description = 'Trainer Agnostic Deep Learning'
+                    url = 'https://boofcv.org'
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                         }
-                        developers {
-                            developer {
-                                id = 'pabeles'
-                                name = 'Peter Abeles'
-                                email = 'peter.abeles@gmail.com'
-                            }
+                    }
+                    developers {
+                        developer {
+                            id = 'pabeles'
+                            name = 'Peter Abeles'
+                            email = 'peter.abeles@gmail.com'
                         }
-                        scm {
-                            connection = 'scm:git:git://github.com/lessthanoptimal/DeepBoof.git'
-                            developerConnection = 'scm:git:git://github.com/lessthanoptimal/DeepBoof.git'
-                            url = 'https://github.com/lessthanoptimal/DeepBoof'
-                        }
+                    }
+                    scm {
+                        connection = 'scm:git:git://github.com/lessthanoptimal/DeepBoof.git'
+                        developerConnection = 'scm:git:git://github.com/lessthanoptimal/DeepBoof.git'
+                        url = 'https://github.com/lessthanoptimal/DeepBoof'
                     }
                 }
             }
-            repositories {
-                maven {
-                    def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-                    def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-                    url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-                    credentials {
-                        username ossrhUsername
-                        password ossrhPassword
-                    }
+        }
+        repositories {
+            maven {
+                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
                 }
             }
         }
     }
-}
 
-// Disable the creation of jars for distribution.  If you don't do this it will crash
-[':modules'].each {String a ->
-    project(a) {
-        jar.enabled = false
-        uploadArchives.enabled = false
-        tasks.publish.enabled = false
+    if (ext.ossrhPassword != "dummy") {
+        signing { sign publishing.publications.mavenJava }
     }
 }
 

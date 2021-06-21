@@ -1,6 +1,6 @@
 dependencies {
-    compile project(':modules:main')
-    testCompile project(':modules:main').sourceSets.test.output
+    implementation project(':modules:main')
+    testImplementation project(':modules:main').sourceSets.test.output
 }
 
 idea {

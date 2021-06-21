@@ -1,7 +1,7 @@
 dependencies {
-    compile project(':modules:main')
-    compile project(':modules:learning')
-    compile project(':modules:io')
+    implementation project(':modules:main')
+    implementation project(':modules:learning')
+    implementation project(':modules:io')
 }
 
 idea {

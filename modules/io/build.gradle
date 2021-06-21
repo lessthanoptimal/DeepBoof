@@ -1,10 +1,10 @@
 dependencies {
-    compile 'com.google.protobuf:protobuf-java:2.6.1'
-    compile project(':modules:main')
-    testCompile project(':modules:main').sourceSets.test.output
+    implementation 'com.google.protobuf:protobuf-java:3.17.3'
+    implementation project(':modules:main')
+    testImplementation project(':modules:main').sourceSets.test.output
 
-    compile 'org.rauschig:jarchivelib:1.1.0'
-    compile 'net.lingala.zip4j:zip4j:2.8.0'
+    implementation 'org.rauschig:jarchivelib:1.1.0'
+    implementation 'net.lingala.zip4j:zip4j:2.8.0'
 }
 
 // Exclude caffe package since it is auto generated code and very large

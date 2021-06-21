@@ -76,11 +76,11 @@ subprojects {
     }
 
     // Disable the creation of jars for distribution.  If you don't do this it will crash
-//    if (['modules','examples'].contains(name)) {
-//        project.jar.enabled = false
-//        project.uploadArchives.enabled = false
-//        project.tasks.publish.enabled = false
-//    }
+    if (['modules','examples'].contains(name)) {
+        project.jar.enabled = false
+        project.uploadArchives.enabled = false
+        project.tasks.publish.enabled = false
+    }
 
     if (!project.tasks.publish.enabled)
         return

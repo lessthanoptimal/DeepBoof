@@ -2,9 +2,3 @@ dependencies {
     implementation project(':modules:main')
     testImplementation project(':modules:main').sourceSets.test.output
 }
-
-idea {
-    module {
-        name = "DeepBoof Learning"
-    }
-}

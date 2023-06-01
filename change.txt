@@ -3,6 +3,12 @@ Change Log
 Date Format: year/month/day
 
 ---------------------------------------------
+Date    : 2023-May-31
+Version : 0.5.2
+
+- Updated dependencies and build script
+
+---------------------------------------------
 Date    : 2021
 Version : 0.5.1
 

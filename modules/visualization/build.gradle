@@ -3,8 +3,8 @@ dependencies {
 //    implementation 'org.jfree:jfreechart:1.0.19'
 
     implementation group: 'de.erichseifert.gral', name: 'gral-core', version: '0.11'
-    implementation "com.beust:jcommander:1.48"
-    implementation 'org.tinyjee.jgraphx:jgraphx:3.4.1.3'
+    implementation "com.beust:jcommander:$project.jcommander_version"
+    implementation "com.github.vlsi.mxgraph:jgraphx:$project.jgraphx_version"
 }
 
 // Create a jar which contains all the applications

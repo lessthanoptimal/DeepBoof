@@ -14,7 +14,7 @@ import java.util.List;
 public class UtilCifar10 {
 
 	public static File downloadModelVggLike( File path ) {
-		return DeepBoofDataBaseOps.downloadModel("http://heanet.dl.sourceforge.net/project/deepboof/networks/v1/likevgg_cifar10.zip", path);
+		return DeepBoofDataBaseOps.downloadModel("https://boofcv.org/notwiki/largefiles/likevgg_cifar10.zip", path);
 	}
 
 	public static File downloadData() {
@@ -23,7 +23,7 @@ public class UtilCifar10 {
 		// If needed, download required data sets and network model
 		if( !trainingDir.exists() ) {
 			try {
-				DeepBoofDataBaseOps.download("http://torch7.s3-website-us-east-1.amazonaws.com/data/cifar-10-torch.tar.gz",trainingDir);
+				DeepBoofDataBaseOps.download("https://boofcv.org/notwiki/largefiles/cifar-10-torch.tar.gz",trainingDir);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

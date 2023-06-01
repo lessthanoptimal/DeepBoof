@@ -1,19 +1,30 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
-    id "com.peterabeles.gversion" version "1.10" apply false
+    id "com.peterabeles.gversion" version "1.10.2" apply false
 }
 
 allprojects {
-    apply plugin: 'idea'
     apply plugin: 'eclipse'
     apply plugin: 'com.peterabeles.gversion'
 
     group 'org.deepboof'
-    version '0.5.1'
+    version '0.5.2'
 
     createVersionFile.enabled = false // run only once. enabled in types
 }
+
+project.ext.lombok_version = '1.18.24'
+project.ext.jabel_version = '1.0.0'
+project.ext.jetnull_version = '23.0.0'
+project.ext.jsr250_version = '1.0'
+project.ext.junit_version = '5.9.1'
+project.ext.auto64to32_version = '3.2.1'
+project.ext.zip4j_version = '2.11.5'
+project.ext.protobuf_version = '3.23.2'
+project.ext.jarchivelib_version = '1.2.0'
+project.ext.jcommander_version = '1.82'
+project.ext.jgraphx_version = '4.2.2'
 
 subprojects {
     apply plugin: 'java-library'
@@ -23,14 +34,14 @@ subprojects {
     java {
         withJavadocJar()
         withSourcesJar()
-        toolchain { languageVersion = JavaLanguageVersion.of(15) }
+        toolchain { languageVersion = JavaLanguageVersion.of(17) }
     }
 
     // Prevents tons of errors if someone is using ASCII
     tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
 
-    // Creates Java 8 byte code
-    tasks.withType(JavaCompile).configureEach { options.release = 8 }
+    // Creates Java 11 byte code
+    tasks.withType(JavaCompile).configureEach { options.release = 11 }
 
     // Enable incremental compile. Should make single file changes faster
     tasks.withType(JavaCompile) { options.incremental = true }
@@ -47,19 +58,19 @@ subprojects {
     }
 
     dependencies {
-        implementation group: 'org.ddogleg', name: 'ddogleg', version: '0.20'
+        implementation group: 'org.ddogleg', name: 'ddogleg', version: '0.23'
 
-        compileOnly 'org.jetbrains:annotations:20.0.0' // @Nullable
-        compileOnly 'javax.annotation:jsr250-api:1.0'  // @Generated
-        compileOnly 'org.projectlombok:lombok:1.18.10'
-        testCompile project.sourceSets.main.compileClasspath
+        compileOnly "org.jetbrains:annotations:$project.jetnull_version" // @Nullable
+        compileOnly "javax.annotation:jsr250-api:$project.jsr250_version"  // @Generated
+        compileOnly "org.projectlombok:lombok:$project.lombok_version"
+        testImplementation project.sourceSets.main.compileClasspath
 
-        testImplementation( 'org.junit.jupiter:junit-jupiter-api:5.4.0')
-        testRuntimeOnly( 'org.junit.jupiter:junit-jupiter-engine:5.4.0')
+        testImplementation("org.junit.jupiter:junit-jupiter-api:$junit_version")
+        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit_version")
 
         // needed to use Java 11+ syntax with Java 1.8 byte code
-        annotationProcessor('com.github.bsideup.jabel:jabel-javac-plugin:0.3.0')
-        testAnnotationProcessor('com.github.bsideup.jabel:jabel-javac-plugin:0.3.0')
+        annotationProcessor("com.github.bsideup.jabel:jabel-javac-plugin:${project.jabel_version}")
+        testAnnotationProcessor("com.github.bsideup.jabel:jabel-javac-plugin:${project.jabel_version}")
     }
 
     sourceSets {
@@ -99,7 +110,6 @@ subprojects {
     // Disable the creation of jars for distribution.  If you don't do this it will crash
     if (['modules','examples'].contains(name)) {
         project.jar.enabled = false
-        project.uploadArchives.enabled = false
         project.tasks.publish.enabled = false
     }
 
@@ -161,5 +171,5 @@ subprojects {
 
 wrapper {
     distributionType = Wrapper.DistributionType.BIN
-    gradleVersion = '6.8.3'
+    gradleVersion = '7.3.3'
 }

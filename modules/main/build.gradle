@@ -8,13 +8,7 @@ gversion {
 }
 
 dependencies {
-    autogenerateCompile group: 'com.peterabeles', name: 'auto64fto32f', version: '1.1'
+    autogenerateImplementation group: 'com.peterabeles', name: 'autofloat', version: auto64to32_version
 }
 
 project.compileJava.dependsOn(project.createVersionFile)
-
-idea {
-    module {
-        name = "DeepBoof Main"
-    }
-}

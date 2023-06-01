@@ -1,8 +1,8 @@
 dependencies {
-    compile project(':modules:main')
-    compile project(':modules:io')
-    compile project(':modules:visualization')
-    compile project(':modules:models')
+    api project(':modules:main')
+    api project(':modules:io')
+    api project(':modules:visualization')
+    api project(':modules:models')
 }
 
 sourceSets {
@@ -10,12 +10,6 @@ sourceSets {
         java {
             srcDir 'src/java'
         }
-    }
-}
-
-idea {
-    module {
-        name = "DeepBoof Examples"
     }
 }
 

@@ -18,8 +18,8 @@
 
 package deepboof.autocode;
 
-import com.peterabeles.auto64fto32f.ConvertFile32From64;
-import com.peterabeles.auto64fto32f.RecursiveConvert;
+import com.peterabeles.autocode.ConvertFile32From64;
+import com.peterabeles.autocode.RecursiveConvert;
 
 import java.io.File;
 
@@ -30,8 +30,6 @@ import java.io.File;
  * @author Peter Abeles
  */
 public class Generate32From64App extends RecursiveConvert {
-
-
 	public Generate32From64App(ConvertFile32From64 converter) {
 		super(converter);
 	}

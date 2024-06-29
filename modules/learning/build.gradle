@@ -1,4 +1,4 @@
 dependencies {
-    implementation project(':modules:main')
+    api project(':modules:main')
     testImplementation project(':modules:main').sourceSets.test.output
 }

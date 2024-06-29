@@ -68,8 +68,9 @@ public class Tensor_S64 extends Tensor<Tensor_S64> {
 	}
 
 	@Override
-	public void zero() {
+	public Tensor_S64 zero() {
 		Arrays.fill(d,startIndex,startIndex+length(),0);
+		return this;
 	}
 
 	@Override

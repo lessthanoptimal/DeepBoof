@@ -27,7 +27,7 @@ import java.util.Arrays;
  */
 public class Tensor_S32 extends Tensor<Tensor_S32> {
 
-	public int d[] = new int[0];
+	public int[] d = new int[0];
 
 	public Tensor_S32( int... shape ) {
 		reshape(shape);
@@ -68,8 +68,9 @@ public class Tensor_S32 extends Tensor<Tensor_S32> {
 	}
 
 	@Override
-	public void zero() {
+	public Tensor_S32 zero() {
 		Arrays.fill(d,startIndex,startIndex+length(),0);
+		return this;
 	}
 
 	@Override

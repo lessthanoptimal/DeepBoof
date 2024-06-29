@@ -33,7 +33,7 @@ import deepboof.misc.TensorOps;
  *
  * @author Peter Abeles
  */
-public abstract class Tensor<T extends Tensor> extends BaseTensor {
+public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 
 	/**
 	 * The index in the input array that this tensor starts at.  This allows for a tensor to be
@@ -50,7 +50,7 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 	/**
 	 * Stride for each axis
 	 */
-	public int strides[] = new int[0];
+	public int[] strides = new int[0];
 
 	/**
 	 * Accessor function which allows any tensor's element to be read as a double.
@@ -76,14 +76,14 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 	 * @param shape New shape.  Length must be the same as the number of dimensions. Array reference
 	 *              not saved internally. Highest to lowest dimension
 	 */
-	public void reshape(int... shape) {
+	public Tensor<T> reshape(int... shape) {
 
 		if( this.shape.length != shape.length ) {
 			this.shape = new int[shape.length];
 		}
 
 		System.arraycopy(shape,0,this.shape,0,shape.length);
-		reshape();
+		return reshape();
 	}
 
 	/**
@@ -92,13 +92,13 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 	 *
 	 * @param length0 Length of axis-0
 	 */
-	public void reshape( int length0 ) {
+	public Tensor<T> reshape( int length0 ) {
 		if( shape.length != 1 ) {
 			shape = new int[1];
 		}
 		shape[0] = length0;
 
-		reshape();
+		return reshape();
 	}
 
 	/**
@@ -108,14 +108,14 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 	 * @param length1 Length of axis-1
 	 * @param length0 Length of axis-0
 	 */
-	public void reshape( int length1 , int length0) {
+	public Tensor<T> reshape( int length1 , int length0) {
 		if( shape.length != 2 ) {
 			shape = new int[2];
 		}
 		shape[0] = length1;
 		shape[1] = length0;
 
-		reshape();
+		return reshape();
 	}
 
 	/**
@@ -126,7 +126,7 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 	 * @param length1 Length of axis-1
 	 * @param length0 Length of axis-0
 	 */
-	public void reshape( int length2 , int length1 , int length0 ) {
+	public Tensor<T> reshape( int length2 , int length1 , int length0 ) {
 		if( shape.length != 3 ) {
 			shape = new int[3];
 		}
@@ -134,7 +134,7 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 		shape[1] = length1;
 		shape[2] = length0;
 
-		reshape();
+		return reshape();
 	}
 
 	/**
@@ -146,7 +146,7 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 	 * @param length1 Length of axis-1
 	 * @param length0 Length of axis-0
 	 */
-	public void reshape( int length3 , int length2 , int length1 , int length0 ) {
+	public Tensor<T> reshape( int length3 , int length2 , int length1 , int length0 ) {
 		if( shape.length != 4 ) {
 			shape = new int[4];
 		}
@@ -155,7 +155,7 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 		shape[2] = length1;
 		shape[3] = length0;
 
-		reshape();
+		return reshape();
 	}
 
 	/**
@@ -168,7 +168,7 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 	 * @param length1 Length of axis-1
 	 * @param length0 Length of axis-0
 	 */
-	public void reshape( int length4 , int length3 , int length2 , int length1 , int length0 ) {
+	public Tensor<T> reshape( int length4 , int length3 , int length2 , int length1 , int length0 ) {
 		if( shape.length != 5 ) {
 			shape = new int[5];
 		}
@@ -178,14 +178,14 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 		shape[3] = length1;
 		shape[4] = length0;
 
-		reshape();
+		return reshape();
 	}
 
 	/**
 	 * Reshape for when the inner shape variable has already been adjusted.  Useful for when calls to new
 	 * are being minimized.
 	 */
-	public void reshape() {
+	public Tensor<T> reshape() {
 		int N = TensorOps.tensorLength(shape);
 		computeStrides();
 
@@ -196,6 +196,7 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 				throw new RuntimeException("BUG: Not a sub-tensor and startIndex isn't zero!");
 			innerArrayGrow(N);
 		}
+		return this;
 	}
 
 	/**
@@ -390,23 +391,24 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 	 * Turns 'this' tensor into a copy of the provided tensor.
 	 * @param original Original tensor that's to be copied into this one.  Not modified.
 	 */
-	public void setTo( T original ) {
+	public T setTo( T original ) {
 		reshape(original.getShape());
 		System.arraycopy(original.getData(), original.startIndex, getData(), startIndex, length());
+		return (T)this;
 	}
 
 	/**
 	 * Sets all elements in the tensor to the value of zero
 	 */
-	public abstract void zero();
+	public abstract Tensor<T> zero();
 
 	/**
 	 * Returns a copy of this tensor
 	 */
 	public T copy() {
-		T out = createLike();
-		out.setTo(this);
-		return out;
+		Tensor<T> out = createLike();
+		out.setTo((T)this);
+		return (T)out;
 	}
 
 	/**
@@ -432,6 +434,6 @@ public abstract class Tensor<T extends Tensor> extends BaseTensor {
 		out.shape = shape;
 		out.subtensor = true;
 		out.computeStrides();
-		return out;
+		return (T)out;
 	}
 }

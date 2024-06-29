@@ -1,5 +1,5 @@
 dependencies {
-    implementation project(':modules:main')
-    implementation project(':modules:learning')
-    implementation project(':modules:io')
+    api project(':modules:main')
+    api project(':modules:learning')
+    api project(':modules:io')
 }

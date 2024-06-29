@@ -1,5 +1,5 @@
 dependencies {
-    implementation project(':modules:main')
+    api project(':modules:main')
 //    implementation 'org.jfree:jfreechart:1.0.19'
 
     implementation group: 'de.erichseifert.gral', name: 'gral-core', version: '0.11'

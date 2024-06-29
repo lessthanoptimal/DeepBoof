@@ -79,8 +79,9 @@ public class Tensor_F32 extends Tensor<Tensor_F32> {
 	}
 
 	@Override
-	public void zero() {
+	public Tensor_F32 zero() {
 		Arrays.fill(d,startIndex,startIndex+length(),0);
+		return this;
 	}
 
 	@Override

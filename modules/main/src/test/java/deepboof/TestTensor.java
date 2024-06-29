@@ -354,7 +354,7 @@ public class TestTensor {
 		}
 
 		@Override
-		public void zero() {}
+		public Tensor zero() {return this;}
 
 		@Override
 		public Class getDataType() {

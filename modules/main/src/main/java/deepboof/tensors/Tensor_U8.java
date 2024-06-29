@@ -76,8 +76,9 @@ public class Tensor_U8 extends Tensor<Tensor_U8> {
 	}
 
 	@Override
-	public void zero() {
+	public Tensor_U8 zero() {
 		Arrays.fill(d,startIndex,startIndex+length(),(byte)0);
+		return this;
 	}
 
 	@Override

@@ -9,12 +9,12 @@ allprojects {
     apply plugin: 'com.peterabeles.gversion'
 
     group 'org.deepboof'
-    version '0.5.2'
+    version '0.5.3-SNAPSHOT'
 
     createVersionFile.enabled = false // run only once. enabled in types
 }
 
-project.ext.lombok_version = '1.18.24'
+project.ext.lombok_version = '1.18.28'
 project.ext.jabel_version = '1.0.0'
 project.ext.jetnull_version = '23.0.0'
 project.ext.jsr250_version = '1.0'
@@ -40,8 +40,11 @@ subprojects {
     // Prevents tons of errors if someone is using ASCII
     tasks.withType(JavaCompile).configureEach { options.encoding = "UTF-8" }
 
-    // Creates Java 11 byte code
-    tasks.withType(JavaCompile).configureEach { options.release = 11 }
+    // Creates Java 11 byte code but Java 17 syntax
+    tasks.withType(JavaCompile).configureEach {
+        sourceCompatibility = 17
+        options.release = 11
+    }
 
     // Enable incremental compile. Should make single file changes faster
     tasks.withType(JavaCompile) { options.incremental = true }
@@ -58,7 +61,7 @@ subprojects {
     }
 
     dependencies {
-        implementation group: 'org.ddogleg', name: 'ddogleg', version: '0.23'
+        implementation group: 'org.ddogleg', name: 'ddogleg', version: '0.23.2'
 
         compileOnly "org.jetbrains:annotations:$project.jetnull_version" // @Nullable
         compileOnly "javax.annotation:jsr250-api:$project.jsr250_version"  // @Generated
@@ -68,7 +71,7 @@ subprojects {
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit_version")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit_version")
 
-        // needed to use Java 11+ syntax with Java 1.8 byte code
+        // needed to use Java 11+ syntax with Java 11 byte code
         annotationProcessor("com.github.bsideup.jabel:jabel-javac-plugin:${project.jabel_version}")
         testAnnotationProcessor("com.github.bsideup.jabel:jabel-javac-plugin:${project.jabel_version}")
     }
@@ -171,5 +174,5 @@ subprojects {
 
 wrapper {
     distributionType = Wrapper.DistributionType.BIN
-    gradleVersion = '7.3.3'
+    gradleVersion = '7.6.4'
 }

@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
-    id "com.peterabeles.gversion" version "1.10.2" apply false
+    id "com.peterabeles.gversion" version "1.10.3" apply false
 }
 
 allprojects {
@@ -14,6 +14,7 @@ allprojects {
     createVersionFile.enabled = false // run only once. enabled in types
 }
 
+project.ext.ddogleg_version = '0.23.2'
 project.ext.lombok_version = '1.18.28'
 project.ext.jabel_version = '1.0.0'
 project.ext.jetnull_version = '23.0.0'
@@ -61,7 +62,7 @@ subprojects {
     }
 
     dependencies {
-        implementation group: 'org.ddogleg', name: 'ddogleg', version: '0.23.2'
+        implementation "org.ddogleg:ddogleg:$project.ddogleg_version"
 
         compileOnly "org.jetbrains:annotations:$project.jetnull_version" // @Nullable
         compileOnly "javax.annotation:jsr250-api:$project.jsr250_version"  // @Generated

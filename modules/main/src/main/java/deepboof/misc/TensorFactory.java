@@ -28,7 +28,7 @@ import java.util.Random;
  * @author Peter Abeles
  */
 @SuppressWarnings("unchecked")
-public class TensorFactory<T extends Tensor> {
+public class TensorFactory<T extends Tensor<T>> {
 
 	Class tensorType;
 

@@ -48,7 +48,7 @@ public interface SpatialBatchNorm<T extends Tensor<T>> extends Function<T>, Batc
 	 * C   = Number of channels in input image
 	 * H   = Height of input image
 	 * W   = With of input image
-	 * M   = Number of parameters.  2 or 4 if gamma-beta is being used.
+	 * M   = Number of parameters. 2 or 4 if gamma-beta is being used.
 	 *       in order of: mean, stdev  OR mean, stdev, gamma, beta
 	 * </pre>
 	 *
@@ -61,7 +61,7 @@ public interface SpatialBatchNorm<T extends Tensor<T>> extends Function<T>, Batc
 	/**
 	 * See {@link #forward} for a description of parameters.
 	 *
-	 * @param parameters Variable tensor.  (C, M), where M is 2 or 4. Not modified.
+	 * @param parameters Variable tensor. (C, M), where M is 2 or 4. Not modified.
 	 */
 	@Override
 	void setParameters(List<T> parameters );

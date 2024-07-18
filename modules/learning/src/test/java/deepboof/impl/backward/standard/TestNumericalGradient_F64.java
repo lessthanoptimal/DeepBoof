@@ -31,7 +31,7 @@ import static deepboof.misc.TensorOps.WI;
 import static deepboof.misc.TensorOps.WT;
 
 /**
- * Validates numerical gradient computation.  The following configuration is considered.  h(x,w) = f(g(x,w))
+ * Validates numerical gradient computation. The following configuration is considered. h(x,w) = f(g(x,w))
  *
  * g(x,w) is the layer whose gradient is being computed numerically, but for validation purposes the
  * gradient of the whole system is computed analytically.
@@ -39,7 +39,7 @@ import static deepboof.misc.TensorOps.WT;
  * g(x,w) = w[i]*w[i]**2
  * f(x) = x[i]**3
  *
- * As a bonus, the analytical gradient is also found inside the function and checked for correctness.  Mostly to make
+ * As a bonus, the analytical gradient is also found inside the function and checked for correctness. Mostly to make
  * sure the author knows what he is doing.
  *
  * @author Peter Abeles
@@ -76,7 +76,7 @@ public class TestNumericalGradient_F64 {
 			// gradient of F
 			Tensor_F64 dF = computeDF(Gout);
 
-			// let's sanity check the built in analytic gradient for fun.  Technically not
+			// let's sanity check the built in analytic gradient for fun. Technically not
 			// needed as part of this unit test
 			Tensor_F64 foundDX = TensorFactory_F64.random(random,sub,numBatch,M);
 			Tensor_F64 foundDW = TensorFactory_F64.random(random,sub,M);

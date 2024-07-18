@@ -32,8 +32,8 @@ import java.util.Map;
 import static deepboof.misc.TensorOps.WI;
 
 /**
- * Processes a sequence of forward functions.  Any non-cyclical graph with a single
- * input and a single output can be processed by this function.  The list of functions passed in to the constructor
+ * Processes a sequence of forward functions. Any non-cyclical graph with a single
+ * input and a single output can be processed by this function. The list of functions passed in to the constructor
  * is assumed to have already been ordered.
  *
  * @author Peter Abeles
@@ -46,7 +46,7 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 	// Map to provide quick and easy lookup of
 	protected Map<String,Node<T,F>> lookup = new HashMap<>();
 
-	// map linking output storage for each node by name.  data0 = function output, data1 = merge output
+	// map linking output storage for each node by name. data0 = function output, data1 = merge output
 	protected Map<String,Tuple2<T,T>> outputStorage = new HashMap<>();
 
 	// used to create tensors
@@ -65,7 +65,7 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 
 		for( Node<T,F> n : sequence ) {
 			if( lookup.containsKey(n.name ))
-				throw new IllegalArgumentException("Conflict.  Multiple nodes with the same name.  "+n.name);
+				throw new IllegalArgumentException("Conflict. Multiple nodes with the same name. "+n.name);
 			lookup.put(n.name,n);
 		}
 
@@ -113,7 +113,7 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 
 				Node<T,F> src = lookup.get(addr.nodeName);
 				if( src == null )
-					throw new RuntimeException("Can't find input node from name.  Bad network");
+					throw new RuntimeException("Can't find input node from name. Bad network");
 				inputs.add( src.function.getOutputShape() );
 				if( verbose )
 					System.out.println("   input addr "+addr.nodeName);
@@ -152,7 +152,7 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 			return;
 		}
 
-		// Declare storage for output from each node.   The last node doesn't need additional storage
+		// Declare storage for output from each node.  The last node doesn't need additional storage
 		for (int i = 0; i < sequence.size(); i++) {
 			Node<T,F> node = sequence.get(i);
 
@@ -187,8 +187,8 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 	}
 
 	/**
-	 * Process the input tensor and compute the output tensor by feeding the results through the network.  Must
-	 * call {@link #initialize} once with the same shape as the input tensor.  Must also call {@link #setParameters}
+	 * Process the input tensor and compute the output tensor by feeding the results through the network. Must
+	 * call {@link #initialize} once with the same shape as the input tensor. Must also call {@link #setParameters}
 	 * @param input Input tensor
 	 * @param output Storage for output tensor.
 	 */
@@ -201,7 +201,7 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 		declareOutputStorage(input.length(0));
 
 		// TODO more meaningful error messages that say which node in the sequence it crashed on
-		// Handle the head node.  No input node
+		// Handle the head node. No input node
 		{
 			Node<T,F> node = sequence.get(0);
 			Tuple2<T,T> storage = outputStorage.get(node.name);
@@ -230,7 +230,7 @@ public class FunctionSequence<T extends Tensor<T>, F extends Function<T>>
 			}
 		}
 
-		// Handle the tail node.  No output node
+		// Handle the tail node. No output node
 		{
 			Node<T, F> node = sequence.get(sequence.size() - 1);
 			inputs.clear();

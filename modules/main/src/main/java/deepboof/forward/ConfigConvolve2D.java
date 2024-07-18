@@ -21,7 +21,7 @@ package deepboof.forward;
 import deepboof.misc.Configuration;
 
 /**
- * Configuration for 2D convolution.  See {@link SpatialConvolve2D} for a more detailed description of variable names.
+ * Configuration for 2D convolution. See {@link SpatialConvolve2D} for a more detailed description of variable names.
  *
  * @author Peter Abeles
  */
@@ -44,7 +44,7 @@ public class ConfigConvolve2D extends ConfigSpatial implements Configuration {
 	}
 
 	/**
-	 * Number of kernels which will be convolved across the input.  This specifies the number of output channels.
+	 * Number of kernels which will be convolved across the input. This specifies the number of output channels.
 	 *
 	 * @return Number of kernels which are convolved across the input, a.k.a. output channels.
 	 */

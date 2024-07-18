@@ -28,7 +28,7 @@ import java.util.Arrays;
 public class Tensor_F32 extends Tensor<Tensor_F32> {
 
 	/**
-	 * Storage for tensor data.  The tensor is stored in a row-major format.
+	 * Storage for tensor data. The tensor is stored in a row-major format.
 	 */
 	public float d[] = new float[0];
 

@@ -25,15 +25,15 @@ package deepboof;
  */
 public enum Accuracy {
 	/**
-	 * Standard accuracy.  F64 = {@link DeepBoofConstants#TEST_TOL_F64}
+	 * Standard accuracy. F64 = {@link DeepBoofConstants#TEST_TOL_F64}
 	 */
 	STANDARD,
 	/**
-	 * Relaxed accuracy.  F64 = {@link DeepBoofConstants#TEST_TOL_A_F64}
+	 * Relaxed accuracy. F64 = {@link DeepBoofConstants#TEST_TOL_A_F64}
 	 */
 	RELAXED_A,
 	/**
-	 * Relaxed accuracy.  F64 = {@link DeepBoofConstants#TEST_TOL_B_F64}
+	 * Relaxed accuracy. F64 = {@link DeepBoofConstants#TEST_TOL_B_F64}
 	 */
 	RElAXED_B;
 

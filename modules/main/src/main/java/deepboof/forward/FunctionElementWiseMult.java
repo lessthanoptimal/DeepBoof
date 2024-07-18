@@ -26,7 +26,7 @@ import deepboof.Tensor;
  *
  * @author Peter Abeles
  */
-public interface FunctionElementWiseMult<T extends Tensor> extends Function<T>
+public interface FunctionElementWiseMult<T extends Tensor<T>> extends Function<T>
 {
 	/**
 	 * <p>Performs scalar multiplication on each element in the input tensor.</p>

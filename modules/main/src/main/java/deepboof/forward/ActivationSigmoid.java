@@ -26,10 +26,10 @@ import deepboof.Tensor;
  * <p>
  * &sigma;(x) = 1/(1 + e<sup>-x</sup>)
  * </p>
- * It has a range from 0 to 1.  It converges towards one for positive numbers and zero for negative numbers.
+ * It has a range from 0 to 1. It converges towards one for positive numbers and zero for negative numbers.
  *
  * @author Peter Abeles
  */
-public interface ActivationSigmoid<T extends Tensor> extends Function<T> {
+public interface ActivationSigmoid<T extends Tensor<T>> extends Function<T> {
 
 }

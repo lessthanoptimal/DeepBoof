@@ -24,7 +24,7 @@ import deepboof.Tensor;
 import java.util.List;
 
 /**
- * Applies a linear (or affine) equation to input array.  This is a matrix multiplication operation that is
+ * Applies a linear (or affine) equation to input array. This is a matrix multiplication operation that is
  * performed between the input vector and their respective weights plus bias.
  * <pre>
  * y = W*x + b
@@ -33,7 +33,7 @@ import java.util.List;
  *
  * @author Peter Abeles
  */
-public interface FunctionLinear<T extends Tensor> extends Function<T> {
+public interface FunctionLinear<T extends Tensor<T>> extends Function<T> {
 	/**
 	 * <p>
 	 * Input tensor shape =(N, d[i], ... , d[K])<br>

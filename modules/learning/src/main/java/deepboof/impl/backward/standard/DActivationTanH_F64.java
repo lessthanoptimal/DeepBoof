@@ -24,7 +24,7 @@ import deepboof.tensors.Tensor_F64;
 import java.util.List;
 
 /**
- * Implementation of {@link DActivationTanH} for {@link Tensor_F64}.  Forward pass tanh is
+ * Implementation of {@link DActivationTanH} for {@link Tensor_F64}. Forward pass tanh is
  * cached to reduce computations in backwards pass.
  *
  * @author Peter Abeles

@@ -24,9 +24,9 @@ import deepboof.Tensor;
 import java.util.List;
 
 /**
- * <p>Implementation of a forward only Batch Normalization.  It applies a previously computed linear transform
+ * <p>Implementation of a forward only Batch Normalization. It applies a previously computed linear transform
  * which will ensure that the training data will have an output with zero mean and standard deviation (stdev) of
- * one.  The optional gamma and beta transform can also be applied.</p>
+ * one. The optional gamma and beta transform can also be applied.</p>
  *
  * <p>See {@link BatchNorm} for a general discussion of Batch Normalization</p>
  *
@@ -37,8 +37,8 @@ public interface FunctionBatchNorm<T extends Tensor<T>> extends Function<T>, Bat
 	/**
 	 * <p>Applies batch normalization to each variable in the input.</p>
 	 *
-	 * <p>Either two or four variables are stored in the parameter tensor as interleaved variables.  If
-	 * {@link #hasGammaBeta()} returns true then mean, variance, gamma, and beta are saved.  Otherwise just
+	 * <p>Either two or four variables are stored in the parameter tensor as interleaved variables. If
+	 * {@link #hasGammaBeta()} returns true then mean, variance, gamma, and beta are saved. Otherwise just
 	 * mean, and variance are saved. These are also the order in which variables are interleaved together.</p>
 	 *
 	 * <pre>
@@ -50,14 +50,14 @@ public interface FunctionBatchNorm<T extends Tensor<T>> extends Function<T>, Bat
 	 * -------------------------------------------------
 	 * N    = Size of mini-batch
 	 * d[i] = length of a dimension
-	 * M    = Number of parameters.  2 or 4 if gamma-beta is being used.
+	 * M    = Number of parameters. 2 or 4 if gamma-beta is being used.
 	 *       in order of: mean, variance  OR mean, variance, gamma, beta
 	 * </pre>
 	 *
 	 * <p>NOTE: Interleaving is used instead of multiple tensors to improve memory locality, which reduces cache
 	 * misses.</p>
 	 *
-	 * @param input Input tensor.  Tensor with a shape of (N, d[i], ... , d[k]), where N is mini-batch size
+	 * @param input Input tensor. Tensor with a shape of (N, d[i], ... , d[k]), where N is mini-batch size
 	 * @param output Output tensor. Same shape as input tensor Modified.
 	 */
 	@Override
@@ -66,7 +66,7 @@ public interface FunctionBatchNorm<T extends Tensor<T>> extends Function<T>, Bat
 	/**
 	 * See {@link #forward} for a description of parameters.
 	 *
-	 * @param parameters Variable tensor.  (d[i], ... , d[k], M), where M is 2 or 4. Not modified.
+	 * @param parameters Variable tensor. (d[i], ... , d[k], M), where M is 2 or 4. Not modified.
 	 */
 	@Override
 	void setParameters(List<T> parameters );

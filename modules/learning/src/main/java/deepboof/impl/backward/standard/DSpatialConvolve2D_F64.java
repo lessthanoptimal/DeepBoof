@@ -30,9 +30,9 @@ import static deepboof.misc.TensorOps.WI;
 /**
  * Implementation of {@link DSpatialConvolve2D} for {@link Tensor_F64}.
  *
- * <p>Local caches of the spatial tensor are used to reduce cache misses.  The cache will contain
+ * <p>Local caches of the spatial tensor are used to reduce cache misses. The cache will contain
  * a region across all of the tensor's channels that encompasses the region that a single convolution
- * would interact with.  In the backwards pass the local cache is written back into the derivative
+ * would interact with. In the backwards pass the local cache is written back into the derivative
  * padded input tensor.
  *
  * @author Peter Abeles

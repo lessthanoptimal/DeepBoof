@@ -36,7 +36,7 @@ public interface VTensor_F32 extends VTensor {
 	float get( int ...coor );
 
 	/**
-	 * Returns the element's value at the specified coordinate.  Only works with 1-DOF
+	 * Returns the element's value at the specified coordinate. Only works with 1-DOF
 	 * tensors.
 	 *
 	 * @param axis0 coordinate at axis-0
@@ -45,7 +45,7 @@ public interface VTensor_F32 extends VTensor {
 	float get( int axis0 );
 
 	/**
-	 * Returns the element's value at the specified coordinate.  Only works with 2-DOF
+	 * Returns the element's value at the specified coordinate. Only works with 2-DOF
 	 * tensors.
 	 *
 	 * @param axis1 coordinate at axis-1
@@ -55,7 +55,7 @@ public interface VTensor_F32 extends VTensor {
 	float get( int axis1 , int axis0 );
 
 	/**
-	 * Returns the element's value at the specified coordinate.  Only works with 3-DOF
+	 * Returns the element's value at the specified coordinate. Only works with 3-DOF
 	 * tensors.
 	 *
 	 * @param axis2 coordinate at axis-2
@@ -66,7 +66,7 @@ public interface VTensor_F32 extends VTensor {
 	float get( int axis2 , int axis1 , int axis0 );
 
 	/**
-	 * Returns the element's value at the specified coordinate.  Only works with 4-DOF
+	 * Returns the element's value at the specified coordinate. Only works with 4-DOF
 	 * tensors.
 	 *
 	 * @param axis3 coordinate at axis-3
@@ -78,7 +78,7 @@ public interface VTensor_F32 extends VTensor {
 	float get( int axis3 , int axis2 , int axis1 , int axis0 );
 
 	/**
-	 * Returns the element's value at the specified coordinate.  Only works with 5-DOF
+	 * Returns the element's value at the specified coordinate. Only works with 5-DOF
 	 * tensors.
 	 *
 	 * @param axis4 coordinate at axis-4

@@ -24,7 +24,7 @@ import deepboof.tensors.Tensor_F64;
 import java.util.List;
 
 /**
- * Implementation of {@link DActivationSigmoid} for {@link Tensor_F64}.  Saves the sigmoid computed
+ * Implementation of {@link DActivationSigmoid} for {@link Tensor_F64}. Saves the sigmoid computed
  * on the forward pass to avoid recomputing the sigmoid on the backwards pass.
  *
  * @author Peter Abeles

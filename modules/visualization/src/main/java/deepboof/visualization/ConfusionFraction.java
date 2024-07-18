@@ -24,14 +24,14 @@ import java.util.List;
 
 /**
  * Stores a confusion matrix of results in an N by N double row-major matrix and provides functions for computing
- * different statistical properties.  To compute different statistical properties first invoke {@link #precompute()}.
+ * different statistical properties. To compute different statistical properties first invoke {@link #precompute()}.
  *
  * @author Peter Abeles
  */
 public class ConfusionFraction {
 	/**
-	 * N by N matrix of counts.  Each element represents the fraction of times category 'row' was labeled
-	 * 'col'.  Thus, the diagonals are the fraction of the time that each category has been correctly labeled.
+	 * N by N matrix of counts. Each element represents the fraction of times category 'row' was labeled
+	 * 'col'. Thus, the diagonals are the fraction of the time that each category has been correctly labeled.
 	 */
 	public DMatrixRMaj M;
 

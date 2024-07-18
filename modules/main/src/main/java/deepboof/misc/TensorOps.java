@@ -97,13 +97,13 @@ public class TensorOps {
 	}
 
 	/**
-	 * Adds a dimension to the input tensor.  Returns a new tensor which references
+	 * Adds a dimension to the input tensor. Returns a new tensor which references
 	 * the same data as the original.
 	 *
 	 * Input Shape = [5 4 3]
 	 * Output Shape = [1 5 4 3]
 	 */
-	public static <T extends Tensor>T AD( T input ) {
+	public static <T extends Tensor<T>>T AD( T input ) {
 		T out;
 		if( input instanceof Tensor_F64 ) {
 			out = (T)new Tensor_F64();
@@ -155,7 +155,7 @@ public class TensorOps {
 	 *
 	 * @param which String describing which variables are being checked
 	 * @param expected List of expected tensors
-	 * @param actual List of actual tensors.  Axis 0 is optionally ignored here, see ignoreAxis0
+	 * @param actual List of actual tensors. Axis 0 is optionally ignored here, see ignoreAxis0
 	 * @param ignoreAxis0 true to ignore axis 0
 	 */
 	public static void checkShape(String which, List<int[]> expected , List<Tensor<?>> actual , boolean ignoreAxis0 )
@@ -186,7 +186,7 @@ public class TensorOps {
 			int db = b.shape[i];
 
 			if( da != db ) {
-				throw new IllegalArgumentException("dimension "+i+"  does not match.  "+da+"  "+db);
+				throw new IllegalArgumentException("dimension "+i+"  does not match. "+da+"  "+db);
 			}
 		}
 	}
@@ -205,22 +205,22 @@ public class TensorOps {
 			int db = b.shape[i];
 
 			if( da != db ) {
-				throw new IllegalArgumentException("dimension "+i+"  does not match.  "+da+"  "+db);
+				throw new IllegalArgumentException("dimension "+i+"  does not match. "+da+"  "+db);
 			}
 		}
 	}
 
 	/**
 	 * Checks to see if the two tensors have the same shape, with the option to ignore the first axis for the 'actual'
-	 * shape.   The first axis is typically the mini-batch, but the expected value might not include the mini-batch
+	 * shape.  The first axis is typically the mini-batch, but the expected value might not include the mini-batch
 	 * since the size of the mini-batch is determined later on.
      * Throws an {@link IllegalArgumentException} if they don't match.
 	 *
 	 * @param which String describing which variable is being checked
-	 * @param tensor Index of the tensor in a tensor list.  Used to provide a more detailed error message.
+	 * @param tensor Index of the tensor in a tensor list. Used to provide a more detailed error message.
 	 *               If &lt; 0 then this is ignored
 	 * @param expected Expected shape.
-	 * @param actual Actual shape.  Axis 0 is optionally ignored.
+	 * @param actual Actual shape. Axis 0 is optionally ignored.
 	 * @param ignoreAxis0 If true it will ignore the first dimension in expected
 	 */
 	public static void checkShape(String which, int tensor, int[] expected, int[] actual, boolean ignoreAxis0 ) {
@@ -279,7 +279,7 @@ public class TensorOps {
 	 * the specified index and going outside</p>
 	 *
 	 * Example:<br>
-	 * Tensor shape = (d[0], ... , d[K-1]).  Then if start dimen is 2, the output will
+	 * Tensor shape = (d[0], ... , d[K-1]). Then if start dimen is 2, the output will
 	 * be the product of d[2] to d[K-1].
 	 */
 	public static int outerLength(int[] shape , int startDimen ) {

@@ -120,12 +120,12 @@ public abstract class SpatialWindowImage
 
 	/**
 	 * Applies the operations at the specified window and stores the results at the specified output
-	 * coordinate.  For virtual tensor
+	 * coordinate. For virtual tensor
 	 *
 	 * @param padded Padded input spatial virtual tensor
 	 * @param batch Index of input in mini-batch that is being processed
-	 * @param padY y-axis lower extent, inclusive.  Padded coordinates
-	 * @param padX x-axis lower extent, inclusive.  Padded coordinates
+	 * @param padY y-axis lower extent, inclusive. Padded coordinates
+	 * @param padX x-axis lower extent, inclusive. Padded coordinates
 	 * @param outY y-axis output coordinates
 	 * @param outX x-axis output coordinates
 	 */

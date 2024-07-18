@@ -24,7 +24,7 @@ import deepboof.Tensor;
 import java.util.List;
 
 /**
- * Rectified Linear Unit (ReLU) activation function.  Used in [1] as an alternative to tanh with the claim
+ * Rectified Linear Unit (ReLU) activation function. Used in [1] as an alternative to tanh with the claim
  * that it has much better convergence.
  * <pre>
  * f(x) = 0  if x &lt; 0
@@ -36,10 +36,10 @@ import java.util.List;
  *
  * @author Peter Abeles
  */
-public interface ActivationReLU<T extends Tensor> extends Function<T> {
+public interface ActivationReLU<T extends Tensor<T>> extends Function<T> {
 
 	/**
-	 * Can skip.  No parameters required.
+	 * Can skip. No parameters required.
 	 *
 	 * @param parameters No parameters required
 	 */
@@ -48,9 +48,9 @@ public interface ActivationReLU<T extends Tensor> extends Function<T> {
 
 	/**
 	 * Applies the ReLU operator to each element in the input tensor and saves the results
-	 * in the output tensor.  Any shape is allowed.
+	 * in the output tensor. Any shape is allowed.
 	 *
-	 * @param input Input to the function.  Any shape.
+	 * @param input Input to the function. Any shape.
 	 * @param output Output tensor. Same shape as input. Modified.
 	 */
 	@Override

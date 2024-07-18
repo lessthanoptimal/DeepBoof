@@ -57,7 +57,7 @@ public class DSpatialBatchNorm_F64 extends BaseDBatchNorm_F64
 		tensorDiffX.reshape( input.shape );
 		tensorXhat.reshape( input.shape );
 
-		// just compute these variables onces.  They are used all over the place
+		// just compute these variables onces. They are used all over the place
 		numChannels = input.length(1);
 		numPixels = TensorOps.outerLength(input.shape,2);
 		M = miniBatchSize*numPixels;

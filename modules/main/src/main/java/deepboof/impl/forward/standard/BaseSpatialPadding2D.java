@@ -24,9 +24,9 @@ import deepboof.forward.ConfigPadding;
 import deepboof.forward.SpatialPadding2D;
 
 /**
- * Abstract class fo all virtual 2D spatial padding implementation.  Virtual padding contains a reference
+ * Abstract class fo all virtual 2D spatial padding implementation. Virtual padding contains a reference
  * to the original input tensor which is going to be padded and on the fly will generate the values for
- * elements which are not explicitly contained in the input tensor.  This can reduce memory consumption and is
+ * elements which are not explicitly contained in the input tensor. This can reduce memory consumption and is
  * more simplistic to implement for more complex padding methods.
  *
  * @author Peter Abeles
@@ -136,11 +136,11 @@ public abstract class BaseSpatialPadding2D<T extends Tensor<T>>
 
 		if( padded.length(0) != original.length(2)+config.y0+config.y1 ) {
 			throw new IllegalArgumentException(
-					"Image heights do not match.  "+padded.length(0)+" != "+original.length(2)+config.y0+config.y1);
+					"Image heights do not match. "+padded.length(0)+" != "+original.length(2)+config.y0+config.y1);
 		}
 		if( padded.length(1) != original.length(3)+config.x0+config.x1) {
 			throw new IllegalArgumentException(
-					"Image widths do not match.  "+padded.length(1)+" != "+original.length(3)+config.x0+config.x1);
+					"Image widths do not match. "+padded.length(1)+" != "+original.length(3)+config.x0+config.x1);
 		}
 	}
 
@@ -158,15 +158,15 @@ public abstract class BaseSpatialPadding2D<T extends Tensor<T>>
 
 		if( padded.length(0) != original.length(1) ) {
 			throw new IllegalArgumentException(
-					"Image channels do not match.  "+padded.length(0)+" != "+original.length(1));
+					"Image channels do not match. "+padded.length(0)+" != "+original.length(1));
 		}
 		if( padded.length(1) != original.length(2)+config.y0+config.y1 ) {
 			throw new IllegalArgumentException(
-					"Image heights do not match.  "+padded.length(1)+" != "+original.length(2)+config.y0+config.y1);
+					"Image heights do not match. "+padded.length(1)+" != "+original.length(2)+config.y0+config.y1);
 		}
 		if( padded.length(2) != original.length(3)+config.x0+config.x1 ) {
 			throw new IllegalArgumentException(
-					"Image widths do not match.  "+padded.length(2)+" != "+original.length(3)+config.x0+config.x1);
+					"Image widths do not match. "+padded.length(2)+" != "+original.length(3)+config.x0+config.x1);
 		}
 	}
 }

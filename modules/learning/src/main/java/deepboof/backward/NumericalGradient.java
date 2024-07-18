@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * <p>Given a {@link Function} implementations of this interface will compute the gradient of its
- * inputs and parameters.  Numerical differentiation is done using a symmetric sample, e.g.
+ * inputs and parameters. Numerical differentiation is done using a symmetric sample, e.g.
  * {@code dx = [f(x+T)-f(x-T)]/T}</p>
  *
  * @author Peter Abeles
@@ -48,7 +48,7 @@ public interface NumericalGradient<T extends Tensor<T>> {
 	void setFunction(Function<T> function );
 
 	/**
-	 * Performs numerical differentiation to compute the gradients of input and parameters.  When numerical
+	 * Performs numerical differentiation to compute the gradients of input and parameters. When numerical
 	 * differentiation is being performed <code>input</code> and <code>parameters</code> will be modified
 	 * and then returned to their original state.
 	 *

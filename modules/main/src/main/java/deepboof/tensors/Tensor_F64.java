@@ -28,7 +28,7 @@ import java.util.Arrays;
 public class Tensor_F64 extends Tensor<Tensor_F64> {
 
 	/**
-	 * Storage for tensor data.  The tensor is stored in a row-major format.
+	 * Storage for tensor data. The tensor is stored in a row-major format.
 	 */
 	public double d[] = new double[0];
 

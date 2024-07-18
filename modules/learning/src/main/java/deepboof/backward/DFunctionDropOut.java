@@ -22,9 +22,9 @@ import deepboof.DFunction;
 import deepboof.Tensor;
 
 /**
- * Drop out is a technique introduced by [1] for regularizing a network and helps prevents over fitting.  It works
- * by randomly selecting neurons and forces them to be off.  The chance of a neuron being turned off is specified
- * by the drop rate.  It's behavior is different when in learning or evaluation mode.  In learning mode it will
+ * Drop out is a technique introduced by [1] for regularizing a network and helps prevents over fitting. It works
+ * by randomly selecting neurons and forces them to be off. The chance of a neuron being turned off is specified
+ * by the drop rate. It's behavior is different when in learning or evaluation mode. In learning mode it will
  * decide if a neuron is dropped using a probability of drop_rate*100, drop_rate is 0 to 1.0, inclusive.
  * In evaluation mode it scales each input by 1.0 - drop_rate.
  *
@@ -37,7 +37,7 @@ import deepboof.Tensor;
 public interface DFunctionDropOut<T extends Tensor<T>> extends DFunction<T> {
 
 	/**
-	 * Returns a number from 0 to 1 indicating the likelihood of a neuron being dropped.  0 = 0% change
+	 * Returns a number from 0 to 1 indicating the likelihood of a neuron being dropped. 0 = 0% change
 	 * and 1 = 100% chance
 	 *
 	 * @return drop rate

@@ -23,7 +23,7 @@ import deepboof.tensors.Tensor_F32;
 import deepboof.tensors.VTensor_F32;
 
 /**
- * Abstract class for F64 implementations of {@link BaseSpatialPadding2D}.  Provides
+ * Abstract class for F64 implementations of {@link BaseSpatialPadding2D}. Provides
  * accessors for spatial tensors.
  *
  * @author Peter Abeles
@@ -52,7 +52,7 @@ public abstract class SpatialPadding2D_F32 extends BaseSpatialPadding2D<Tensor_F
 	}
 
 	/**
-	 * Invalid accessor.  Only supports 4-DOF accessors.
+	 * Invalid accessor. Only supports 4-DOF accessors.
 	 */
 	@Override
 	public float get(int axis0) {
@@ -60,7 +60,7 @@ public abstract class SpatialPadding2D_F32 extends BaseSpatialPadding2D<Tensor_F
 	}
 
 	/**
-	 * Invalid accessor.  Only supports 4-DOF accessors.
+	 * Invalid accessor. Only supports 4-DOF accessors.
 	 */
 	@Override
 	public float get(int axis1, int axis0) {
@@ -68,7 +68,7 @@ public abstract class SpatialPadding2D_F32 extends BaseSpatialPadding2D<Tensor_F
 	}
 
 	/**
-	 * Invalid accessor.  Only supports 4-DOF accessors.
+	 * Invalid accessor. Only supports 4-DOF accessors.
 	 */
 	@Override
 	public float get(int axis2, int axis1, int axis0) {
@@ -76,7 +76,7 @@ public abstract class SpatialPadding2D_F32 extends BaseSpatialPadding2D<Tensor_F
 	}
 
 	/**
-	 * Returns the value of the virtual padded tensor at the specified coordinate.  The coordinate
+	 * Returns the value of the virtual padded tensor at the specified coordinate. The coordinate
 	 * can be inside or outside the original image.
 	 *
 	 * @param minibatch mini-batch number
@@ -95,7 +95,7 @@ public abstract class SpatialPadding2D_F32 extends BaseSpatialPadding2D<Tensor_F
 	}
 
 	/**
-	 * Invalid accessor.  Only supports 4-DOF accessors.
+	 * Invalid accessor. Only supports 4-DOF accessors.
 	 */
 	@Override
 	public float get(int axis4, int axis3, int axis2, int axis1, int axis0) {

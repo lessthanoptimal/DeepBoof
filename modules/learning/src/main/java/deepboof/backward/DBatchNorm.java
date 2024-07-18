@@ -24,7 +24,7 @@ import deepboof.forward.BatchNorm;
 
 /**
  * Implementation of {@link deepboof.forward.BatchNorm batch normalization} for training networks.
- * The mean and standard deviation is always computed on the forwards pass.  Unlike the forward only
+ * The mean and standard deviation is always computed on the forwards pass. Unlike the forward only
  * implementation the only parameters (which are optional) are gamma and beta.
  *
  * @author Peter Abeles
@@ -38,7 +38,7 @@ public interface DBatchNorm<T extends Tensor<T>> extends BatchNorm, DFunction<T>
     T getMean( T output );
 
     /**
-     * Returns the most recently computed variance for each variable.  This will be the actual variance not something that has been
+     * Returns the most recently computed variance for each variable. This will be the actual variance not something that has been
      * adjusted by adding EPS to it.
      *
      * @param output Storage for variance tensor. Is reshaped. If null a new instance will be declared

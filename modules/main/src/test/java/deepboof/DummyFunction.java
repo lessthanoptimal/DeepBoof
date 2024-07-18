@@ -23,39 +23,37 @@ import java.util.List;
 /**
  * @author Peter Abeles
  */
-public class DummyFunction< T extends Tensor > implements Function<T> {
-	@Override
-	public void initialize(int... shapeInput) {
+public class DummyFunction<T extends Tensor<T>> implements Function<T> {
+    @Override
+    public void initialize(int... shapeInput) {
+    }
 
-	}
+    @Override
+    public void setParameters(List<T> parameters) {
+    }
 
-	@Override
-	public void setParameters(List<T> parameters) {
+    @Override
+    public List<T> getParameters() {
+        return null;
+    }
 
-	}
+    @Override
+    public void forward(T input, T output) {
 
-	@Override
-	public List<T> getParameters() {
-		return null;
-	}
+    }
 
-	@Override
-	public void forward(T input, T output) {
+    @Override
+    public List<int[]> getParameterShapes() {
+        return null;
+    }
 
-	}
+    @Override
+    public int[] getOutputShape() {
+        return new int[0];
+    }
 
-	@Override
-	public List<int[]> getParameterShapes() {
-		return null;
-	}
-
-	@Override
-	public int[] getOutputShape() {
-		return new int[0];
-	}
-
-	@Override
-	public Class<T> getTensorType() {
-		return null;
-	}
+    @Override
+    public Class<T> getTensorType() {
+        return null;
+    }
 }

@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Special checks for learning implementations of spatial batch norm.  The behavior is very different from forwards
+ * Special checks for learning implementations of spatial batch norm. The behavior is very different from forwards
  * only since the statics are computed in the forwards pass
  *
  * @author Peter Abeles

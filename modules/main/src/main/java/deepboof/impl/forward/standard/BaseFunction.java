@@ -32,7 +32,7 @@ import java.util.List;
  * @author Peter Abeles
  */
 @SuppressWarnings("unchecked")
-public abstract class BaseFunction<T extends Tensor> implements Function<T> {
+public abstract class BaseFunction<T extends Tensor<T>> implements Function<T> {
 	protected int [] shapeInput = new int[0];
 	protected List<int []> shapeParameters = new ArrayList<>();
 	protected int [] shapeOutput = new int[0];

@@ -37,7 +37,7 @@ public class DFunctionDropOut_F64 extends BaseDFunction<Tensor_F64> implements D
 	// Specifies chance of a neuron being dropped from 0 to 1.0
 	double dropRate;
 
-	// used to indicate if a neuron is turned off or not.  Using a double since it should be faster
+	// used to indicate if a neuron is turned off or not. Using a double since it should be faster
 	// than adding conditional statements (need to verify this)
 	Tensor_F64 drops = new Tensor_F64();
 

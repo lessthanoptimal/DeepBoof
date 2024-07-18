@@ -90,7 +90,7 @@ public abstract class ChecksDerivative<T extends Tensor<T>>
 					numeric.differentiate(inputTensor,parameters,dout,expectedXD,expectedWD);
 //					System.out.println("===== NUMERICAL GRADIENT STOP");
 
-					// invoke the forwards pass first.  Some algorithms require it be called first
+					// invoke the forwards pass first. Some algorithms require it be called first
 					alg.setParameters(parameters);
 					// to compute the gradient
 					alg.forward(inputTensor, outputTensor);

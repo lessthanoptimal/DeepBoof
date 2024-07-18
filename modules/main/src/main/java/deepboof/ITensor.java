@@ -39,8 +39,8 @@ public interface ITensor {
 	boolean isShape(int ...shape );
 
 	/**
-	 * Returns the length of a dimension/axis.  If a negative number is passed in it will
-	 * return the distance relative to the end.  E.g. -1 = length-1, -2 = length-2
+	 * Returns the length of a dimension/axis. If a negative number is passed in it will
+	 * return the distance relative to the end. E.g. -1 = length-1, -2 = length-2
 	 * @param dimension The dimension/axis
 	 * @return length
 	 */

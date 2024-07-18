@@ -29,7 +29,7 @@ import java.util.List;
  * Implementation of {@link DSpatialPadding2D_F64} for {@link Tensor_F64} that extends {@link DSpatialWindowChannel}.
  *
  * Comments:<br>
- *     dpadding is a 2D tensor of the spatial region only.  In the forwards pass the partial coordinate's index is
+ *     dpadding is a 2D tensor of the spatial region only. In the forwards pass the partial coordinate's index is
  *     saved and the batch + channel indexes are implicit saved in the output index tensor.
  *
  *

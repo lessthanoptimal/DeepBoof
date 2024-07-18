@@ -36,7 +36,7 @@ public abstract class ChecksGenericFunction<T extends Tensor<T>> {
 	protected TensorFactory<T> tensorFactory;
 
 	/**
-	 * Configure of distinctive configurations.  Each configuration might have different shapes for parameters.
+	 * Configure of distinctive configurations. Each configuration might have different shapes for parameters.
 	 */
 	protected int numberOfConfigurations=1;
 

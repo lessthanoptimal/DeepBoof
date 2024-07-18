@@ -31,8 +31,8 @@ import java.util.List;
 public interface SpatialConvolve2D<T extends Tensor<T>> extends Function<T> {
 
 	/**
-	 * Applies forward spacial convolution.  Each spacial convolution kernel is composed of a C 2D kernels that are
-	 * applied to the input image.  The number of channels in the output image is dependent on the number of
+	 * Applies forward spacial convolution. Each spacial convolution kernel is composed of a C 2D kernels that are
+	 * applied to the input image. The number of channels in the output image is dependent on the number of
 	 * spacial kernels in this layer.
 	 *
 	 * <pre>
@@ -47,7 +47,7 @@ public interface SpatialConvolve2D<T extends Tensor<T>> extends Function<T> {
 	 * W   = With of input image
 	 * F   = Number of kernels or channels in output
 	 * H'  = Height of output image. H' = 1 + (H + padY0 + padY1 - HH) / periodY
-	 * W'  = Width of output image.  W' = 1 + (W + padX0 + padX1 - WW) / periodX
+	 * W'  = Width of output image. W' = 1 + (W + padX0 + padX1 - WW) / periodX
 	 * HH  = Height of kernel
 	 * WW  = Width of kernel
 	 * </pre>
@@ -61,7 +61,7 @@ public interface SpatialConvolve2D<T extends Tensor<T>> extends Function<T> {
 	/**
 	 * See {@link #forward} for a description of parameters.
 	 *
-	 * @param parameters Two tensors.  Weights = (F, C, HH, WW), bias = (F,)
+	 * @param parameters Two tensors. Weights = (F, C, HH, WW), bias = (F,)
 	 */
 	@Override
 	void setParameters(List<T> parameters );

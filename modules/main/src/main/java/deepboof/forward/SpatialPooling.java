@@ -25,8 +25,8 @@ import java.util.List;
 
 /**
  * Spatial pooling down samples the input spatial tensors by finding a representative value inside
- * each pooling region.  The intent is to reduce the number of variables while maintaining much of the original
- * information.  Pooling is specified by the region's size (poolWidth, poolHeight) and the sampling
+ * each pooling region. The intent is to reduce the number of variables while maintaining much of the original
+ * information. Pooling is specified by the region's size (poolWidth, poolHeight) and the sampling
  * period (periodX, periodY), and padding parameters.
  *
  * Processing Steps:<br>
@@ -48,7 +48,7 @@ import java.util.List;
  *
  * @author Peter Abeles
  */
-public interface SpatialPooling<T extends Tensor> extends Function<T> {
+public interface SpatialPooling<T extends Tensor<T>> extends Function<T> {
 
 	/**
 	 * Processes a spatial tensor.
@@ -74,7 +74,7 @@ public interface SpatialPooling<T extends Tensor> extends Function<T> {
 	void forward(T input, T output);
 
 	/**
-	 * Can skip.  No parameters required.
+	 * Can skip. No parameters required.
 	 *
 	 * @param parameters No parameters required
 	 */

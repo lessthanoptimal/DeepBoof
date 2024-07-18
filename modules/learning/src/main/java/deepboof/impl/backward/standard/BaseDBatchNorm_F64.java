@@ -58,7 +58,7 @@ public abstract class BaseDBatchNorm_F64 extends BaseDFunction<Tensor_F64> imple
     // number of elements in input tensor (excluding mini-batch)
     protected int D;
 
-    // Internal storage for gamma and beta parameters.  Stored interleaved gamma then beta.  1 for each input variable
+    // Internal storage for gamma and beta parameters. Stored interleaved gamma then beta. 1 for each input variable
     // params = [ gamma[0], beta[0], gamma[1], beta[1],  ... , gamma[D], beta[D]]
     protected Tensor_F64 params = new Tensor_F64(0);
     protected double EPS = DeepBoofConstants.TEST_TOL_F64*0.1;

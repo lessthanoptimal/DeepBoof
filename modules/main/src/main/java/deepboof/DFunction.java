@@ -22,9 +22,9 @@ import java.util.List;
 
 /**
  * {@link Function Functions} which also implement the backwards step and compute the gradient for all inputs.
- * Functions have two modes for operation, learning and evaluating.  When in learning mode they are free
+ * Functions have two modes for operation, learning and evaluating. When in learning mode they are free
  * to modify their internal state during the forward step, otherwise, while in evaluation mode, they are not
- * allowed to modify their state.  <i>By default, all functions start in evaluation mode.</i>
+ * allowed to modify their state. <i>By default, all functions start in evaluation mode.</i>
  *
  * @author Peter Abeles
  */
@@ -40,13 +40,13 @@ public interface DFunction<T extends Tensor<T>> extends Function<T> {
 	void evaluating();
 
 	/**
-	 * Computes the derivatives of all the inputs and parameters to this function.  The {@link #forward} function
+	 * Computes the derivatives of all the inputs and parameters to this function. The {@link #forward} function
 	 * must be called first before calling this one and the same inputs and parameters must be passed in.
 	 *
 	 * @param input The same input tensor which was passed in during the forward pass.
 	 * @param dout Derivative of output, computed from next layer.
 	 * @param gradientInput gradient of input {@link Tensor}
-	 * @param gradientParameters  Gradients of all parameter {@link Tensor Tensors}.  Same order as parameters
+	 * @param gradientParameters  Gradients of all parameter {@link Tensor Tensors}. Same order as parameters
 	 *                            in {@link #forward}
 	 */
 	void backwards(T input, T dout , T gradientInput , List<T> gradientParameters );

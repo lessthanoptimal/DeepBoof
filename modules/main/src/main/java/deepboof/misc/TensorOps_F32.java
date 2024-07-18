@@ -60,13 +60,13 @@ public class TensorOps_F32 {
 	}
 
 	/**
-	 * <p>Performs element-wise multiplication between the two tensors and stores results in output.  All tensors
-	 * must have the same shape.  </p>
+	 * <p>Performs element-wise multiplication between the two tensors and stores results in output. All tensors
+	 * must have the same shape. </p>
 	 *
 	 * {@code output[i] = A[i]*B[i]}
 	 *
-	 * @param A Input tensor.  Can be the same as output.
-	 * @param B Input tensor.  Can be the same as output.
+	 * @param A Input tensor. Can be the same as output.
+	 * @param B Input tensor. Can be the same as output.
 	 * @param output Output tensor.
 	 */
 	public static void elementMult(Tensor_F32 A , Tensor_F32 B , Tensor_F32 output ) {
@@ -93,13 +93,13 @@ public class TensorOps_F32 {
 	}
 
 	/**
-	 * <p>Performs element-wise addition between the two tensors and stores results in output.  All tensors
-	 * must have the same shape.  </p>
+	 * <p>Performs element-wise addition between the two tensors and stores results in output. All tensors
+	 * must have the same shape. </p>
 	 *
 	 * {@code output[i] = A[i] + B[i]}
 	 *
-	 * @param A Input tensor.  Can be the same as output.
-	 * @param B Input tensor.  Can be the same as output.
+	 * @param A Input tensor. Can be the same as output.
+	 * @param B Input tensor. Can be the same as output.
 	 * @param output Output tensor.
 	 */
 	public static void elementAdd(Tensor_F32 A , Tensor_F32 B , Tensor_F32 output ) {
@@ -168,14 +168,14 @@ public class TensorOps_F32 {
 	}
 
 	/**
-	 * Inserts the spatial region of one tensor into another.  Both tensors are assumed
-	 * to follow the following pattern for their shape.  (..., C, H, W).  C is for
+	 * Inserts the spatial region of one tensor into another. Both tensors are assumed
+	 * to follow the following pattern for their shape. (..., C, H, W). C is for
 	 * the number of channels, H is for the image's height, and W, is for the image's width.
 	 *
-	 * @param src Source tensor.  Entire image is copied into dst.
-	 * @param srcCoor Coordinate of spatial region.  ( ..., 0, 0, 0) modified.
-	 * @param dst Destination tensor.  The source image can be smaller than the destination, but not larger.
-	 * @param dstCoor Coordinate of spatial region.  ( ..., 0, y, x) modified.
+	 * @param src Source tensor. Entire image is copied into dst.
+	 * @param srcCoor Coordinate of spatial region. ( ..., 0, 0, 0) modified.
+	 * @param dst Destination tensor. The source image can be smaller than the destination, but not larger.
+	 * @param dstCoor Coordinate of spatial region. ( ..., 0, y, x) modified.
 	 */
 	public static void insertSpatial(Tensor_F32 src , int []srcCoor,
 									 Tensor_F32 dst , int []dstCoor )
@@ -244,12 +244,12 @@ public class TensorOps_F32 {
 	}
 
 	/**
-	 * Fills the border with the specified value.  The tensor is assumed to have the following
+	 * Fills the border with the specified value. The tensor is assumed to have the following
 	 * shape ( ... , C , H, W),  C is for he number of channels, H is for the image's height, and W, is for
 	 * the image's width.
 	 * 
 	 * @param tensor Tensor with a spatial region at the end. Modified.
-	 * @param coor Coordinate of the targeted spatial region inside the tensor.  axis values for C,H,W are ignored. Modified.
+	 * @param coor Coordinate of the targeted spatial region inside the tensor. axis values for C,H,W are ignored. Modified.
 	 * @param borderY0 Lower extent's border length along Y axis
 	 * @param borderX0 Lower extent's border length along X axis
 	 * @param borderY1 Upper extent's border length along Y axis

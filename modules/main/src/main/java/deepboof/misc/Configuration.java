@@ -21,7 +21,7 @@ package deepboof.misc;
 import java.io.Serializable;
 
 /**
- * Complex algorithms with several parameters can specify their parameters using a separate class.  This interface
+ * Complex algorithms with several parameters can specify their parameters using a separate class. This interface
  * is intended to provide a common interface for all such configuration classes.
  *
  * @author Peter Abeles

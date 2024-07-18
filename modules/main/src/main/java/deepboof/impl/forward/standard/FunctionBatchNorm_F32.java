@@ -36,7 +36,7 @@ public class FunctionBatchNorm_F32
 {
 	protected boolean requiresGammaBeta;
 
-	// internal copy of parameters with variance modified for performance.  precomputes inverse of stdev + EPS
+	// internal copy of parameters with variance modified for performance. precomputes inverse of stdev + EPS
 	protected Tensor_F32 params = new Tensor_F32(0);
 	protected float EPS = DeepBoofConstants.TEST_TOL_F32*0.1f;
 
@@ -68,7 +68,7 @@ public class FunctionBatchNorm_F32
 	@Override
 	public void _forward(Tensor_F32 input, Tensor_F32 output) {
 		if( input.getDimension() <= 1 ) {
-			throw new IllegalArgumentException("Input tensor must be at least 2D.  First dimension of batch.");
+			throw new IllegalArgumentException("Input tensor must be at least 2D. First dimension of batch.");
 		}
 
 		int D = TensorOps.outerLength(input.shape,1);

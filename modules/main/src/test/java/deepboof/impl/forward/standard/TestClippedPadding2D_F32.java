@@ -74,7 +74,7 @@ public class TestClippedPadding2D_F32 {
 	}
 
 	/**
-	 * See if the inner values are returned correctly.  Should be the same as the input just offset
+	 * See if the inner values are returned correctly. Should be the same as the input just offset
 	 */
 	@Test
 	public void innerValue() {

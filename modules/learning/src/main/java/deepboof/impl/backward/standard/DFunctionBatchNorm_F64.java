@@ -25,7 +25,7 @@ import deepboof.tensors.Tensor_F64;
 import java.util.List;
 
 /**
- * Implementation of {@link DFunctionBatchNorm} for {@link Tensor_F64}.  Intermediate variables are cached in the
+ * Implementation of {@link DFunctionBatchNorm} for {@link Tensor_F64}. Intermediate variables are cached in the
  * forward pass.
  *
  * @author Peter Abeles

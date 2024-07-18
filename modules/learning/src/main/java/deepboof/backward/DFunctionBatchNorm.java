@@ -24,12 +24,12 @@ import deepboof.forward.FunctionBatchNorm;
 import java.util.List;
 
 /**
- * <p>Implementation of {@link FunctionBatchNorm Batch Normalization} for training networks.  This has distinctly
- * different behavior from forward only implementations.  In this learning implementation, statistics of
- * the input parameters are recomputed every time {@link #forward} is invoked.  While for the forward only
+ * <p>Implementation of {@link FunctionBatchNorm Batch Normalization} for training networks. This has distinctly
+ * different behavior from forward only implementations. In this learning implementation, statistics of
+ * the input parameters are recomputed every time {@link #forward} is invoked. While for the forward only
  * implementation those statistics are known already and not recomputed.</p>
  *
- * <p>The above described change in behavior also changes how parameters are specified.  mean and variance
+ * <p>The above described change in behavior also changes how parameters are specified. mean and variance
  * are no longer input parameters but are computed dynamically in the forwards pass.</p>
  *
  * NOTES:
@@ -44,7 +44,7 @@ public interface DFunctionBatchNorm<T extends Tensor<T>>
     /**
      * <p>Applies batch normalization to each variable in the input.</p>
      *
-     * <p>There is only a parameter tensor if {@link #hasGammaBeta()} returns true.  If true then
+     * <p>There is only a parameter tensor if {@link #hasGammaBeta()} returns true. If true then
      * gamma, and beta are encoded in a single tensor in an interleaved fashion (gamma, beta).</p>
      *
      * <pre>
@@ -61,7 +61,7 @@ public interface DFunctionBatchNorm<T extends Tensor<T>>
      * <p>NOTE: Interleaving is used in the parameters instead of multiple tensors to improve memory locality,
      * which reduces cache misses.</p>
      *
-     * @param input Input tensor.  Tensor with a shape of (N, d[i], ... , d[k]), where N is mini-batch size
+     * @param input Input tensor. Tensor with a shape of (N, d[i], ... , d[k]), where N is mini-batch size
      * @param output Output tensor. Same shape as input tensor Modified.
      */
     @Override
@@ -70,7 +70,7 @@ public interface DFunctionBatchNorm<T extends Tensor<T>>
     /**
      * See {@link #forward} for a description of parameters.
      *
-     * @param parameters Variable tensor.  (d[i], ... , d[k], 2). Not modified.
+     * @param parameters Variable tensor. (d[i], ... , d[k], 2). Not modified.
      */
     @Override
     void setParameters(List<T> parameters );

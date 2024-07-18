@@ -33,7 +33,7 @@ public class ConfigPadding implements Configuration {
 	public int x0, y0;
 
 	/**
-	 * Padding added to upper extent along x and y axis.  Zero is default
+	 * Padding added to upper extent along x and y axis. Zero is default
 	 */
 	public int x1, y1;
 

@@ -24,9 +24,9 @@ import deepboof.forward.SpatialBatchNorm;
 import java.util.List;
 
 /**
- * <p>Interface of {@link SpatialBatchNorm Spatial Batch Normalization} for training networks.  Spatial batch norm
+ * <p>Interface of {@link SpatialBatchNorm Spatial Batch Normalization} for training networks. Spatial batch norm
  * can be made to be functionally equivalent to regular batch norm by simply reordering each band so that all
- * the pixels inside are treated as one variable.  See {@link DFunctionBatchNorm} for additional details on
+ * the pixels inside are treated as one variable. See {@link DFunctionBatchNorm} for additional details on
  * training method.</p>
  *
  * @author Peter Abeles
@@ -37,7 +37,7 @@ public interface DSpatialBatchNorm<T extends Tensor<T>>
     /**
      * <p>Performs batch normalization on spatial data.</p>
      *
-     * <p>There is only a parameter tensor if {@link #hasGammaBeta()} returns true.  If true then
+     * <p>There is only a parameter tensor if {@link #hasGammaBeta()} returns true. If true then
      * gamma, and beta are encoded in a single tensor in an interleaved fashion (gamma, beta).</p>
      * <pre>
      * Summary Table
@@ -59,7 +59,7 @@ public interface DSpatialBatchNorm<T extends Tensor<T>>
     void forward(T input, T output);
 
     /**
-     * There are only parameters when gamma-beta is used.  See {@link #forward} for a description
+     * There are only parameters when gamma-beta is used. See {@link #forward} for a description
      * parameter encoding.
      *
      * @param parameters Single tensor with shape (C, 2). Not modified.

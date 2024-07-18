@@ -19,7 +19,7 @@
 package deepboof;
 
 /**
- * Base class for all Tensor data types.  Only provides information dealing with the tensor's shape
+ * Base class for all Tensor data types. Only provides information dealing with the tensor's shape
  * and core data type.
  *
  * @author Peter Abeles
@@ -27,7 +27,7 @@ package deepboof;
 public abstract class BaseTensor implements ITensor {
 
 	/**
-	 * The lengths of each dimension/axis.  Highest stride to smallest stride.
+	 * The lengths of each dimension/axis. Highest stride to smallest stride.
 	 */
 	public int shape[] = new int[0];
 

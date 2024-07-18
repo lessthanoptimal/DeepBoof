@@ -34,7 +34,7 @@ public class DeepUnitTest {
 		}
 	}
 
-	public static<T extends Tensor>
+	public static<T extends Tensor<T>>
 	void assertNotEquals(T expected , T found , Accuracy tol ) {
 		if( expected instanceof Tensor_F64 ) {
 			assertNotEquals((Tensor_F64)expected,(Tensor_F64)found,tol.value(double.class));
@@ -43,7 +43,7 @@ public class DeepUnitTest {
 		}
 	}
 
-	public static<T extends Tensor>
+	public static<T extends Tensor<T>>
 	void assertEquals(T expected , T found , Accuracy tol ) {
 		if( expected instanceof Tensor_F64 ) {
 			assertEquals((Tensor_F64)expected,(Tensor_F64)found,tol.value(double.class));

@@ -34,7 +34,7 @@ public class TensorFactory_F64 {
 	/**
 	 * Generate a zeros tensor with the option for a sub-tensor
 	 *
-	 * @param rand If you wish to generate a sub-matrix pass in this RNG and it will randomly offset the data.  null
+	 * @param rand If you wish to generate a sub-matrix pass in this RNG and it will randomly offset the data. null
 	 *             for regular tensor
 	 * @param shape Shape of the tensor
 	 * @return tensor

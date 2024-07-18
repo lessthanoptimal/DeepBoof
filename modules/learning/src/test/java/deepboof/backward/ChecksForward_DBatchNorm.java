@@ -71,7 +71,7 @@ public abstract class ChecksForward_DBatchNorm<T extends Tensor<T>> extends Chec
 				T origMean = alg.getMean(null);
 				T origVar = alg.getVariance(null);
 
-				// put it into evaluation mode and provide it new data.  The statistics should
+				// put it into evaluation mode and provide it new data. The statistics should
 				// remain the same
 				input = tensorFactory.randomM(random, false, test.minibatch, test.inputShape);
 				alg.evaluating();

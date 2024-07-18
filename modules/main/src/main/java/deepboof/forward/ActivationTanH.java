@@ -26,10 +26,10 @@ import deepboof.Tensor;
  * <pre>
  * tanh(x) = sinh(x)/cosh(x) = 2*&sigma;(2*x) - 1
  * </pre>
- * where &sigma;(x) is the sigmoid function, sinh and cosh are hyperbolic sine and cosine functions.  It has
- * a range of -1 to 1.  Converges towards 1 for positive numbers and -1 for negative numbers.
+ * where &sigma;(x) is the sigmoid function, sinh and cosh are hyperbolic sine and cosine functions. It has
+ * a range of -1 to 1. Converges towards 1 for positive numbers and -1 for negative numbers.
  *
  * @author Peter Abeles
  */
-public interface ActivationTanH<T extends Tensor> extends Function<T> {
+public interface ActivationTanH<T extends Tensor<T>> extends Function<T> {
 }

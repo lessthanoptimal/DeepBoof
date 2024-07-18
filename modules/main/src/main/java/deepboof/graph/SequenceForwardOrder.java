@@ -22,7 +22,7 @@ import java.util.*;
 
 /**
  * Orders an unsorted list of nodes so that they can be processed in sequence and have all of their dependencies meet
- * prior to being invoked.  The graph must not have islands or cycles.  Some sanity checking is done to
+ * prior to being invoked. The graph must not have islands or cycles. Some sanity checking is done to
  * ensure that these preconditions are meet, but not all situations are currently caught.
  * 
  * <pre>
@@ -36,7 +36,7 @@ import java.util.*;
  */
 public class SequenceForwardOrder {
 
-	// Input sequence augmented with additional data.  Assumed to be unordered
+	// Input sequence augmented with additional data. Assumed to be unordered
 	List<NodeData> sequence = new ArrayList<>();
 
 	/**
@@ -76,7 +76,7 @@ public class SequenceForwardOrder {
 	public List<Node<?,?>> putIntoForwardOrder() {
 		assignDepth();
 
-		// See if any nodes were not traversed.  If that's the code then there are disconnected nodes
+		// See if any nodes were not traversed. If that's the code then there are disconnected nodes
 		for( int i = 0; i < sequence.size(); i++ ) {
 			NodeData n = sequence.get(i);
 
@@ -100,7 +100,7 @@ public class SequenceForwardOrder {
 	}
 
 	/**
-	 * Assigns a depth from the input node for all the elements in the graph.  Depth is defined as the distance
+	 * Assigns a depth from the input node for all the elements in the graph. Depth is defined as the distance
 	 * of the longest path to the node.
 	 */
 	protected void assignDepth() {
@@ -132,7 +132,7 @@ public class SequenceForwardOrder {
 				for (int j = 0; j < n.next.size(); j++) {
 					NodeData c = n.next.get(j);
 					if( c.depth == Integer.MAX_VALUE ) {
-						// have all of it's parents been assigned a depth?  If not wait.  This will ensure that
+						// have all of it's parents been assigned a depth?  If not wait. This will ensure that
 						// it's depth is the depth of the longest path
 						boolean allAssigned = true;
 						for (int k = 0; k < c.previous.size(); k++) {
@@ -153,7 +153,7 @@ public class SequenceForwardOrder {
 				for (int j = 0; j < n.previous.size(); j++) {
 					NodeData c = n.previous.get(j);
 					if( c.depth == Integer.MAX_VALUE ) {
-						throw new RuntimeException("An input to this node has not been traversed.  Cycle or other graph error. "+c.node.name);
+						throw new RuntimeException("An input to this node has not been traversed. Cycle or other graph error. "+c.node.name);
 					}
 				}
 			}
@@ -167,7 +167,7 @@ public class SequenceForwardOrder {
 	}
 
 	/**
-	 * Finds the input node.  Throws an error if there isn't one and only one input node
+	 * Finds the input node. Throws an error if there isn't one and only one input node
 	 * @return Input node
 	 */
 	protected NodeData findInput() {

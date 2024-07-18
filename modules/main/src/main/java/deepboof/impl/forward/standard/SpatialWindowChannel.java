@@ -94,10 +94,10 @@ public abstract class SpatialWindowChannel
 	 * Processes along the spatial tensor's border using the padded virtual tensor.
 	 *
 	 * @param batchIndex which mini-batch
-	 * @param row0 Lower extent along rows, inclusive.  output coordinates
-	 * @param col0 Lower extent along columns, inclusive.  output coordinates
-	 * @param row1 Upper extent along rows, exclusive.  output coordinates
-	 * @param col1 Upper extent along columns, exclusive.  output coordinates
+	 * @param row0 Lower extent along rows, inclusive. output coordinates
+	 * @param col0 Lower extent along columns, inclusive. output coordinates
+	 * @param row1 Upper extent along rows, exclusive. output coordinates
+	 * @param col1 Upper extent along columns, exclusive. output coordinates
 	 */
 	private void forwardBorder(int batchIndex , int channel , int row0, int col0, int row1, int col1 ) {
 		for (int outRow = row0; outRow < row1; outRow++) {
@@ -127,7 +127,7 @@ public abstract class SpatialWindowChannel
 
 	/**
 	 * Applies the operations at the specified window and stores the results at the specified output
-	 * coordinate.  For virtual tensor
+	 * coordinate. For virtual tensor
 	 *
 	 * @param padded Input spatial virtual tensor
 	 * @param batch Index of input in mini-batch that is being processed

@@ -22,14 +22,14 @@ import java.util.List;
 
 /**
  * Stores a confusion matrix of results in an N by N integer row-major matrix and provides functions for computing
- * different statistical properties.  To compute different statistical properties first invoke {@link #precompute()}.
+ * different statistical properties. To compute different statistical properties first invoke {@link #precompute()}.
  *
  * @author Peter Abeles
  */
 public class ConfusionCounts {
 	/**
-	 * N by N matrix of counts.  Each element represents the number of times category 'row' was labeled
-	 * 'col'.  Thus, the diagonals are the totals that each category has been correctly labeled.
+	 * N by N matrix of counts. Each element represents the number of times category 'row' was labeled
+	 * 'col'. Thus, the diagonals are the totals that each category has been correctly labeled.
 	 */
 	public int counts[];
 
@@ -38,7 +38,7 @@ public class ConfusionCounts {
 	public int sumCols[];
 
 	/**
-	 * Optional labels for each category.  Can be null.
+	 * Optional labels for each category. Can be null.
 	 */
 	public List<String> labels;
 	/**

@@ -24,7 +24,7 @@ import deepboof.forward.SpatialConvolve2D;
 import deepboof.forward.SpatialPadding2D;
 
 /**
- * Common class for implementations of {@link SpatialConvolve2D}.  Does not assume how kernels span input channels.
+ * Common class for implementations of {@link SpatialConvolve2D}. Does not assume how kernels span input channels.
  *
  * @author Peter Abeles
  */

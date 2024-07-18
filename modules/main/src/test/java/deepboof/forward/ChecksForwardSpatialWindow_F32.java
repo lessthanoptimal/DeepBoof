@@ -215,7 +215,7 @@ public abstract class ChecksForwardSpatialWindow_F32 <C extends ConfigSpatial>
 	}
 
 	/**
-	 * Compute the expected value from inside the tensor.  The region may or may not be contained
+	 * Compute the expected value from inside the tensor. The region may or may not be contained
 	 * entirely inside the tensor
 	 */
 	protected abstract float[] computeExpected(Tensor_F32 input, List<Tensor_F32> parameters,

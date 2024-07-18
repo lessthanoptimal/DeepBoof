@@ -28,7 +28,7 @@ import java.util.List;
  * @author Peter Abeles
  */
 @SuppressWarnings("unchecked")
-public abstract class ElementWiseFunction<T extends Tensor> extends BaseFunction<T> {
+public abstract class ElementWiseFunction<T extends Tensor<T>> extends BaseFunction<T> {
 	@Override
 	public void _initialize() {
 		shapeOutput = shapeInput.clone();

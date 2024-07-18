@@ -21,13 +21,13 @@ package deepboof;
 import deepboof.misc.TensorOps;
 
 /**
- * Base class for Tensors.  A tensor is an N-dimensional array.  Array elements are stored in a 1-D array
- * in row-major ordering.  This class and its direct children provide only a light weight wrapper around the
+ * Base class for Tensors. A tensor is an N-dimensional array. Array elements are stored in a 1-D array
+ * in row-major ordering. This class and its direct children provide only a light weight wrapper around the
  * array.
  *
  * <p>
- * Sub-tensors are tensors which are wrapped around an external array which it doesn't own.  Most of the time,
- * sub-tensors will have a non-zero startIndex.  They can't be {@link #reshape(int...) reshaped} if the change
+ * Sub-tensors are tensors which are wrapped around an external array which it doesn't own. Most of the time,
+ * sub-tensors will have a non-zero startIndex. They can't be {@link #reshape(int...) reshaped} if the change
  * in shape requires the data array to grow.
  * </p>
  *
@@ -36,14 +36,14 @@ import deepboof.misc.TensorOps;
 public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 
 	/**
-	 * The index in the input array that this tensor starts at.  This allows for a tensor to be
+	 * The index in the input array that this tensor starts at. This allows for a tensor to be
 	 * inside a much larger array.
 	 */
 	public int startIndex = 0;
 
 	/**
 	 * If this tensor is wrapped around another array which it doesn't own then it is a sub-tensor.
-	 * Most of the time, sub-tensors will have a non-zero startIndex.  They can't be resized.
+	 * Most of the time, sub-tensors will have a non-zero startIndex. They can't be resized.
 	 */
 	public boolean subtensor = false;
 
@@ -60,7 +60,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	public abstract double getDouble( int ...coordinate );
 
 	/**
-	 * Returns internal array used to store tensor data.  Data is stored in a row-major order in a single array.
+	 * Returns internal array used to store tensor data. Data is stored in a row-major order in a single array.
 	 * @return tensor data.
 	 */
 	public abstract Object getData();
@@ -73,7 +73,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	/**
 	 * Reshape for an arbitrary number of dimensions
 	 *
-	 * @param shape New shape.  Length must be the same as the number of dimensions. Array reference
+	 * @param shape New shape. Length must be the same as the number of dimensions. Array reference
 	 *              not saved internally. Highest to lowest dimension
 	 */
 	public Tensor<T> reshape(int... shape) {
@@ -87,7 +87,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	}
 
 	/**
-	 * {@link #reshape(int...) Reshape} for 1-D tensors.  Convenience function, but can be used
+	 * {@link #reshape(int...) Reshape} for 1-D tensors. Convenience function, but can be used
 	 * to avoid declaring a new array
 	 *
 	 * @param length0 Length of axis-0
@@ -102,7 +102,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	}
 
 	/**
-	 * {@link #reshape(int...) Reshape} for 2-D tensors.  Convenience function, but can be used
+	 * {@link #reshape(int...) Reshape} for 2-D tensors. Convenience function, but can be used
 	 * to avoid declaring a new array
 	 *
 	 * @param length1 Length of axis-1
@@ -119,7 +119,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	}
 
 	/**
-	 * {@link #reshape(int...) Reshape} for 3-D tensors.  Convenience function, but can be used
+	 * {@link #reshape(int...) Reshape} for 3-D tensors. Convenience function, but can be used
 	 * to avoid declaring a new array
 	 *
 	 * @param length2 Length of axis-2
@@ -138,7 +138,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	}
 
 	/**
-	 * {@link #reshape(int...) Reshape} for 4-D tensors.  Convenience function, but can be used
+	 * {@link #reshape(int...) Reshape} for 4-D tensors. Convenience function, but can be used
 	 * to avoid declaring a new array
 	 *
 	 * @param length3 Length of axis-3
@@ -159,7 +159,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	}
 
 	/**
-	 * {@link #reshape(int...) Reshape} for 5-D tensors.  Convenience function, but can be used
+	 * {@link #reshape(int...) Reshape} for 5-D tensors. Convenience function, but can be used
 	 * to avoid declaring a new array
 	 *
 	 * @param length4 Length of axis-4
@@ -182,7 +182,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	}
 
 	/**
-	 * Reshape for when the inner shape variable has already been adjusted.  Useful for when calls to new
+	 * Reshape for when the inner shape variable has already been adjusted. Useful for when calls to new
 	 * are being minimized.
 	 */
 	public Tensor<T> reshape() {
@@ -212,7 +212,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	protected abstract int innerArrayLength();
 
 	/**
-	 * Returns the index of the coordinate.  Data array is encoded in a row-major format
+	 * Returns the index of the coordinate. Data array is encoded in a row-major format
 	 *
 	 * @param coordinate Coordinate from highest to lowest axis number/dimension
 	 * @return index of the index in internal data array
@@ -300,7 +300,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	}
 
 	/**
-	 * Returns the stride at the specified dimension.  If negative it will start counting from the tail
+	 * Returns the stride at the specified dimension. If negative it will start counting from the tail
 	 */
 	public int stride( int index ) {
 		if( index < 0 ) {
@@ -312,7 +312,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 
 	/**
 	 * Copies the shape of this tensor into the provided int[]
-	 * @param shape Where the shape is to be written to.  Must be the correct size
+	 * @param shape Where the shape is to be written to. Must be the correct size
 	 */
 	public void copyShape( int shape[] ) {
 		if( shape.length != this.shape.length )
@@ -324,8 +324,8 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	}
 
 	/**
-	 * Returns the length of a dimension/axis.  If a negative number is passed in it will
-	 * return the distance relative to the end.  E.g. -1 = length-1, -2 = length-2
+	 * Returns the length of a dimension/axis. If a negative number is passed in it will
+	 * return the distance relative to the end. E.g. -1 = length-1, -2 = length-2
 	 * @param dimension The dimension/axis
 	 * @return length
 	 */
@@ -337,7 +337,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	}
 
 	/**
-	 * Length of used elements in Tensor's data array.  Note that the actual data array can be larger
+	 * Length of used elements in Tensor's data array. Note that the actual data array can be larger
 	 * @return length of used region in data array
 	 */
 	public int length() {
@@ -373,7 +373,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 	/**
 	 * Converts an array index into a coordinate
 	 * @param index internal array index offset from startIndex
-	 * @param storage (Optional) storage for coordinate.  If null a new instance is created
+	 * @param storage (Optional) storage for coordinate. If null a new instance is created
 	 * @return coordinate
 	 */
 	public int[] indexToCoor( int index , int []storage ) {
@@ -389,7 +389,7 @@ public abstract class Tensor<T extends Tensor<T>> extends BaseTensor {
 
 	/**
 	 * Turns 'this' tensor into a copy of the provided tensor.
-	 * @param original Original tensor that's to be copied into this one.  Not modified.
+	 * @param original Original tensor that's to be copied into this one. Not modified.
 	 */
 	public T setTo( T original ) {
 		reshape(original.getShape());

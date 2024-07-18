@@ -40,7 +40,7 @@ public abstract class DSpatialWindowChannel<T extends Tensor<T>, P extends DSpat
 	// Toggle indicating if it's in learning mode or not
 	protected boolean learningMode = false;
 
-	// storage for padded image gradient.  This is a 2D tensor
+	// storage for padded image gradient. This is a 2D tensor
 	protected T dpadding;
 
 	public DSpatialWindowChannel(ConfigSpatial config, P padding) {
@@ -135,10 +135,10 @@ public abstract class DSpatialWindowChannel<T extends Tensor<T>, P extends DSpat
 	 * Processes along the spatial tensor's border using the padded virtual tensor.
 	 *
 	 * @param batchIndex which mini-batch
-	 * @param row0 Lower extent along rows, inclusive.  output coordinates
-	 * @param col0 Lower extent along columns, inclusive.  output coordinates
-	 * @param row1 Upper extent along rows, exclusive.  output coordinates
-	 * @param col1 Upper extent along columns, exclusive.  output coordinates
+	 * @param row0 Lower extent along rows, inclusive. output coordinates
+	 * @param col0 Lower extent along columns, inclusive. output coordinates
+	 * @param row1 Upper extent along rows, exclusive. output coordinates
+	 * @param col1 Upper extent along columns, exclusive. output coordinates
 	 */
 	private void backwardsBorder( int batchIndex , int channel , int row0, int col0, int row1, int col1 ) {
 		for (int outRow = row0; outRow < row1; outRow++) {
@@ -152,7 +152,7 @@ public abstract class DSpatialWindowChannel<T extends Tensor<T>, P extends DSpat
 	}
 
 	/**
-	 * Applies the backwards local window operation.  The padded gradient (dpadding) should be computed here.
+	 * Applies the backwards local window operation. The padded gradient (dpadding) should be computed here.
 	 * The input gradient will be found later on
 	 *
 	 * @param input Input spatial tensor
@@ -167,7 +167,7 @@ public abstract class DSpatialWindowChannel<T extends Tensor<T>, P extends DSpat
 											  int inY, int inX, int outY, int outX);
 
 	/**
-	 * Applies the backwards local window operation.  The padded gradient (dpadding) should be computed here.
+	 * Applies the backwards local window operation. The padded gradient (dpadding) should be computed here.
 	 * The input gradient will be found later on
 	 *
 	 * @param padded Input spatial virtual tensor

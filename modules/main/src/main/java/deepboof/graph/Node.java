@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Node in a network graph which describes the network's processing sequence.
  *
- * If there are multiple sources a {@link TensorMerger} must be provided.  A {@link Function function} can
+ * If there are multiple sources a {@link TensorMerger} must be provided. A {@link Function function} can
  * only process one input.
  *
  * @author Peter Abeles

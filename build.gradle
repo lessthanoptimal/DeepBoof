@@ -67,7 +67,7 @@ subprojects {
         compileOnly "org.jetbrains:annotations:$project.jetnull_version" // @Nullable
         compileOnly "javax.annotation:jsr250-api:$project.jsr250_version"  // @Generated
         compileOnly "org.projectlombok:lombok:$project.lombok_version"
-        testImplementation project.sourceSets.main.compileClasspath
+        testImplementation files(project.sourceSets.main.compileClasspath)
 
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit_version")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit_version")
@@ -83,7 +83,7 @@ subprojects {
 
     test {
         useJUnitPlatform()
-        reports.html.enabled = false
+        reports.html.setRequired(false)
         // Make the error logging verbose to make debugging on CI easier
         testLogging.showStandardStreams = true
         testLogging.exceptionFormat TestExceptionFormat.FULL
@@ -175,5 +175,5 @@ subprojects {
 
 wrapper {
     distributionType = Wrapper.DistributionType.BIN
-    gradleVersion = '7.6.4'
+    gradleVersion = '8.12.1'
 }

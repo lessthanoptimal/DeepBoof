@@ -16,13 +16,13 @@ allprojects {
 
 project.ext.ddogleg_version = '0.23.2'
 project.ext.lombok_version = '1.18.28'
-project.ext.jabel_version = '1.0.0'
+project.ext.jabel_version = '1.0.1-1'
 project.ext.jetnull_version = '23.0.0'
 project.ext.jsr250_version = '1.0'
-project.ext.junit_version = '5.9.1'
-project.ext.auto64to32_version = '3.2.1'
+project.ext.junit_version = '5.10.0'
+project.ext.auto64to32_version = '3.2.2'
 project.ext.zip4j_version = '2.11.5'
-project.ext.protobuf_version = '3.23.2'
+project.ext.protobuf_version = '3.25.6'
 project.ext.jarchivelib_version = '1.2.0'
 project.ext.jcommander_version = '1.82'
 project.ext.jgraphx_version = '4.2.2'
@@ -73,8 +73,8 @@ subprojects {
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit_version")
 
         // needed to use Java 11+ syntax with Java 11 byte code
-        annotationProcessor("com.github.bsideup.jabel:jabel-javac-plugin:${project.jabel_version}")
-        testAnnotationProcessor("com.github.bsideup.jabel:jabel-javac-plugin:${project.jabel_version}")
+        annotationProcessor("com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}")
+        testAnnotationProcessor("com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}")
     }
 
     sourceSets {

@@ -5,25 +5,24 @@ plugins {
 }
 
 allprojects {
-    apply plugin: 'eclipse'
     apply plugin: 'com.peterabeles.gversion'
 
-    group 'org.deepboof'
-    version '0.5.3-SNAPSHOT'
+    group = 'org.deepboof'
+    version = '0.5.3-SNAPSHOT'
 
     createVersionFile.enabled = false // run only once. enabled in types
 }
 
-project.ext.ddogleg_version = '0.23.2'
+project.ext.ddogleg_version = '0.24.0'
 project.ext.lombok_version = '1.18.28'
 project.ext.jabel_version = '1.0.1-1'
 project.ext.jetnull_version = '23.0.0'
 project.ext.jsr250_version = '1.0'
-project.ext.junit_version = '5.10.0'
+project.ext.junit_version = '5.11.4'
 project.ext.auto64to32_version = '3.2.2'
 project.ext.zip4j_version = '2.11.5'
 project.ext.protobuf_version = '3.25.6'
-project.ext.jarchivelib_version = '1.2.0'
+project.ext.plexus_version = '4.10.0'
 project.ext.jcommander_version = '1.82'
 project.ext.jgraphx_version = '4.2.2'
 
@@ -51,7 +50,7 @@ subprojects {
     tasks.withType(JavaCompile) { options.incremental = true }
 
     // Fail on jar conflict
-    configurations.all { resolutionStrategy { failOnVersionConflict() } }
+    configurations.configureEach { resolutionStrategy { failOnVersionConflict() } }
 
     repositories {
         mavenCentral()

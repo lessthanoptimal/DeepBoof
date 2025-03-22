@@ -3,6 +3,13 @@ Change Log
 Date Format: year/month/day
 
 ---------------------------------------------
+Date    : 2025-Mar-21
+Version : 0.5.3
+
+- Switched from jarchive to plexus for tgz and zip support
+  * jarchive was no longer being support and had known issues
+
+---------------------------------------------
 Date    : 2023-May-31
 Version : 0.5.2
 

@@ -8,7 +8,7 @@ allprojects {
     apply plugin: 'com.peterabeles.gversion'
 
     group = 'org.deepboof'
-    version = '0.5.3-SNAPSHOT'
+    version = '0.5.3'
 
     createVersionFile.enabled = false // run only once. enabled in types
 }

@@ -3,7 +3,7 @@ dependencies {
     implementation project(':modules:main')
     testImplementation project(':modules:main').sourceSets.test.output
 
-    implementation "org.rauschig:jarchivelib:$project.jarchivelib_version"
+    implementation "org.codehaus.plexus:plexus-archiver:$project.plexus_version"
     implementation "net.lingala.zip4j:zip4j:$project.zip4j_version"
 }
 

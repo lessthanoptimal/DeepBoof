@@ -15,7 +15,8 @@ sourceSets {
 
 // Runs an application from the examples directory
 // gradle exampleRun -Pwhich=ExampleClassifyVggCifar10
-task exampleRun(dependsOn: 'classes' ) {
+tasks.register('exampleRun') {
+    dependsOn 'classes'
 
     doLast {
         if (project.hasProperty('which')) {

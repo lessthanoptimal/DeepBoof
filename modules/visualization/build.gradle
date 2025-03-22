@@ -14,11 +14,11 @@ task resultsPlotJar(type: Jar) {
                 'Implementation-Version': version,
                 'Main-Class': 'deepboof.visualization.GridParameterResultsApp'
     }
-    archiveName = 'ResultsPlot.jar'
+    archiveFileName = 'ResultsPlot.jar'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 
     doLast {
-        archivePath.renameTo(file(archiveName))
+        archivePath.renameTo(file(archiveFileName))
     }
 }

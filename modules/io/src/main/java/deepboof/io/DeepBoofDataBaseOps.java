@@ -18,10 +18,8 @@
 
 package deepboof.io;
 
-import net.lingala.zip4j.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
-import org.rauschig.jarchivelib.Archiver;
-import org.rauschig.jarchivelib.ArchiverFactory;
+import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
+import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -206,28 +204,23 @@ public class DeepBoofDataBaseOps {
 
 
 	public static void decompressTGZ( File src , File dst ) {
-		Archiver archiver = ArchiverFactory.createArchiver("tar", "gz");
-		try {
-			archiver.extract(src, dst);
-		} catch (IOException e) {
-			System.out.println("Failed to decompress.  "+e.getMessage());
-			System.exit(1);
-		}
+		var unArchiver = new TarGZipUnArchiver();
+		unArchiver.setSourceFile(src);
+		unArchiver.setDestDirectory(dst);
+		unArchiver.extract();
 	}
 
 	public static void decompressZip( File src , File dst , boolean deleteZip ) {
-		try {
-			ZipFile zipFile = new ZipFile(src);
-			zipFile.extractAll(dst.getAbsolutePath());
-			if( deleteZip ) {
-				if( !src.delete() ) {
-					System.err.println("Failed to delete "+src.getName());
-				}
-			}
-		} catch (ZipException e) {
-			System.err.println("Failed to decompress.  "+e.getMessage());
-			System.exit(1);
-		}
+		var unArchiver = new ZipUnArchiver();
+		unArchiver.setSourceFile(src);
+		unArchiver.setDestDirectory(dst);
+		unArchiver.extract();
+
+        if( deleteZip ) {
+            if( !src.delete() ) {
+                System.err.println("Failed to delete "+src.getName());
+            }
+        }
 	}
 
 	/**
